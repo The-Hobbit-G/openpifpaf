@@ -12,7 +12,6 @@ class Base:
     def json_data(self, coordinate_digits=2):
         raise NotImplementedError
 
-####test   
 
 
 class Annotation(Base):
