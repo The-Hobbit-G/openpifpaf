@@ -1,7 +1,5 @@
 """Train a pifpaf network."""
 
-##git test
-
 import argparse
 import copy
 import datetime
