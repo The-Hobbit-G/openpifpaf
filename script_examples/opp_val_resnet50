@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --time=01:00:00
-#SBATCH --output=/scratch/izar/<username>/<path/to/dir>/%x.out
+#SBATCH --output=/scratch/izar/jiguo/val/%x.out
 
 shopt -s extglob
 
@@ -20,11 +20,11 @@ evalxp='opp_train_resnet50'
 evalepoch=150
 
 
-xpdir="/scratch/izar/<username>/<path/to/dir>/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/val/${SLURM_JOB_NAME}"
 
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
-tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
+tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
 mkdir -p ${xpdir}/logs
 
 
@@ -34,7 +34,7 @@ mkdir -p ${xpdir}/predictions
 
 for cpepoch in ${evalepoch}
 do
-  evalfrom="/scratch/izar/<username>/<path/to/dir>/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
+  evalfrom="/scratch/izar/jiguo/val/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
   echo "Start evaluating ${evalfrom}..."
   srun time python3 -m openpifpaf.eval \
     --write-predictions \
