@@ -16,7 +16,7 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50'
+evalxp='801_opp_train_resnet50'
 evalepoch=150
 
 
@@ -40,7 +40,7 @@ do
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocokp \
-    --coco-eval-long-edge 641 \
+    --coco-eval-long-edge 801 \
     --cocokp-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
