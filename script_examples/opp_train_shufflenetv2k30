@@ -1,0 +1,56 @@
+#!/bin/bash -l
+
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=48G
+#SBATCH --partition=gpu
+#SBATCH --qos=gpu
+#SBATCH --gres=gpu:2
+#SBATCH --time=72:00:00
+#SBATCH --output=/scratch/izar/<username>/<path/to/dir>/%x.out
+
+shopt -s extglob
+
+export MASTER_ADDR=$(hostname)
+export MASTER_PORT=7247
+export TORCH_DISTRIBUTED_DEBUG=INFO
+
+
+echo STARTING AT `date`
+
+
+xpdir="/scratch/izar/<username>/<path/to/dir>/${SLURM_JOB_NAME}"
+mkdir -p ${xpdir}
+mkdir -p ${xpdir}/code
+tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
+mkdir -p ${xpdir}/logs
+
+
+cd ..
+
+mkdir -p ${xpdir}/checkpoints
+
+srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
+  --output ${xpdir}/checkpoints/${SLURM_JOB_NAME}.pt \
+  --dataset=cocokp \
+  --cocokp-square-edge=513 \
+  --cocokp-extended-scale \
+  --cocokp-orientation-invariant=0.1 \
+  --cocokp-upsample=2 \
+  --basenet=shufflenetv2k30 \
+  --epochs=200 \
+  --batch-size=8 \
+  --lr=0.001 \
+  --lr-decay 180 190 \
+  --lr-decay-epochs=10 \
+  --momentum=0.9 \
+  --weight-decay=1e-5 \
+  --b-scale=10.0 \
+  --clip-grad-value=10.0 \
+  2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
+
+cd -
+
+
+echo FINISHED at `date`
