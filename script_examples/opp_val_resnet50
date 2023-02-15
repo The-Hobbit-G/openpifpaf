@@ -45,7 +45,7 @@ do
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
     --loader-workers 8 \
-    --checkpoint ${evalfrom} \
+    --checkpoint resnet50 \
     --decoder=cifcaf:0 \
     --seed-threshold 0.2 \
     --force-complete-pose \
