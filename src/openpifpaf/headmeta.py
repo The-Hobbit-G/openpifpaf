@@ -18,6 +18,11 @@ class Base:
     base_stride: int = field(default=None, init=False)
     upsample_stride: int = field(default=1, init=False)
 
+    ##base_stride will be claimed in each backbone network as 'stride' attribute and be specific to different backbones(eg. the base_stride of ShuffleNetV2 is 16) 
+
+    ##Since these are class attributes, they are shared by all instances of the class
+    ##On the contrary, if we define an attribute in the __init__ method, it would be an instance attribute and is specific to each object of the class
+
     @property
     def stride(self) -> int:
         if self.base_stride is None:
@@ -27,6 +32,9 @@ class Base:
     @property
     def n_fields(self) -> int:
         raise NotImplementedError
+
+    #n_fields: a property that raises a NotImplementedError. 
+    #This means that any subclasses of Base will need to provide their own implementation of the n_fields property, or raise a NotImplementedError.
 
 
 @dataclass

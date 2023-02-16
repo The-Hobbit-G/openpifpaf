@@ -39,3 +39,10 @@ from .show.annotation_painter import PAINTERS
 
 # load plugins last
 plugin.register()
+
+
+##Since in the training and evaluation script, we call 'python3 -m openpifpaf.eval ...' 
+##When you use the -m option to run a Python module as a script, Python first imports the openpifpaf module as a package, 
+##which means it executes this __init__.py file. Then it looks for a module or script named eval inside the package and executes it.
+##So all the codes in this __init__.py file will be executed and since we have plugin.register() here, 
+##DATAMODULES from .datasets will be inserted the corresponding datamodule and won't be empaty

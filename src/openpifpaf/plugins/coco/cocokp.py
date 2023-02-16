@@ -58,6 +58,8 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        #The 'cif' and 'cocokp' here are the values of the 'name' and 'dataset' attributes of the Cif class in headmeta, 
+        #'name' and 'dataset' are attributes inherited from Base class
         cif = openpifpaf.headmeta.Cif('cif', 'cocokp',
                                       keypoints=COCO_KEYPOINTS,
                                       sigmas=COCO_PERSON_SIGMAS,
@@ -81,6 +83,7 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
         caf.upsample_stride = self.upsample_stride
         dcaf.upsample_stride = self.upsample_stride
         self.head_metas = [cif, caf, dcaf] if self.with_dense else [cif, caf]
+        #Head metas contain the base stride which might be different for different data module instances.
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):

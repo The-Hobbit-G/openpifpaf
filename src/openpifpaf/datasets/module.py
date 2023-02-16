@@ -41,6 +41,13 @@ class DataModule:
     #: name and dataset to entries in the checkpoint and overwritten here.
     head_metas: List[headmeta.Base] = None
 
+
+    #classmethod is a built-in decorator that can be used to define a method that operates on the class rather than on instances of the class. 
+    #A classmethod receives the class itself as its first argument instead of the instance, and it can access and modify the class-level data.
+    #This method takes the class itself as its first argument (usually called cls by convention) instead of self. 
+    #Inside the method, we can access and modify class-level data using the class name (e.g. cls.class_attr1).
+    #we don't need to create an instance of DataModule to call this method. Instead, we have called it on the class itself.
+
     @classmethod
     def set_loader_workers(cls, value):
         cls._loader_workers = value
