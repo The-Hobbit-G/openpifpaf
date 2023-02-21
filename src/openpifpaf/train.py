@@ -145,7 +145,12 @@ def cli():
 def main():
     args = cli()
 
-    datamodule = datasets.factory(args.dataset)
+    #set a flag for whether using FPN to enable different pre_precessing for the data
+    use_fpn = False
+    if args.necknet is not None:
+        use_fpn = True
+
+    datamodule = datasets.factory(args.dataset,use_fpn)
 
     net_cpu, start_epoch = network.Factory().factory(head_metas=datamodule.head_metas)
     loss = network.losses.Factory().factory(datamodule.head_metas)

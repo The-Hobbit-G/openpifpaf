@@ -1,15 +1,26 @@
 import logging
 import torch
+from functools import partial
+
 
 LOG = logging.getLogger(__name__)
 
 
+def multi_apply(func, *args, **kwargs):
+    pfunc = partial(func, **kwargs) if kwargs else func
+    map_results = map(pfunc, *args)
+    return tuple(map(list, zip(*map_results)))
+
 class Shell(torch.nn.Module):
-    def __init__(self, base_net, head_nets, *,
+    #By using the * syntax, any arguments that come after it must be specified as keyword arguments. 
+    #In the case of the Shell class, this means that the process_input and process_heads arguments can only be passed as named parameters
+    #like: net = Shell(base_net, head_nets, process_input=my_input_processor, process_heads=my_head_processor)
+    def __init__(self, base_net, head_nets, neck_net = None, *,
                  process_input=None, process_heads=None):
         super().__init__()
 
         self.base_net = base_net
+        self.neck_net = neck_net
         self.head_nets = None
         self.process_input = process_input
         self.process_heads = process_heads
@@ -30,6 +41,8 @@ class Shell(torch.nn.Module):
             hn.meta.head_index = hn_i
             hn.meta.base_stride = self.base_net.stride
 
+            """TO DO : Embed the multi strides of FPN into this base_stride so that the gd could be mapped into targets of each level"""
+
         self.head_nets = head_nets
 
     def forward(self, image_batch, *, head_mask=None):
@@ -37,13 +50,27 @@ class Shell(torch.nn.Module):
             image_batch = self.process_input(image_batch)
 
         x = self.base_net(image_batch)
-        if head_mask is not None:
-            head_outputs = tuple(hn(x) if m else None for hn, m in zip(self.head_nets, head_mask))
-        else:
-            head_outputs = tuple(hn(x) for hn in self.head_nets)
 
-        if self.process_heads is not None:
-            head_outputs = self.process_heads(head_outputs)
+        if self.neck_net is not None:
+            x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN)
+            if head_mask is not None:
+                head_outputs = tuple(multi_apply(hn,x) if m else None for hn, m in zip(self.head_nets, head_mask))
+            else:
+                head_outputs = tuple(multi_apply(hn,x) for hn in self.head_nets)
+
+            if self.process_heads is not None:
+                # head_outputs = self.process_heads(head_outputs)
+                head_outputs = multi_apply(self.process_heads,head_outputs)
+        else:
+            if head_mask is not None:
+                head_outputs = tuple(hn(x) if m else None for hn, m in zip(self.head_nets, head_mask))
+            else:
+                head_outputs = tuple(hn(x) for hn in self.head_nets)
+
+            if self.process_heads is not None:
+                head_outputs = self.process_heads(head_outputs)
+
+        
 
         return head_outputs
 

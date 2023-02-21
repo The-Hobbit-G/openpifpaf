@@ -58,6 +58,6 @@ class HFlip(Preprocess):
         assert meta['hflip'] is False
         meta['hflip'] = True
 
-        meta['valid_area'][0] = -(meta['valid_area'][0] + meta['valid_area'][2]) - 1.0 + w
+        meta['valid_area'][0] = -(meta['valid_area'][0] + meta['valid_area'][2]) - 1.0 + w  #meta from COCO will be constructed in annotation.py (NormalizeAnnotations)
 
         return image, anns, meta

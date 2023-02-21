@@ -99,7 +99,7 @@ class AnnRescaler():
             self.suppress_selfhidden_(keypoint_sets)
 
         for keypoints in keypoint_sets:
-            keypoints[:, :2] /= self.stride
+            keypoints[:, :2] /= self.stride   ###This operation maps the gd keypoint coordinates into its coordinates in the featuremap to formulate the target for regression part(vectoral part) in CifCaf
         return keypoint_sets
 
     def bg_mask(self, anns, width_height, *, crowd_margin):

@@ -10,6 +10,7 @@ import time
 import torch
 
 from ..profiler import TorchProfiler
+from .nets import multi_apply
 
 LOG = logging.getLogger(__name__)
 
@@ -157,6 +158,7 @@ class Trainer():
 
             self.train(train_scenes, epoch)
 
+            #evaluate the model after the training is done or at specified epochs
             if (epoch + 1) % self.val_interval == 0 \
                or epoch + 1 == self.epochs:
                 self.write_model(epoch + 1, epoch + 1 == self.epochs)
@@ -178,7 +180,7 @@ class Trainer():
         with torch.autograd.profiler.record_function('model'):
             outputs = self.model(data, head_mask=[t is not None for t in targets])
             if self.train_profile and self.device.type != 'cpu':
-                torch.cuda.synchronize()
+                torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
         with torch.autograd.profiler.record_function('loss'):
             loss, head_losses = self.loss(outputs, targets)
             if self.train_profile and self.device.type != 'cpu':

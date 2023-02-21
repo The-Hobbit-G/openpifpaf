@@ -9,3 +9,4 @@ from .tracking_base import TrackingBase
 from .tracking_heads import TBaseSingleImage, Tcaf
 from .trainer import Trainer
 from . import losses
+from . import fpn

@@ -16,7 +16,7 @@ LOG = logging.getLogger(__name__)
 @dataclasses.dataclass
 class Cif:
     meta: headmeta.Cif
-    rescaler: AnnRescaler = None
+    rescaler: AnnRescaler = None  ##If we want CIF to process with different stide, we have to specify the rescaler with the corresponding stides
     v_threshold: int = 0
     bmin: float = 0.1  #: in pixels
     visualizer: CifVisualizer = None
@@ -48,6 +48,7 @@ class CifGenerator():
     def __call__(self, image, anns, meta):
         width_height_original = image.shape[2:0:-1]
 
+        ###This operation maps the gd keypoint coordinates into its coordinates in the featuremap to formulate the target for regression part(vectoral part) in CifCaf
         keypoint_sets = self.rescaler.keypoint_sets(anns)
         bg_mask = self.rescaler.bg_mask(anns, width_height_original,
                                         crowd_margin=(self.config.side_length - 1) / 2)
@@ -58,6 +59,7 @@ class CifGenerator():
         self.init_fields(n_fields, bg_mask)
         self.fill(keypoint_sets)
         fields = self.fields(valid_area)
+        #fields is the final target of the CIF head(mapped from the gd through a load of pre-processing)
 
         self.visualizer.processed_image(image)
         self.visualizer.targets(fields, annotation_dicts=anns)

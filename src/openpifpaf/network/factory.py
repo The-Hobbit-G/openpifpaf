@@ -12,6 +12,7 @@ from ..configurable import Configurable
 from . import basenetworks, heads, model_migration, nets, tracking_heads
 from . import swin_transformer, xcit
 from .tracking_base import TrackingBase
+from .fpn import build_fpn
 
 
 # monkey patch torchvision for mobilenetv2 checkpoint backwards compatibility
@@ -193,6 +194,14 @@ BASE_FACTORIES['tshufflenetv2k16'] = lambda: TrackingBase(BASE_FACTORIES['shuffl
 BASE_FACTORIES['tshufflenetv2k30'] = lambda: TrackingBase(BASE_FACTORIES['shufflenetv2k30']())
 BASE_FACTORIES['tresnet50'] = lambda: TrackingBase(BASE_FACTORIES['resnet50']())
 
+
+#: neck factories that contain variations of FPN to enable multi-scale keypoint and bbox detection
+NECK_FACTORIES = {
+    'fpn': FPN,
+    'pan': PAN,
+    'tan': TAN,
+}
+
 #: headmeta class to head class
 HEADS = {
     headmeta.Cif: heads.CompositeField4,
@@ -233,6 +242,7 @@ def local_checkpoint_path(checkpoint):
 
 class Factory(Configurable):
     base_name = None
+    neck_name = None
     checkpoint = None
     cross_talk = 0.0
     download_progress = True
@@ -265,6 +275,39 @@ class Factory(Configurable):
         )
         group.add_argument('--basenet', default=cls.base_name,
                            help='base network, one of {}'.format(list(BASE_FACTORIES.keys())))
+
+        ##add a neck(FPN) to tackle performance issues related to instance scales
+        group.add_argument('--necknet', default=cls.neck_name,
+                           help='base network, one of {}'.format(list(NECK_FACTORIES.keys())))
+        group.add_argument('--neck_in', default=None,
+                           help='a list of channels of the input of FPN, depending on the backbone structure and the applied stages')
+        group.add_argument('--neck_out', default=None,
+                           help='The output channels of neck(defined by the user)')
+        group.add_argument('--num_outs', default=None,
+                           help='The number of output stage of neck')
+        group.add_argument('--start_level', default=0,
+                           help='The starting stage of the FPN(extracting from the neck_in according to this specified start_level)')
+        group.add_argument('--end_level', default=-1,
+                           help='The end stage of the FPN(extracting from the neck_in according to this specified end_level)')
+        group.add_argument('--add_extra_convs', default=False,
+                           help='(bool | str): If bool, it decides whether to add conv layers on top of the original feature maps. Default to False. \
+                            If True, it is equivalent to add_extra_convs=\'on_input\'. If str, it specifies the source feature map of the extra convs. Only the following options are allowed')
+        group.add_argument('--relu_before_extra_convs', default=False,
+                           help='Whether to apply relu before the extra conv.')
+        group.add_argument('--no_norm_on_lateral', default=False,
+                           help='Whether to apply norm on lateral.')
+        group.add_argument('--conv_cfg', default=None,
+                           help='Config dict for convolution layer.')
+        group.add_argument('--norm_cfg', default=None,
+                           help='Config dict for normalization layer.')
+        group.add_argument('--activation', default='ReLU',
+                           help='Config dict for activation layer in ConvModule.')
+
+
+
+
+
+
         group.add_argument('--cross-talk', default=cls.cross_talk, type=float,
                            help='[experimental]')
         assert cls.download_progress
@@ -285,6 +328,24 @@ class Factory(Configurable):
             hn.configure(args)
 
         cls.base_name = args.basenet
+   
+        ##add a neck(FPN) to tackle performance issues related to instance scales
+        cls.neck_name = args.necknet
+        cls.neck_in = args.neck_in
+        cls.neck_out = args.neck_out
+        cls.num_outs = args.num_outs
+        cls.start_level = args.start_level
+        cls.end_level = args.end_level
+        cls.add_extra_convs = args.add_extra_convs
+        cls.relu_before_extra_convs = args.relu_before_extra_convs
+        cls.no_norm_on_lateral = args.no_norm_on_lateral
+        cls.conv_cfg = args.conv_cfg
+        cls.norm_cfg = args.norm_cfg
+        cls.neck_conv_activation = args.activation
+
+
+
+
         cls.checkpoint = args.checkpoint
         cls.cross_talk = args.cross_talk
         cls.download_progress = args.download_progress
@@ -389,9 +450,31 @@ class Factory(Configurable):
             raise Exception('basenet {} unknown'.format(self.base_name))
 
         basenet = BASE_FACTORIES[self.base_name]()
-        headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
 
-        net_cpu = nets.Shell(basenet, headnets)
+        ##add a neck(FPN):
+        if self.neck_name is not None:
+            neck_cfg = dict(
+                name = self.neck_name,
+                in_channels=self.neck_in,
+                out_channels = self.neck_out,
+                num_outs = self.num_outs,
+                start_level = self.start_level,
+                end_level = self.end_level,
+                add_extra_convs = self.add_extra_convs,
+                relu_before_extra_convs = self.relu_before_extra_convs,
+                no_norm_on_lateral = self.no_norm_on_lateral,
+                conv_cfg = self.conv_cfg,
+                norm_cfg = self.norm_cfg,
+                activation = self.neck_conv_activation,
+            )
+            necknet =  build_fpn(neck_cfg)
+
+        headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
+        #h.__class__ will return module_name.h(eg. module_name.Cif) where module_name is the name of the module where Cif is defined, which in our case will be headmeta.h(eg.headmeta.Cif)
+        if self.neck_name is not None:
+            net_cpu = nets.Shell(basenet, headnets, neck_net=necknet)
+        else:
+            net_cpu = nets.Shell(basenet, headnets)
         nets.model_defaults(net_cpu)
         return net_cpu
 

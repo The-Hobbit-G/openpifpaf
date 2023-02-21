@@ -26,7 +26,7 @@ class NormalizeAnnotations(Preprocess):
                 ann['iscrowd'] = False
 
             ann['keypoints'] = np.asarray(ann['keypoints'], dtype=np.float32).reshape(-1, 3)
-            if 'bbox' not in ann:
+            if 'bbox' not in ann: #if there is any instance that has only the keypoints but not the bbox annotations, we can form the bbox from the keypoints,otherwise we just use the given bbox annotations
                 ann['bbox'] = cls.bbox_from_keypoints(ann['keypoints'])
             ann['bbox'] = np.asarray(ann['bbox'], dtype=np.float32)
             if 'bbox_original' not in ann:
@@ -46,7 +46,13 @@ class NormalizeAnnotations(Preprocess):
         y1 = np.min(visible_keypoints[:, 1])
         x2 = np.max(visible_keypoints[:, 0])
         y2 = np.max(visible_keypoints[:, 1])
-        return [x1, y1, x2 - x2, y2 - y1]
+        # return [x1, y1, x2 - x2, y2 - y1] ####Should be x2-x1
+        return [x1, y1, x2 - x1, y2 - y1]
+
+    #In Python, both @classmethod and @staticmethod decorators are used to define methods that belong to a class rather than to an instance of the class.
+    #The main difference between @classmethod and @staticmethod is that a @classmethod receives the class itself as the first argument 
+    #(by convention, this argument is usually called cls), while a @staticmethod does not receive any implicit first argument.
+    #Therefore, class methods are often used to create new instances of the class, while static methods are often used for utility functions that don't require access to the instance's state.
 
     def __call__(self, image, anns, meta):
         anns = self.normalize_annotations(anns)

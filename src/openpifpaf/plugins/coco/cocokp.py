@@ -55,7 +55,7 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
 
     skeleton = COCO_PERSON_SKELETON
 
-    def __init__(self, **kwargs):
+    def __init__(self,use_fpn=False, **kwargs):
         super().__init__(**kwargs)
 
         #The 'cif' and 'cocokp' here are the values of the 'name' and 'dataset' attributes of the Cif class in headmeta, 
@@ -84,6 +84,9 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
         dcaf.upsample_stride = self.upsample_stride
         self.head_metas = [cif, caf, dcaf] if self.with_dense else [cif, caf]
         #Head metas contain the base stride which might be different for different data module instances.
+
+        self.use_fpn = use_fpn
+        #set a flag for whether using FPN to enable different pre_precessing for the data
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -197,7 +200,15 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
             encoders.append(openpifpaf.encoder.Caf(self.head_metas[2], bmin=self.bmin))
 
         if not self.augmentation:
-            return openpifpaf.transforms.Compose([
+            if self.use_fpn:
+                return openpifpaf.transforms.Compose([
+                    openpifpaf.transforms.NormalizeAnnotations(),
+                    openpifpaf.transforms.RescaleAbsolute(self.square_edge),
+                    openpifpaf.transforms.CenterPad(self.square_edge),
+                    openpifpaf.transforms.EVAL_TRANSFORM,
+                ])
+            else:
+                return openpifpaf.transforms.Compose([
                 openpifpaf.transforms.NormalizeAnnotations(),
                 openpifpaf.transforms.RescaleAbsolute(self.square_edge),
                 openpifpaf.transforms.CenterPad(self.square_edge),
@@ -216,7 +227,8 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
                              2.0 * self.rescale_images),
                 power_law=True, stretch_range=(0.75, 1.33))
 
-        return openpifpaf.transforms.Compose([
+        if self.use_fpn:
+            return openpifpaf.transforms.Compose([
             openpifpaf.transforms.NormalizeAnnotations(),
             openpifpaf.transforms.RandomApply(
                 openpifpaf.transforms.HFlip(COCO_KEYPOINTS, HFLIP), 0.5),
@@ -231,8 +243,25 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
             openpifpaf.transforms.Crop(self.square_edge, use_area_of_interest=True),
             openpifpaf.transforms.CenterPad(self.square_edge),
             openpifpaf.transforms.TRAIN_TRANSFORM,
-            openpifpaf.transforms.Encoders(encoders),
         ])
+        else:
+            return openpifpaf.transforms.Compose([
+                openpifpaf.transforms.NormalizeAnnotations(),
+                openpifpaf.transforms.RandomApply(
+                    openpifpaf.transforms.HFlip(COCO_KEYPOINTS, HFLIP), 0.5),
+                rescale_t,
+                openpifpaf.transforms.RandomApply(
+                    openpifpaf.transforms.Blur(), self.blur),
+                openpifpaf.transforms.RandomChoice(
+                    [openpifpaf.transforms.RotateBy90(),
+                    openpifpaf.transforms.RotateUniform(30.0)],
+                    [self.orientation_invariant, 0.4],
+                ),
+                openpifpaf.transforms.Crop(self.square_edge, use_area_of_interest=True),
+                openpifpaf.transforms.CenterPad(self.square_edge),
+                openpifpaf.transforms.TRAIN_TRANSFORM,
+                openpifpaf.transforms.Encoders(encoders),
+            ])
 
     def train_loader(self):
         train_data = CocoDataset(
