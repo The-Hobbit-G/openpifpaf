@@ -45,6 +45,9 @@ class CocoDataset(torch.utils.data.Dataset):
 
         self.preprocess = preprocess or openpifpaf.transforms.EVAL_TRANSFORM
 
+        # self.add_encoder = add_encoder #add a flag to decide whether to add specific encoders for different layers of FPN
+        # self.add_dcaf = add_dcaf #add a flag to decide whether to add specific encoders for different layers of FPN(for dcaf)
+
     def filter_for_annotations(self, *, min_kp_anns=0):
         LOG.info('filter for annotations (min kp=%d) ...', min_kp_anns)
 
@@ -126,6 +129,17 @@ class CocoDataset(torch.utils.data.Dataset):
 
         # preprocess image and annotations
         image, anns, meta = self.preprocess(image, anns, meta)
+        
+        #TODO: use add_encoder attribute to add specific encoders for outputs at different stage
+        # strides = [4,8,16] #stides should be given by the user or gained from the basenet(need to be done later)
+        # for i in range(len(strides)):
+        #     encoders = [openpifpaf.encoder.Cif(self.head_metas[0], bmin=self.bmin),
+        #             openpifpaf.encoder.Caf(self.head_metas[1], bmin=self.bmin)]
+        #     if self.add_dcaf:
+        #         encoders.append(openpifpaf.encoder.Caf(self.head_metas[2], bmin=self.bmin))
+
+
+
 
         LOG.debug(meta)
 
