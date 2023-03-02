@@ -5,17 +5,17 @@ from .multimodule import MultiDataModule
 DATAMODULES = {}
 
 
-def factory(dataset,use_fpn = False):
+def factory(dataset):
     if '-' in dataset:
         datamodules = [factory(ds) for ds in dataset.split('-')]
         return MultiDataModule(datamodules)
 
     if dataset not in DATAMODULES:
         raise Exception('dataset {} unknown'.format(dataset))
-    if use_fpn:
-        return DATAMODULES[dataset](use_fpn=use_fpn)
-    else:
-        return DATAMODULES[dataset]()
+    # if use_fpn:
+    #     return DATAMODULES[dataset](use_fpn=use_fpn)
+    # else:
+    return DATAMODULES[dataset]()
 
 
 def cli(parser):
