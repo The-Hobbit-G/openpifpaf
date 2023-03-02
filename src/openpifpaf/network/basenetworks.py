@@ -17,11 +17,12 @@ class BaseNetwork(torch.nn.Module):
     :param out_features: number of output features
     """
 
-    def __init__(self, name: str, *, stride: int, out_features: int):
+    def __init__(self, name: str, *, stride: int, out_features: int, out_stage=-1):
         super().__init__()
         self.name = name
         self.stride = stride
         self.out_features = out_features
+        self.out_stage = out_stage
         LOG.info('%s: stride = %d, output features = %d', name, stride, out_features)
 
     @classmethod
@@ -39,24 +40,41 @@ class BaseNetwork(torch.nn.Module):
 class ShuffleNetV2(BaseNetwork):
     pretrained = True
 
-    def __init__(self, name, torchvision_shufflenetv2, out_features=2048):
-        super().__init__(name, stride=16, out_features=out_features)
+    def __init__(self, name, torchvision_shufflenetv2, out_features=2048, out_stage=-1):
+        super().__init__(name, stride=16, out_features=out_features, out_stage=out_stage)
 
         base_vision = torchvision_shufflenetv2(self.pretrained)
-        self.conv1 = base_vision.conv1
+        self.conv1 = base_vision.conv1   #out_features = 24
         # base_vision.maxpool
-        self.stage2 = base_vision.stage2
-        self.stage3 = base_vision.stage3
-        self.stage4 = base_vision.stage4
-        self.conv5 = base_vision.conv5
+        self.stage2 = base_vision.stage2 #out_features = 58
+        self.stage3 = base_vision.stage3 #out_features = 116
+        self.stage4 = base_vision.stage4 #out_features = 232
+        self.conv5 = base_vision.conv5   #out_features = 1024
 
     def forward(self, x):
-        x = self.conv1(x)
-        x = self.stage2(x)
-        x = self.stage3(x)
-        x = self.stage4(x)
-        x = self.conv5(x)
-        return x
+        if type(self.out_stage) == int:
+            x = self.conv1(x)
+            x = self.stage2(x)
+            x = self.stage3(x)
+            x = self.stage4(x)
+            x = self.conv5(x)
+            return x
+        else:
+            x = self.conv1(x)
+            # x = self.maxpool(x)
+            output = []
+            for i in range(2, 5):
+                stage = getattr(self, 'stage{}'.format(i))
+                x = stage(x)
+                if i in self.out_stage and i < 4 :
+                    output.append(x)
+            x = self.conv5(x)
+            if 4 in self.out_stage:
+                output.append(x)  
+            ##the output of the last layer should be the one after conv5 since we apply conv5 by default
+            ##we can add an extra attribute 'with_last_conv' to decide whether to apply conv5 to the last stage of the output
+            return tuple(output)
+        
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -79,13 +97,15 @@ class Resnet(BaseNetwork):
     remove_last_block = False
     block5_dilation = 1
 
-    def __init__(self, name, torchvision_resnet, out_features=2048):
+    def __init__(self, name, torchvision_resnet, out_features=2048,out_stage=-1):
         modules = list(torchvision_resnet(self.pretrained).children())
         stride = 32
 
         input_modules = modules[:4]
 
         # input pool
+        #if the stride of maxpool in the input stem is given, and not 2, it will be further processed
+        #if it's false(0), which is our case, we simply eliminate the maxpooling in the input stem, so the overall stride should be divided by 2
         if self.pool0_stride:
             if self.pool0_stride != 2:
                 # pylint: disable=protected-access
@@ -137,20 +157,31 @@ class Resnet(BaseNetwork):
                 padding = (m.kernel_size[0] - 1) // 2 * self.block5_dilation
                 m.padding = torch.nn.modules.utils._pair(padding)
 
-        super().__init__(name, stride=stride, out_features=out_features)
-        self.input_block = torch.nn.Sequential(*input_modules)
-        self.block2 = modules[4]
-        self.block3 = modules[5]
-        self.block4 = modules[6]
-        self.block5 = block5
+        super().__init__(name, stride=stride, out_features=out_features,out_stage=out_stage)
+        self.input_block = torch.nn.Sequential(*input_modules) #[resnet18 out_features = 64],[resnet50 out_features = 64],[resnet101 out_features = 64]
+        self.block2 = modules[4] #[resnet18 out_features = 64],[resnet50 out_features = 256],[resnet101 out_features = 256]
+        self.block3 = modules[5] #[resnet18 out_features = 128],[resnet50 out_features = 512],[resnet101 out_features = 512]
+        self.block4 = modules[6] #[resnet18 out_features = 256],[resnet50 out_features = 1024],[resnet101 out_features = 1024]
+        self.block5 = block5 #[resnet18 out_features = 512],[resnet50 out_features = 2048],[resnet101 out_features = 2048]
 
     def forward(self, x):
-        x = self.input_block(x)
-        x = self.block2(x)
-        x = self.block3(x)
-        x = self.block4(x)
-        x = self.block5(x)
-        return x
+        if type(self.out_stage) == int:
+            x = self.input_block(x)
+            x = self.block2(x)
+            x = self.block3(x)
+            x = self.block4(x)
+            x = self.block5(x)
+            return x
+        else:
+            x = self.input_block(x) 
+            output = []
+            for i in range(1,5):
+                res_layer = getattr(self, 'block{}'.format(i+1))  #block_i correspondes to stage_i-1 in resnet out_stage, we don't take output from the input_block(input stem)
+                x = res_layer(x)
+                if i in self.out_stage:
+                    output.append(x)
+
+            return tuple(output)
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -256,7 +287,7 @@ class ShuffleNetV2K(BaseNetwork):
     conv5_as_stage = False
     non_linearity = None
 
-    def __init__(self, name, stages_repeats, stages_out_channels):
+    def __init__(self, name, stages_repeats, stages_out_channels,out_stage=-1):
         layer_norm = ShuffleNetV2K.layer_norm
         if layer_norm is None:
             layer_norm = torch.nn.BatchNorm2d
@@ -341,7 +372,7 @@ class ShuffleNetV2K(BaseNetwork):
                 non_linearity(),
             )
 
-        super().__init__(name, stride=stride, out_features=output_channels)
+        super().__init__(name, stride=stride, out_features=output_channels,out_stage=out_stage)
         self.input_block = torch.nn.Sequential(*input_modules)
         self.stage2 = stages[0]
         self.stage3 = stages[1]
@@ -349,12 +380,27 @@ class ShuffleNetV2K(BaseNetwork):
         self.conv5 = conv5
 
     def forward(self, x):
-        x = self.input_block(x)
-        x = self.stage2(x)
-        x = self.stage3(x)
-        x = self.stage4(x)
-        x = self.conv5(x)
-        return x
+        if type(self.out_stage) == int:
+            x = self.input_block(x)
+            x = self.stage2(x)
+            x = self.stage3(x)
+            x = self.stage4(x)
+            x = self.conv5(x)
+            return x
+        else:
+            x = self.input_block(x)
+            output = []
+            for i in range(2, 5):
+                stage = getattr(self, 'stage{}'.format(i))
+                x = stage(x)
+                if i in self.out_stage and i < 4 :
+                    output.append(x)
+            x = self.conv5(x)
+            if 4 in self.out_stage:
+                output.append(x)  
+            ##the output of the last layer should be the one after conv5 since we apply conv5 by default
+            ##we can add an extra attribute 'with_last_conv' to decide whether to apply conv5 to the last stage of the output
+            return tuple(output)
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -409,14 +455,34 @@ class ShuffleNetV2K(BaseNetwork):
 class MobileNetV2(BaseNetwork):
     pretrained = True
 
-    def __init__(self, name, torchvision_mobilenetv2, out_features=1280):
-        super().__init__(name, stride=32, out_features=out_features)
+    def __init__(self, name, torchvision_mobilenetv2, out_features=1280,out_stage=-1):
+        super().__init__(name, stride=32, out_features=out_features,out_stage=out_stage)
         base_vision = torchvision_mobilenetv2(self.pretrained)
         self.backbone = list(base_vision.children())[0]  # remove output classifier
+        if type(self.out_stage) != int:
+            self.first_layer = self.backbone[0]
+            self.stage0 = self.backbone[1]
+            self.stage1 = self.backbone[2:4]
+            self.stage2 = self.backbone[4:7]
+            self.stage3 = self.backbone[7:11]
+            self.stage4 = self.backbone[11:14]
+            self.stage5 = self.backbone[14:17]
+            self.stage6 = self.backbone[17:]
 
     def forward(self, x):
-        x = self.backbone(x)
-        return x
+        if type(self.out_stage) == int:
+            x = self.backbone(x)
+            return x
+        else:
+            x = self.first_layer(x)
+            output = []
+            for i in range(0, 7):
+                stage = getattr(self, 'stage{}'.format(i))
+                x = stage(x)
+                if i in self.out_stage:
+                    output.append(x)
+
+            return tuple(output)
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -434,8 +500,8 @@ class MobileNetV2(BaseNetwork):
 class MobileNetV3(BaseNetwork):
     pretrained = True
 
-    def __init__(self, name, torchvision_mobilenetv3, out_features=960):
-        super().__init__(name, stride=16, out_features=out_features)
+    def __init__(self, name, torchvision_mobilenetv3, out_features=960,out_stage=-1):
+        super().__init__(name, stride=16, out_features=out_features,out_stage=out_stage)
         base_vision = torchvision_mobilenetv3(self.pretrained)
 
         self.backbone = list(base_vision.children())[0]  # remove output classifier
@@ -444,6 +510,7 @@ class MobileNetV3(BaseNetwork):
         input_conv.stride = torch.nn.modules.utils._pair(1)  # pylint: disable=protected-access
 
     def forward(self, x):
+        #TODO: add output stages like MobileNetV2
         x = self.backbone(x)
         return x
 
@@ -463,8 +530,8 @@ class MobileNetV3(BaseNetwork):
 class SqueezeNet(BaseNetwork):
     pretrained = True
 
-    def __init__(self, name, torchvision_squeezenet, out_features=512):
-        super().__init__(name, stride=16, out_features=out_features)
+    def __init__(self, name, torchvision_squeezenet, out_features=512,out_stage=-1):
+        super().__init__(name, stride=16, out_features=out_features,out_stage=out_stage)
         base_vision = torchvision_squeezenet(self.pretrained)
 
         for m in base_vision.modules():
@@ -485,6 +552,7 @@ class SqueezeNet(BaseNetwork):
         self.backbone = list(base_vision.children())[0]  # remove output classifier
 
     def forward(self, x):
+        #TODO: add output stages like other basenets
         x = self.backbone(x)
         return x
 
@@ -553,7 +621,7 @@ class SwinTransformer(BaseNetwork):
     fpn_level = 3
     fpn_out_channels = None
 
-    def __init__(self, name, swin_net):
+    def __init__(self, name, swin_net,out_stage=-1):
         embed_dim = swin_net().embed_dim
 
         if not self.use_fpn or self.fpn_out_channels is None:
@@ -571,7 +639,7 @@ class SwinTransformer(BaseNetwork):
             LOG.debug('swin output FPN level: %d', self.fpn_level)
             stride //= 2 ** (4 - self.fpn_level)
 
-        super().__init__(name, stride=stride, out_features=self.out_features)
+        super().__init__(name, stride=stride, out_features=self.out_features,out_stage=out_stage)
 
         self.input_upsample_op = None
         if self.input_upsample:
@@ -592,6 +660,7 @@ class SwinTransformer(BaseNetwork):
                            self.out_features, self.fpn_level)
 
     def forward(self, x):
+        #TODO: add output stages like other basenets
         if self.input_upsample_op is not None:
             x = self.input_upsample_op(x)
 
@@ -647,7 +716,7 @@ class XCiT(BaseNetwork):
     out_channels = None
     out_maxpool = False
 
-    def __init__(self, name, xcit_net):
+    def __init__(self, name, xcit_net,out_stage=-1):
         embed_dim = xcit_net().embed_dim
         patch_size = xcit_net().patch_size
         has_projection = isinstance(self.out_channels, int)
@@ -655,7 +724,7 @@ class XCiT(BaseNetwork):
 
         stride = patch_size * 2 if self.out_maxpool else patch_size
 
-        super().__init__(name, stride=stride, out_features=self.out_channels)
+        super().__init__(name, stride=stride, out_features=self.out_channels,out_stage=out_stage)
 
         self.backbone = xcit_net(pretrained=self.pretrained)
 
@@ -677,6 +746,7 @@ class XCiT(BaseNetwork):
             self.out_block = torch.nn.Sequential(self.out_projection)
 
     def forward(self, x):
+        #TODO: add output stages like other basenets
         x = self.backbone(x)
         x = self.out_block(x)
         return x
@@ -704,13 +774,14 @@ class XCiT(BaseNetwork):
 
 
 class EffNetV2(BaseNetwork):
-    def __init__(self, name, configuration, stride):
+    def __init__(self, name, configuration, stride,out_stage=-1):
         backbone = effnetv2.EffNetV2(configuration)
-        super().__init__(name, stride=stride, out_features=backbone.output_channel)
+        super().__init__(name, stride=stride, out_features=backbone.output_channel,out_stage=out_stage)
         self.backbone = backbone
         self.backbone._initialize_weights()
 
     def forward(self, x):
+        #TODO: add output stages like other basenets
         x = self.backbone.forward(x)
         return x
 
@@ -726,8 +797,8 @@ class EffNetV2(BaseNetwork):
 class BotNet(BaseNetwork):
     input_image_size = 640
 
-    def __init__(self, name, out_features=2048):
-        super().__init__(name, stride=8, out_features=out_features)
+    def __init__(self, name, out_features=2048,out_stage=-1):
+        super().__init__(name, stride=8, out_features=out_features,out_stage=out_stage)
 
         layer = bottleneck_transformer.BottleStack(
             dim=256,
@@ -751,6 +822,7 @@ class BotNet(BaseNetwork):
         )
 
     def forward(self, x):
+        #TODO: add output stages like other basenets
         x = self.backbone.forward(x)
         return x
 
