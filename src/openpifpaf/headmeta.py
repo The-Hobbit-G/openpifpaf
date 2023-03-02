@@ -18,6 +18,8 @@ class Base:
     base_stride: int = field(default=None, init=False)
     upsample_stride: int = field(default=1, init=False)
 
+    # base_head_stride: list = [4,8,16]
+
     ##base_stride will be claimed in each backbone network as 'stride' attribute and be specific to different backbones(eg. the base_stride of ShuffleNetV2 is 16) 
 
     ##Since these are class attributes, they are shared by all instances of the class
@@ -28,6 +30,12 @@ class Base:
         if self.base_stride is None:
             return None
         return self.base_stride // self.upsample_stride
+
+    # @property
+    # def head_stride(self) -> list:
+    #     if self.base_head_stride is None:
+    #         return None
+    #     return [s // self.upsample_stride for s in self.base_head_stride]
 
     @property
     def n_fields(self) -> int:
