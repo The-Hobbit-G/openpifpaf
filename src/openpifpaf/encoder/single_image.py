@@ -1,3 +1,6 @@
+import dataclasses
+
+@dataclasses.dataclass
 class SingleImage:
     """Helper class for encoders on datasets with image pairs."""
 
