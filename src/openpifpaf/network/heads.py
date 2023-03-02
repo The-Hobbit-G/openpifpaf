@@ -8,6 +8,7 @@ import math
 import torch
 
 from .. import headmeta
+from .nets import multi_apply
 
 LOG = logging.getLogger(__name__)
 
@@ -167,6 +168,11 @@ class CompositeField3(HeadNetwork):
     def sparse_task_parameters(self):
         return [self.conv.weight]
 
+
+    # def forward(self,x):
+    #     return multi_apply(self.forward_single,x)
+
+
     def forward(self, x):  # pylint: disable=arguments-differ
         x = self.dropout(x)
         x = self.conv(x)
@@ -314,6 +320,9 @@ class CompositeField4(HeadNetwork):
     @property
     def sparse_task_parameters(self):
         return [self.conv.weight]
+
+    # def forward(self,x):
+    #     return multi_apply(self.forward_single,x)
 
     def forward(self, x):  # pylint: disable=arguments-differ
         x = self.dropout(x)
