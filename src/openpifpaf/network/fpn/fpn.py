@@ -45,14 +45,26 @@ class FPN(nn.Module):
         self.no_norm_on_lateral = no_norm_on_lateral
         self.fp16_enabled = False
 
-        if end_level == -1 or end_level == self.num_ins - 1:
+        ##This implementation is from mmdetection where the end_level is included in the output, max(end_level) == self.num_ins-1
+        # if end_level == -1 or end_level == self.num_ins-1:
+        #     self.backbone_end_level = self.num_ins
+        #     assert num_outs >= self.num_ins - start_level
+        # else:
+        #     # if end_level < inputs, no extra level is allowed
+        #     self.backbone_end_level = end_level + 1
+        #     assert end_level <= len(in_channels)
+        #     assert num_outs == end_level - start_level + 1
+
+        ##Our current implementation is from nanodet where the end_level is not included in the output, max(end_level) == self.num_ins
+        ##The output of basenet will be formulated based on this version
+        if end_level == -1 or end_level == self.num_ins:
             self.backbone_end_level = self.num_ins
             assert num_outs >= self.num_ins - start_level
         else:
             # if end_level < inputs, no extra level is allowed
-            self.backbone_end_level = end_level + 1
+            self.backbone_end_level = end_level
             assert end_level <= len(in_channels)
-            assert num_outs == end_level - start_level +1
+            assert num_outs == end_level - start_level
         self.start_level = start_level
         self.end_level = end_level
         self.add_extra_convs = add_extra_convs
