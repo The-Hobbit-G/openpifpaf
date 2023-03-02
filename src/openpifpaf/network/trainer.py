@@ -170,11 +170,19 @@ class Trainer():
             assert data.is_pinned(), 'input data must be pinned'
             if targets[0] is not None:
                 assert targets[0].is_pinned(), 'input targets must be pinned'
-            with torch.autograd.profiler.record_function('to-device'):
-                data = data.to(self.device, non_blocking=True)
-                targets = [head.to(self.device, non_blocking=True)
-                           if head is not None else None
-                           for head in targets]
+            
+            if type(targets[0]) == list:
+                with torch.autograd.profiler.record_function('to-device'):
+                    data = data.to(self.device, non_blocking=True)
+                    targets = tuple([head.to(self.device, non_blocking=True)
+                            if head is not None else None
+                            for head in target] for target in targets) #now the target would be tuple([tensors,...],[tensors,...],...)
+            else:
+                with torch.autograd.profiler.record_function('to-device'):
+                    data = data.to(self.device, non_blocking=True)
+                    targets = [head.to(self.device, non_blocking=True)
+                            if head is not None else None
+                            for head in targets]
 
         # train encoder
         with torch.autograd.profiler.record_function('model'):
@@ -182,7 +190,15 @@ class Trainer():
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
         with torch.autograd.profiler.record_function('loss'):
-            loss, head_losses = self.loss(outputs, targets)
+            if type(targets) == tuple:
+                assert type(outputs[0]) == tuple
+                assert len(targets) == len(outputs)
+                multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
+                # average over the losses from different stage(could also do sum)
+                loss = sum(multistage_loss)/len(multistage_loss)
+                head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
+            else:
+                loss, head_losses = self.loss(outputs, targets)
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize()
         if loss is not None:
@@ -251,14 +267,29 @@ class Trainer():
 
     def val_batch(self, data, targets):
         if self.device:
-            data = data.to(self.device, non_blocking=True)
-            targets = [head.to(self.device, non_blocking=True)
-                       if head is not None else None
-                       for head in targets]
+            if type(targets[0]) == list:
+                data = data.to(self.device, non_blocking=True)
+                targets = tuple([head.to(self.device, non_blocking=True)
+                        if head is not None else None
+                        for head in target] for target in targets) 
+            else:
+                data = data.to(self.device, non_blocking=True)
+                targets = [head.to(self.device, non_blocking=True)
+                        if head is not None else None
+                        for head in targets]
 
         with torch.inference_mode():
             outputs = self.model(data)
-            loss, head_losses = self.loss(outputs, targets)
+
+            if type(targets) == tuple:
+                assert type(outputs[0]) == tuple
+                assert len(targets) == len(outputs)
+                multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
+                # average over the losses from different stage(could also do sum)
+                loss = sum(multistage_loss)/len(multistage_loss)
+                head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
+            else:
+                loss, head_losses = self.loss(outputs, targets)
             loss = self.reduce_loss(loss)
             head_losses = self.reduce_loss(head_losses)
 
