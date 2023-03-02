@@ -1,6 +1,11 @@
 import argparse
 import logging
+import dataclasses
 from typing import List
+from abc import ABC, abstractmethod
+import copy
+
+import openpifpaf
 
 import torch
 
@@ -40,6 +45,13 @@ class DataModule:
     #: When loading a checkpoint, entries in this list will be matched by
     #: name and dataset to entries in the checkpoint and overwritten here.
     head_metas: List[headmeta.Base] = None
+
+
+    #A list of strides that should be explicitly specified by the user and used for encoder
+    head_stride: List[int] = [4,8,16]
+
+    #A flag for specifying whether to use fpn and adjust the targets correspondingly
+    use_fpn: bool = False
 
 
     #classmethod is a built-in decorator that can be used to define a method that operates on the class rather than on instances of the class. 
@@ -139,3 +151,40 @@ class DataModule:
             num_workers=loader.num_workers,
             collate_fn=loader.collate_fn,
         )
+
+
+    def multiencoder_process(self):
+        preprocess_compose = copy.deepcopy(self._preprocess())
+        if self.use_fpn:
+            assert len(self.head_stride) >= 1
+            if (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.Encoders) or \
+                (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.pair.Encoders):
+                ori_encoders = preprocess_compose.pop(-1)
+                # new_encoders = []
+                # for enc in ori_encoders.encoders:
+                #     new_encs = [dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) for hs in self.head_stride] 
+                #     #eg. encoder.Cif(headmeta.Cif(base_stride=16))-->[encoder.Cif(headmeta.Cif(base_stride=4)),encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Cif(headmeta.Cif(base_stride=16))]
+                #     new_encoders.append(new_encs)
+                #     #new_encoders = [new_Cif,new_Caf,...] where new_Cif = the examples above
+
+                #TODO: Consider the situation where enc in ori_encoders.encoders could be openpifpaf.encoder.SingleImage
+                if type(ori_encoders) == openpifpaf.transforms.Encoders:
+                    new_encoders = [openpifpaf.transforms.Encoders([dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) if type(enc) != openpifpaf.encoder.SingleImage \
+                                                                    else dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = dataclasses.replace(enc.wrapped.meta, base_stride = hs)))]\
+                                                                            for enc in ori_encoders.encoders) for hs in self.head_stride]
+                else:
+                    new_encoders = [openpifpaf.transforms.pair.Encoders([dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) if type(enc) != openpifpaf.encoder.SingleImage \
+                                                                    else dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = dataclasses.replace(enc.wrapped.meta, base_stride = hs)))]\
+                                                                            for enc in ori_encoders.encoders) for hs in self.head_stride]
+                #eg. [encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Cif(headmeta.Caf(base_stride=16)),...]-->[[encoder.Cif(headmeta.Cif(base_stride=4)),encoder.Cif(headmeta.Caf(base_stride=4,)),...],
+                # [encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Cif(headmeta.Caf(base_stride=8,)),...],[encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Cif(headmeta.Caf(base_stride=16)),...]]
+                #Now the final element of preprocess_compose changes from type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders> to 
+                #List[type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders>]
+                preprocess_compose.append(new_encoders)
+        self._preprocess = preprocess_compose
+        # return preprocess_compose
+
+
+    @abstractmethod
+    def _preprocess(self):
+        pass
