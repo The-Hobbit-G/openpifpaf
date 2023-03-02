@@ -12,6 +12,25 @@ class Compose(Preprocess):
         for p in self.preprocess_list:
             if p is None:
                 continue
-            args = p(*args)
+            if (self.preprocess_list.index(p) == len(self.preprocess_list)-1) and (type(p) == list):
+                process_results = [p_single(*args) for p_single in p]
+                images = [process_results[0][0]]
+                #encoders won't do any manipulation to the image, so they are always the same
+                anns = []
+                meta = []
+                for result in process_results:
+                    assert(len(result)==3)
+                    anns.append(result[1])
+                    meta.append(result[2])
+                args = [images, anns, meta] #images will be the same as before, anns and meta would be type<list>
+            else:
+                args = p(*args)
 
         return args
+
+    #enable us to further manipulate the preprocess compose after construction
+    def pop(self, position):
+        return self.preprocess_list.pop(position)
+
+    def append(self, process):
+        self.preprocess_list.append(process)
