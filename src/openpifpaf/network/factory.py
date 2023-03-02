@@ -43,65 +43,65 @@ BASE_TYPES = set([
     TrackingBase,
 ])
 BASE_FACTORIES = {
-    'mobilenetv2': lambda: basenetworks.MobileNetV2('mobilenetv2', torchvision.models.mobilenet_v2),
-    'mobilenetv3large': lambda: basenetworks.MobileNetV3(
-        'mobilenetv3large', torchvision.models.mobilenet_v3_large),
-    'mobilenetv3small': lambda: basenetworks.MobileNetV3(
-        'mobilenetv3small', torchvision.models.mobilenet_v3_small, 576),
-    'resnet18': lambda: basenetworks.Resnet('resnet18', torchvision.models.resnet18, 512),
-    'resnet50': lambda: basenetworks.Resnet('resnet50', torchvision.models.resnet50),
-    'resnet101': lambda: basenetworks.Resnet('resnet101', torchvision.models.resnet101),
-    'resnet152': lambda: basenetworks.Resnet('resnet152', torchvision.models.resnet152),
-    'resnext50': lambda: basenetworks.Resnet('resnext50', torchvision.models.resnext50_32x4d),
-    'resnext101': lambda: basenetworks.Resnet('resnext101', torchvision.models.resnext101_32x8d),
-    'shufflenetv2x1': lambda: basenetworks.ShuffleNetV2(
-        'shufflenetv2x1', torchvision.models.shufflenet_v2_x1_0, 1024),
-    'shufflenetv2x2': lambda: basenetworks.ShuffleNetV2(
+    'mobilenetv2': lambda base_out_stage: basenetworks.MobileNetV2('mobilenetv2', torchvision.models.mobilenet_v2, out_stage=base_out_stage),
+    'mobilenetv3large': lambda base_out_stage: basenetworks.MobileNetV3(
+        'mobilenetv3large', torchvision.models.mobilenet_v3_large, out_stage=base_out_stage),
+    'mobilenetv3small': lambda base_out_stage: basenetworks.MobileNetV3(
+        'mobilenetv3small', torchvision.models.mobilenet_v3_small, 576, out_stage=base_out_stage),
+    'resnet18': lambda base_out_stage: basenetworks.Resnet('resnet18', torchvision.models.resnet18, 512, out_stage=base_out_stage),
+    'resnet50': lambda base_out_stage: basenetworks.Resnet('resnet50', torchvision.models.resnet50, out_stage=base_out_stage),
+    'resnet101': lambda base_out_stage: basenetworks.Resnet('resnet101', torchvision.models.resnet101, out_stage=base_out_stage),
+    'resnet152': lambda base_out_stage: basenetworks.Resnet('resnet152', torchvision.models.resnet152, out_stage=base_out_stage),
+    'resnext50': lambda base_out_stage: basenetworks.Resnet('resnext50', torchvision.models.resnext50_32x4d, out_stage=base_out_stage),
+    'resnext101': lambda base_out_stage: basenetworks.Resnet('resnext101', torchvision.models.resnext101_32x8d, out_stage=base_out_stage),
+    'shufflenetv2x1': lambda base_out_stage: basenetworks.ShuffleNetV2(
+        'shufflenetv2x1', torchvision.models.shufflenet_v2_x1_0, 1024, out_stage=base_out_stage),
+    'shufflenetv2x2': lambda base_out_stage: basenetworks.ShuffleNetV2(
         # defined in torchvision as [4, 8, 4], [24, 244, 488, 976, 2048]
-        'shufflenetv2x2', torchvision.models.shufflenet_v2_x2_0),
-    'shufflenetv2k16': lambda: basenetworks.ShuffleNetV2K(
-        'shufflenetv2k16', [4, 8, 4], [24, 348, 696, 1392, 1392]),
-    'shufflenetv2k20': lambda: basenetworks.ShuffleNetV2K(
-        'shufflenetv2k20', [5, 10, 5], [32, 512, 1024, 2048, 2048]),
-    'shufflenetv2kx5': lambda: basenetworks.ShuffleNetV2K(
-        'shufflenetv2kx5', [6, 13, 6], [42, 640, 1280, 2560, 2560]),
-    'shufflenetv2k30': lambda: basenetworks.ShuffleNetV2K(
-        'shufflenetv2k30', [8, 16, 6], [32, 512, 1024, 2048, 2048]),
-    'shufflenetv2k44': lambda: basenetworks.ShuffleNetV2K(
-        'shufflenetv2k44', [12, 24, 8], [32, 512, 1024, 2048, 2048]),
-    'squeezenet': lambda: basenetworks.SqueezeNet('squeezenet', torchvision.models.squeezenet1_1),
+        'shufflenetv2x2', torchvision.models.shufflenet_v2_x2_0, out_stage=base_out_stage),
+    'shufflenetv2k16': lambda base_out_stage: basenetworks.ShuffleNetV2K(
+        'shufflenetv2k16', [4, 8, 4], [24, 348, 696, 1392, 1392], out_stage=base_out_stage),
+    'shufflenetv2k20': lambda base_out_stage: basenetworks.ShuffleNetV2K(
+        'shufflenetv2k20', [5, 10, 5], [32, 512, 1024, 2048, 2048], out_stage=base_out_stage),
+    'shufflenetv2kx5': lambda base_out_stage: basenetworks.ShuffleNetV2K(
+        'shufflenetv2kx5', [6, 13, 6], [42, 640, 1280, 2560, 2560], out_stage=base_out_stage),
+    'shufflenetv2k30': lambda base_out_stage: basenetworks.ShuffleNetV2K(
+        'shufflenetv2k30', [8, 16, 6], [32, 512, 1024, 2048, 2048], out_stage=base_out_stage),
+    'shufflenetv2k44': lambda base_out_stage: basenetworks.ShuffleNetV2K(
+        'shufflenetv2k44', [12, 24, 8], [32, 512, 1024, 2048, 2048], out_stage=base_out_stage),
+    'squeezenet': lambda base_out_stage: basenetworks.SqueezeNet('squeezenet', torchvision.models.squeezenet1_1, out_stage=base_out_stage),
     # Swin architectures: swin_t is roughly equivalent to unmodified resnet50
-    'swin_t': lambda: basenetworks.SwinTransformer(
-        'swin_t', swin_transformer.swin_tiny_patch4_window7),
-    'swin_s': lambda: basenetworks.SwinTransformer(
-        'swin_s', swin_transformer.swin_small_patch4_window7),
-    'swin_b': lambda: basenetworks.SwinTransformer(
-        'swin_b', swin_transformer.swin_base_patch4_window7),
-    'swin_b_window_12': lambda: basenetworks.SwinTransformer(
-        'swin_b_window_12', swin_transformer.swin_base_patch4_window12),
-    'swin_l': lambda: basenetworks.SwinTransformer(
-        'swin_l', swin_transformer.swin_large_patch4_window7),
-    'swin_l_window_12': lambda: basenetworks.SwinTransformer(
-        'swin_l_window_12', swin_transformer.swin_large_patch4_window12),
+    'swin_t': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_t', swin_transformer.swin_tiny_patch4_window7, out_stage=base_out_stage),
+    'swin_s': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_s', swin_transformer.swin_small_patch4_window7, out_stage=base_out_stage),
+    'swin_b': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_b', swin_transformer.swin_base_patch4_window7, out_stage=base_out_stage),
+    'swin_b_window_12': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_b_window_12', swin_transformer.swin_base_patch4_window12, out_stage=base_out_stage),
+    'swin_l': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_l', swin_transformer.swin_large_patch4_window7, out_stage=base_out_stage),
+    'swin_l_window_12': lambda base_out_stage: basenetworks.SwinTransformer(
+        'swin_l_window_12', swin_transformer.swin_large_patch4_window12, out_stage=base_out_stage),
     # XCiT architectures: xcit_small_12_p16 is roughly equivalent to unmodified resnet50
-    'xcit_nano_12_p16': lambda: basenetworks.XCiT('xcit_nano_12_p16', xcit.xcit_nano_12_p16),
-    'xcit_tiny_12_p16': lambda: basenetworks.XCiT('xcit_tiny_12_p16', xcit.xcit_tiny_12_p16),
-    'xcit_tiny_24_p16': lambda: basenetworks.XCiT('xcit_tiny_24_p16', xcit.xcit_tiny_24_p16),
-    'xcit_small_12_p16': lambda: basenetworks.XCiT('xcit_small_12_p16', xcit.xcit_small_12_p16),
-    'xcit_small_24_p16': lambda: basenetworks.XCiT('xcit_small_24_p16', xcit.xcit_small_24_p16),
-    'xcit_medium_24_p16': lambda: basenetworks.XCiT('xcit_medium_24_p16', xcit.xcit_medium_24_p16),
-    'xcit_large_24_p16': lambda: basenetworks.XCiT('xcit_large_24_p16', xcit.xcit_large_24_p16),
-    'xcit_nano_12_p8': lambda: basenetworks.XCiT('xcit_nano_12_p8', xcit.xcit_nano_12_p8),
-    'xcit_tiny_12_p8': lambda: basenetworks.XCiT('xcit_tiny_12_p8', xcit.xcit_tiny_12_p8),
-    'xcit_tiny_24_p8': lambda: basenetworks.XCiT('xcit_tiny_24_p8', xcit.xcit_tiny_24_p8),
-    'xcit_small_12_p8': lambda: basenetworks.XCiT('xcit_small_12_p8', xcit.xcit_small_12_p8),
-    'xcit_small_24_p8': lambda: basenetworks.XCiT('xcit_small_24_p8', xcit.xcit_small_24_p8),
-    'xcit_medium_24_p8': lambda: basenetworks.XCiT('xcit_medium_24_p8', xcit.xcit_medium_24_p8),
-    'xcit_large_24_p8': lambda: basenetworks.XCiT('xcit_large_24_p8', xcit.xcit_large_24_p8),
+    'xcit_nano_12_p16': lambda base_out_stage: basenetworks.XCiT('xcit_nano_12_p16', xcit.xcit_nano_12_p16, out_stage=base_out_stage),
+    'xcit_tiny_12_p16': lambda base_out_stage: basenetworks.XCiT('xcit_tiny_12_p16', xcit.xcit_tiny_12_p16, out_stage=base_out_stage),
+    'xcit_tiny_24_p16': lambda base_out_stage: basenetworks.XCiT('xcit_tiny_24_p16', xcit.xcit_tiny_24_p16, out_stage=base_out_stage),
+    'xcit_small_12_p16': lambda base_out_stage: basenetworks.XCiT('xcit_small_12_p16', xcit.xcit_small_12_p16, out_stage=base_out_stage),
+    'xcit_small_24_p16': lambda base_out_stage: basenetworks.XCiT('xcit_small_24_p16', xcit.xcit_small_24_p16, out_stage=base_out_stage),
+    'xcit_medium_24_p16': lambda base_out_stage: basenetworks.XCiT('xcit_medium_24_p16', xcit.xcit_medium_24_p16, out_stage=base_out_stage),
+    'xcit_large_24_p16': lambda base_out_stage: basenetworks.XCiT('xcit_large_24_p16', xcit.xcit_large_24_p16, out_stage=base_out_stage),
+    'xcit_nano_12_p8': lambda base_out_stage: basenetworks.XCiT('xcit_nano_12_p8', xcit.xcit_nano_12_p8, out_stage=base_out_stage),
+    'xcit_tiny_12_p8': lambda base_out_stage: basenetworks.XCiT('xcit_tiny_12_p8', xcit.xcit_tiny_12_p8, out_stage=base_out_stage),
+    'xcit_tiny_24_p8': lambda base_out_stage: basenetworks.XCiT('xcit_tiny_24_p8', xcit.xcit_tiny_24_p8, out_stage=base_out_stage),
+    'xcit_small_12_p8': lambda base_out_stage: basenetworks.XCiT('xcit_small_12_p8', xcit.xcit_small_12_p8, out_stage=base_out_stage),
+    'xcit_small_24_p8': lambda base_out_stage: basenetworks.XCiT('xcit_small_24_p8', xcit.xcit_small_24_p8, out_stage=base_out_stage),
+    'xcit_medium_24_p8': lambda base_out_stage: basenetworks.XCiT('xcit_medium_24_p8', xcit.xcit_medium_24_p8, out_stage=base_out_stage),
+    'xcit_large_24_p8': lambda base_out_stage: basenetworks.XCiT('xcit_large_24_p8', xcit.xcit_large_24_p8, out_stage=base_out_stage),
     # Parameters for the EffNetV2 construction
     # expansion ratio, channels, number of layers of this type, stride, use squeeze+excitation
     # t, c, n, s, SE
-    'effnetv2_s': lambda: basenetworks.EffNetV2('effnetv2_s',
+    'effnetv2_s': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_s',
                                                 [
                                                     [1, 24, 2, 1, 0],
                                                     [4, 48, 4, 2, 0],
@@ -110,8 +110,8 @@ BASE_FACTORIES = {
                                                     [6, 160, 9, 1, 1],
                                                     [6, 256, 15, 2, 1],
                                                 ],
-                                                stride=32),
-    'effnetv2_m': lambda: basenetworks.EffNetV2('effnetv2_m',
+                                                stride=32, out_stage=base_out_stage),
+    'effnetv2_m': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_m',
                                                 [
                                                     [1, 24, 3, 1, 0],
                                                     [4, 48, 5, 2, 0],
@@ -121,8 +121,8 @@ BASE_FACTORIES = {
                                                     [6, 304, 18, 2, 1],
                                                     [6, 512, 5, 1, 1],
                                                 ],
-                                                stride=32),
-    'effnetv2_l': lambda: basenetworks.EffNetV2('effnetv2_l',
+                                                stride=32, out_stage=base_out_stage),
+    'effnetv2_l': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_l',
                                                 [
                                                     [1, 32, 4, 1, 0],
                                                     [4, 64, 7, 2, 0],
@@ -132,8 +132,8 @@ BASE_FACTORIES = {
                                                     [6, 384, 25, 2, 1],
                                                     [6, 640, 7, 1, 1],
                                                 ],
-                                                stride=32),
-    'effnetv2_xl': lambda: basenetworks.EffNetV2('effnetv2_xl',
+                                                stride=32, out_stage=base_out_stage),
+    'effnetv2_xl': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_xl',
                                                  [
                                                      [1, 32, 4, 1, 0],
                                                      [4, 64, 8, 2, 0],
@@ -143,8 +143,8 @@ BASE_FACTORIES = {
                                                      [6, 512, 32, 2, 1],
                                                      [6, 640, 8, 1, 1],
                                                  ],
-                                                 stride=32),
-    'effnetv2_s16_s': lambda: basenetworks.EffNetV2('effnetv2_s16_s',
+                                                 stride=32, out_stage=base_out_stage),
+    'effnetv2_s16_s': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_s16_s',
                                                     [
                                                         [1, 24, 2, 1, 0],
                                                         [4, 48, 4, 2, 0],
@@ -153,8 +153,8 @@ BASE_FACTORIES = {
                                                         [6, 160, 9, 1, 1],
                                                         # [6, 256, 15, -1, 1],  # -1 = dilated con
                                                     ],
-                                                    stride=16),
-    'effnetv2_s16_m': lambda: basenetworks.EffNetV2('effnetv2_s16_m',
+                                                    stride=16, out_stage=base_out_stage),
+    'effnetv2_s16_m': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_s16_m',
                                                     [
                                                         [1, 24, 3, 1, 0],
                                                         [4, 48, 5, 2, 0],
@@ -164,8 +164,8 @@ BASE_FACTORIES = {
                                                         # [6, 304, 18, -1, 1], # -1 = dilated conv
                                                         # [6, 512, 5, 1, 1],
                                                     ],
-                                                    stride=16),
-    'effnetv2_s16_l': lambda: basenetworks.EffNetV2('effnetv2_s16_l',
+                                                    stride=16, out_stage=base_out_stage),
+    'effnetv2_s16_l': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_s16_l',
                                                     [
                                                         [1, 32, 4, 1, 0],
                                                         [4, 64, 7, 2, 0],
@@ -175,8 +175,8 @@ BASE_FACTORIES = {
                                                         # [6, 384, 25, -1, 1],  # -1=dilated conv
                                                         # [6, 640, 7, 1, 1],
                                                     ],
-                                                    stride=16),
-    'effnetv2_s16_xl': lambda: basenetworks.EffNetV2('effnetv2_s16_xl',
+                                                    stride=16, out_stage=base_out_stage),
+    'effnetv2_s16_xl': lambda base_out_stage: basenetworks.EffNetV2('effnetv2_s16_xl',
                                                      [
                                                          [1, 32, 4, 1, 0],
                                                          [4, 64, 8, 2, 0],
@@ -186,21 +186,21 @@ BASE_FACTORIES = {
                                                          # [6, 512, 32, -1, 1],  # -1 = dilated c
                                                          # [6, 640, 8, 1, 1],
                                                      ],
-                                                     stride=16),
-    'botnet': lambda: basenetworks.BotNet('botnet'),
+                                                     stride=16, out_stage=base_out_stage),
+    'botnet': lambda base_out_stage: basenetworks.BotNet('botnet', out_stage=base_out_stage),
 }
 # base factories that wrap other base factories:
-BASE_FACTORIES['tshufflenetv2k16'] = lambda: TrackingBase(BASE_FACTORIES['shufflenetv2k16']())
-BASE_FACTORIES['tshufflenetv2k30'] = lambda: TrackingBase(BASE_FACTORIES['shufflenetv2k30']())
-BASE_FACTORIES['tresnet50'] = lambda: TrackingBase(BASE_FACTORIES['resnet50']())
+BASE_FACTORIES['tshufflenetv2k16'] = lambda base_out_stage: TrackingBase(BASE_FACTORIES['shufflenetv2k16'](out_stage=base_out_stage))
+BASE_FACTORIES['tshufflenetv2k30'] = lambda base_out_stage: TrackingBase(BASE_FACTORIES['shufflenetv2k30'](out_stage=base_out_stage))
+BASE_FACTORIES['tresnet50'] = lambda base_out_stage: TrackingBase(BASE_FACTORIES['resnet50'](out_stage=base_out_stage))
 
 
 #: neck factories that contain variations of FPN to enable multi-scale keypoint and bbox detection
-NECK_FACTORIES = {
-    'fpn': FPN,
-    'pan': PAN,
-    'tan': TAN,
-}
+# NECK_FACTORIES = {
+#     'fpn': FPN,
+#     'pan': PAN,
+#     'tan': TAN,
+# }
 
 #: headmeta class to head class
 HEADS = {
@@ -278,7 +278,7 @@ class Factory(Configurable):
 
         ##add a neck(FPN) to tackle performance issues related to instance scales
         group.add_argument('--necknet', default=cls.neck_name,
-                           help='base network, one of {}'.format(list(NECK_FACTORIES.keys())))
+                           help='base network, one of {}'.format('FPN and PAN for now'))
         group.add_argument('--neck_in', default=None,
                            help='a list of channels of the input of FPN, depending on the backbone structure and the applied stages')
         group.add_argument('--neck_out', default=None,
@@ -302,6 +302,14 @@ class Factory(Configurable):
                            help='Config dict for normalization layer.')
         group.add_argument('--activation', default='ReLU',
                            help='Config dict for activation layer in ConvModule.')
+
+        #choose which stages from the basenet will be applied FPN
+        group.add_argument('--base_outstage', default=-1,
+                           help='Config dict for activation layer in ConvModule. shoule be a tuple')
+
+        #the strides of head should be explicitly given by the user
+        group.add_argument('--head_stride', default=[4,8,16],
+                           help='Config dict for the strides of headnet')
 
 
 
@@ -331,17 +339,26 @@ class Factory(Configurable):
    
         ##add a neck(FPN) to tackle performance issues related to instance scales
         cls.neck_name = args.necknet
-        cls.neck_in = args.neck_in
-        cls.neck_out = args.neck_out
-        cls.num_outs = args.num_outs
-        cls.start_level = args.start_level
-        cls.end_level = args.end_level
-        cls.add_extra_convs = args.add_extra_convs
-        cls.relu_before_extra_convs = args.relu_before_extra_convs
-        cls.no_norm_on_lateral = args.no_norm_on_lateral
-        cls.conv_cfg = args.conv_cfg
-        cls.norm_cfg = args.norm_cfg
-        cls.neck_conv_activation = args.activation
+        if cls.neck_name is not None:
+            cls.neck_in = args.neck_in
+            cls.neck_out = args.neck_out
+            cls.num_outs = args.num_outs
+            cls.start_level = args.start_level
+            cls.end_level = args.end_level
+            cls.add_extra_convs = args.add_extra_convs
+            cls.relu_before_extra_convs = args.relu_before_extra_convs
+            cls.no_norm_on_lateral = args.no_norm_on_lateral
+            cls.conv_cfg = args.conv_cfg
+            cls.norm_cfg = args.norm_cfg
+            cls.neck_conv_activation = args.activation
+            # cls.base_out_stage = args.base_outstage
+            if type(args.base_outstage) == int and args.base_outstage != -1:
+                cls.base_out_stage = tuple(args.base_outstage)
+            elif args.base_outstage == -1:
+                cls.base_out_stage = args.base_outstage
+            else:
+                cls.base_out_stage = tuple(args.base_outstage)
+            cls.head_stride = args.head_stride
 
 
 
@@ -448,11 +465,14 @@ class Factory(Configurable):
     def from_scratch(self, head_metas) -> nets.Shell:
         if self.base_name not in BASE_FACTORIES:
             raise Exception('basenet {} unknown'.format(self.base_name))
-
-        basenet = BASE_FACTORIES[self.base_name]()
+        
+        # headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
+        #h.__class__ will return module_name.h(eg. module_name.Cif) where module_name is the name of the module where Cif is defined, which in our case will be headmeta.h(eg.headmeta.Cif)
+        
 
         ##add a neck(FPN):
         if self.neck_name is not None:
+            basenet = BASE_FACTORIES[self.base_name](self.base_out_stage)
             neck_cfg = dict(
                 name = self.neck_name,
                 in_channels=self.neck_in,
@@ -468,13 +488,19 @@ class Factory(Configurable):
                 activation = self.neck_conv_activation,
             )
             necknet =  build_fpn(neck_cfg)
-
-        headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
-        #h.__class__ will return module_name.h(eg. module_name.Cif) where module_name is the name of the module where Cif is defined, which in our case will be headmeta.h(eg.headmeta.Cif)
-        if self.neck_name is not None:
+            headnets = [HEADS[h.__class__](h, necknet.out_channels) for h in head_metas]
             net_cpu = nets.Shell(basenet, headnets, neck_net=necknet)
         else:
+            basenet = BASE_FACTORIES[self.base_name](-1)
+            headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
             net_cpu = nets.Shell(basenet, headnets)
+
+        
+        
+        # if self.neck_name is not None:
+        #     net_cpu = nets.Shell(basenet, headnets, neck_net=necknet)
+        # else:
+        #     net_cpu = nets.Shell(basenet, headnets)
         nets.model_defaults(net_cpu)
         return net_cpu
 
