@@ -21,7 +21,7 @@ cd ..
 
 mkdir -p ${xpdir}/checkpoints
 
-srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
+python3 -m openpifpaf.train --ddp \
   --output ${xpdir}/checkpoints/debug.pt \
   --dataset=cocokp \
   --cocokp-square-edge=513 \
@@ -38,7 +38,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --weight-decay=1e-5 \
   --b-scale=10.0 \
   --clip-grad-value=10.0 \
-  2>&1 | tee ${xpdir}/logs/debug.log"
+  2>&1 | tee ${xpdir}/logs/debug.log
 
 cd -
 
