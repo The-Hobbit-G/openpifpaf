@@ -41,7 +41,6 @@ class Shell(torch.nn.Module):
             hn.meta.head_index = hn_i
             hn.meta.base_stride = self.base_net.stride
 
-            """TO DO : Embed the multi strides of FPN into this base_stride so that the gd could be mapped into targets of each level"""
 
         self.head_nets = head_nets
 
@@ -52,11 +51,18 @@ class Shell(torch.nn.Module):
         x = self.base_net(image_batch)
 
         if self.neck_net is not None:
-            x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN)
+            assert type(x) == tuple
+            x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN in a bottom-up!!! fasion)
+            assert type(head_mask[0]) == list
             if head_mask is not None:
-                head_outputs = tuple(multi_apply(hn,x) if m else None for hn, m in zip(self.head_nets, head_mask))
+                # head_outputs = tuple(multi_apply(hn,x) if m else None for hn, m in zip(self.head_nets, head_mask[0]))  
+                ###we don't wanna the output to be in the form tuple(Cif(stage1,stage2,...),Caf(stage1,stage2,...),...)
+                head_outputs = tuple(tuple(hn(x_single) if m else None for hn, m in zip(self.head_nets, head_mask[0])) for x_single in x)
+                ###Rather we wanna the output to be in the form tuple(tuple(Cif(stage1),Caf(stage1),...),tuple(Cif(stage2),Caf(stage2),...),...)
+                #Plus, now head_mask if a list of the original head_mask without fpn, but each element in this list contains the same heads, so we simply use head_mask[0]
             else:
-                head_outputs = tuple(multi_apply(hn,x) for hn in self.head_nets)
+                # head_outputs = tuple(multi_apply(hn,x) for hn in self.head_nets)
+                head_outputs = tuple(tuple(hn(x_single) for hn in self.head_nets) for x_single in x )
 
             if self.process_heads is not None:
                 # head_outputs = self.process_heads(head_outputs)
@@ -70,7 +76,6 @@ class Shell(torch.nn.Module):
             if self.process_heads is not None:
                 head_outputs = self.process_heads(head_outputs)
 
-        
 
         return head_outputs
 
