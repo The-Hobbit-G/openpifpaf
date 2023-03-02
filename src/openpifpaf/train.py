@@ -150,7 +150,13 @@ def main():
     if args.necknet is not None:
         use_fpn = True
 
-    datamodule = datasets.factory(args.dataset,use_fpn)
+    assert(len(args.neck_in)==len(args.head_stride))
+
+    datamodule = datasets.factory(args.dataset)
+    if use_fpn:
+        datamodule.use_fpn = use_fpn
+        datamodule.head_stride = args.head_stride
+        datamodule.multiencoder_process()
 
     net_cpu, start_epoch = network.Factory().factory(head_metas=datamodule.head_metas)
     loss = network.losses.Factory().factory(datamodule.head_metas)
