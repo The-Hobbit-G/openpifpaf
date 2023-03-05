@@ -59,6 +59,7 @@ class FPN(nn.Module):
         ##The output of basenet will be formulated based on this version
         if end_level == -1 or end_level == self.num_ins:
             self.backbone_end_level = self.num_ins
+            print(num_outs,self.num_ins,start_level)
             assert num_outs >= self.num_ins - start_level
         else:
             # if end_level < inputs, no extra level is allowed
