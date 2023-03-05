@@ -283,11 +283,11 @@ class Factory(Configurable):
                            help='a list of channels of the input of FPN, depending on the backbone structure and the applied stages')
         group.add_argument('--neck_out', default=None,
                            help='The output channels of neck(defined by the user)')
-        group.add_argument('--num_outs', default=None,
+        group.add_argument('--num_outs', default=None, type=int,
                            help='The number of output stage of neck')
-        group.add_argument('--start_level', default=0,
+        group.add_argument('--start_level', default=0,type=int,
                            help='The starting stage of the FPN(extracting from the neck_in according to this specified start_level)')
-        group.add_argument('--end_level', default=-1,
+        group.add_argument('--end_level', default=-1,type=int,
                            help='The end stage of the FPN(extracting from the neck_in according to this specified end_level)')
         group.add_argument('--add_extra_convs', default=False,
                            help='(bool | str): If bool, it decides whether to add conv layers on top of the original feature maps. Default to False. \
