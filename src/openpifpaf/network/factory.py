@@ -281,7 +281,7 @@ class Factory(Configurable):
                            help='base network, one of {}'.format('FPN and PAN for now'))
         group.add_argument('--neck_in', default=None, nargs='+',type=int,
                            help='a list of channels of the input of FPN, depending on the backbone structure and the applied stages')
-        group.add_argument('--neck_out', default=None,
+        group.add_argument('--neck_out', default=None,type=int,
                            help='The output channels of neck(defined by the user)')
         group.add_argument('--num_outs', default=None, type=int,
                            help='The number of output stage of neck')
