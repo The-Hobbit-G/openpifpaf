@@ -150,6 +150,7 @@ def main():
     if args.necknet is not None:
         use_fpn = True
 
+    print(type(args.neck_in),type(args.head_stride),len(args.neck_in),len(args.head_stride))
     assert(len(args.neck_in)==len(args.head_stride))
 
     datamodule = datasets.factory(args.dataset)
