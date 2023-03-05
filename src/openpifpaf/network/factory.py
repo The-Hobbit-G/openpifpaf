@@ -279,7 +279,7 @@ class Factory(Configurable):
         ##add a neck(FPN) to tackle performance issues related to instance scales
         group.add_argument('--necknet', default=cls.neck_name,
                            help='base network, one of {}'.format('FPN and PAN for now'))
-        group.add_argument('--neck_in', default=None, type=list,
+        group.add_argument('--neck_in', default=None, nargs='+',type=int,
                            help='a list of channels of the input of FPN, depending on the backbone structure and the applied stages')
         group.add_argument('--neck_out', default=None,
                            help='The output channels of neck(defined by the user)')
@@ -304,11 +304,11 @@ class Factory(Configurable):
                            help='Config dict for activation layer in ConvModule.')
 
         #choose which stages from the basenet will be applied FPN
-        group.add_argument('--base_outstage', default=-1, type=list,
+        group.add_argument('--base_outstage', default=-1, nargs='+',type=int,
                            help='Config dict for activation layer in ConvModule. shoule be a tuple')
 
         #the strides of head should be explicitly given by the user
-        group.add_argument('--head_stride', default=[4,8,16], type=list,
+        group.add_argument('--head_stride', default=[4,8,16], nargs='+',type=int,
                            help='Config dict for the strides of headnet')
 
 

@@ -30,12 +30,12 @@ python3 -m openpifpaf.train --ddp \
   --cocokp-upsample=2 \
   --basenet=resnet50 \
   --necknet=FPN \
-  --neck_in=[512,1024,2048] \
+  --neck_in=512 1024 2048 \
   --neck_out=1024 \
   --num_outs=3 \
   --start_level=0 \
-  --base_outstage=[2,3,4] \
-  --head_stride=[4,8,16] \
+  --base_outstage=2 3 4 \
+  --head_stride=4 8 16 \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
