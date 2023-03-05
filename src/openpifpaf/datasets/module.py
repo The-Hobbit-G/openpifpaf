@@ -181,7 +181,7 @@ class DataModule:
                 #Now the final element of preprocess_compose changes from type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders> to 
                 #List[type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders>]
                 preprocess_compose.append(new_encoders)
-        self._preprocess = preprocess_compose
+        self._preprocess = preprocess_compose()
         # return preprocess_compose
 
 
