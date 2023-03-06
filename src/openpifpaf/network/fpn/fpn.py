@@ -151,7 +151,7 @@ class FPN(nn.Module):
             #     laterals[i], scale_factor=2, mode="bilinear"
             # )
             laterals[i - 1] += F.interpolate(
-                laterals[i], size=laterals[i].size(), mode="bilinear"
+                laterals[i], size=laterals[i-1].size(), mode="bilinear"
             )
 
         # build outputs
