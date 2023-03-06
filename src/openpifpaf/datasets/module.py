@@ -192,9 +192,9 @@ class DataModule:
                             new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
                         new_encs.append(new_enc)
                     new_encoders.append(ori_encoders.__class__(new_encs))
-                    
+
                 #check the length
-                print('new encoders length: {}, new encs length: {}'.format(len(new_encoders),len(new_encoders[0])))
+                print('new encoders length: {}, new encs length: {}'.format(len(new_encoders),len(new_encs)))
 
                 preprocess_compose.append(new_encoders)
         # self._preprocess() = preprocess_compose
