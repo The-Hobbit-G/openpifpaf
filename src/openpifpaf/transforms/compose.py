@@ -14,7 +14,7 @@ class Compose(Preprocess):
                 continue
             if (self.preprocess_list.index(p) == len(self.preprocess_list)-1) and (type(p) == list):
                 process_results = [p_single(*args) for p_single in p]
-                images = [process_results[0][0]]
+                images = process_results[0][0]
                 #encoders won't do any manipulation to the image, so they are always the same
                 anns = []
                 meta = []
