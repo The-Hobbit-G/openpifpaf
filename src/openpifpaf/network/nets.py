@@ -54,11 +54,11 @@ class Shell(torch.nn.Module):
             assert type(x) == tuple
             x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN in a bottom-up!!! fasion)
             print(type(head_mask),type(head_mask[0]))
-            assert type(head_mask[0]) == list
+            # assert type(head_mask[0]) == list
             if head_mask is not None:
                 # head_outputs = tuple(multi_apply(hn,x) if m else None for hn, m in zip(self.head_nets, head_mask[0]))  
                 ###we don't wanna the output to be in the form tuple(Cif(stage1,stage2,...),Caf(stage1,stage2,...),...)
-                head_outputs = tuple(tuple(hn(x_single) if m else None for hn, m in zip(self.head_nets, head_mask[0])) for x_single in x)
+                head_outputs = tuple(tuple(hn(x_single) if m else None for hn, m in zip(self.head_nets, head_mask)) for x_single in x)
                 ###Rather we wanna the output to be in the form tuple(tuple(Cif(stage1),Caf(stage1),...),tuple(Cif(stage2),Caf(stage2),...),...)
                 #Plus, now head_mask if a list of the original head_mask without fpn, but each element in this list contains the same heads, so we simply use head_mask[0]
             else:
