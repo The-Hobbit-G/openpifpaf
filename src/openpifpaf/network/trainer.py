@@ -178,9 +178,9 @@ class Trainer():
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
-                    targets = tuple([head.to(self.device, non_blocking=True)
+                    targets = tuple([[head.to(self.device, non_blocking=True)
                             if head is not None else None
-                            for head in target] for target in targets) #now the target would be tuple([tensors,...],[tensors,...],...)
+                            for head in target] for target in targets]) #now the target would be tuple([tensors,...],[tensors,...],...)
             else:
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
