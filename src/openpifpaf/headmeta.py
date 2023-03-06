@@ -15,7 +15,7 @@ class Base:
     dataset: str
 
     head_index: int = field(default=None, init=False)
-    base_stride: int = field(default=None, init=True)
+    base_stride: int = field(default=None, init=False) ##!!Set to True to enable dataclasses.replace
     upsample_stride: int = field(default=1, init=False)
 
     # base_head_stride: list = [4,8,16]
