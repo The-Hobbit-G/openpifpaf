@@ -177,7 +177,7 @@ class DataModule:
                 #List[type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders>]
                 '''
 
-                '''Since base_stride is set to init=False and cannot be applied replace, we try the following implementation'''
+                #Since base_stride is set to init=False and cannot be applied replace, we try the following implementation
                 new_encoders = []
                 for hs in self.head_stride:
                     new_encs = []
