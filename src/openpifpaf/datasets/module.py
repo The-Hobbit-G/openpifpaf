@@ -194,6 +194,7 @@ class DataModule:
                     new_encoders.append(ori_encoders.__class__(new_encs))
 
                 #check the length
+                print('---------------------')
                 print('new encoders length: {}, new encs length: {}'.format(len(new_encoders),len(new_encs)))
 
                 preprocess_compose.append(new_encoders)
