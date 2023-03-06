@@ -141,8 +141,8 @@ class FPN(nn.Module):
             for i, lateral_conv in enumerate(self.lateral_convs)
         ]
          
-        for lateral in laterals:
-            print(lateral.shape)
+        # for lateral in laterals:
+        #     print(lateral.shape)
 
         # build top-down path
         used_backbone_levels = len(laterals)

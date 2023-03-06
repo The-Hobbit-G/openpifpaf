@@ -173,7 +173,7 @@ class Trainer():
                 for target in targets[0]:
                     assert target.is_pinned()
 
-            print(type(targets),type(targets[0]))
+            # print(type(targets),type(targets[0]))
             
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
@@ -190,7 +190,7 @@ class Trainer():
 
         # train encoder
         with torch.autograd.profiler.record_function('model'):
-            print(type(targets),type(targets[0]),len(target))
+            print(type(targets),type(targets[0]),len(targets),len(targets[0]))
             if type(targets) == tuple:
                 outputs = self.model(data, head_mask=[t is not None for t in targets[0]])
             else:
@@ -201,6 +201,10 @@ class Trainer():
             if type(targets) == tuple:
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
+                ###check the shape of outputs and targets:
+                for i in range(len(targets)):
+                    print('target shape: {}, output shape: {}'.format(targets[i],outputs[i]))
+
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # average over the losses from different stage(could also do sum)
                 loss = sum(multistage_loss)/len(multistage_loss)
