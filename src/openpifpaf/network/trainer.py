@@ -169,7 +169,7 @@ class Trainer():
         if self.device.type != 'cpu':
             assert data.is_pinned(), 'input data must be pinned'
             if targets[0] is not None:
-                assert targets[0].all().is_pinned(), 'input targets must be pinned'
+                assert all(targets[0]).is_pinned(), 'input targets must be pinned'
             
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
