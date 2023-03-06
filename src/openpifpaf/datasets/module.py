@@ -160,13 +160,8 @@ class DataModule:
             if (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.Encoders) or \
                 (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.pair.Encoders):
                 ori_encoders = preprocess_compose.pop(-1)
-                # new_encoders = []
-                # for enc in ori_encoders.encoders:
-                #     new_encs = [dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) for hs in self.head_stride] 
-                #     #eg. encoder.Cif(headmeta.Cif(base_stride=16))-->[encoder.Cif(headmeta.Cif(base_stride=4)),encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Cif(headmeta.Cif(base_stride=16))]
-                #     new_encoders.append(new_encs)
-                #     #new_encoders = [new_Cif,new_Caf,...] where new_Cif = the examples above
 
+                '''
                 #TODO: Consider the situation where enc in ori_encoders.encoders could be openpifpaf.encoder.SingleImage
                 if type(ori_encoders) == openpifpaf.transforms.Encoders:
                     new_encoders = [openpifpaf.transforms.Encoders([dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) if type(enc) != openpifpaf.encoder.SingleImage \
@@ -180,6 +175,25 @@ class DataModule:
                 # [encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Cif(headmeta.Caf(base_stride=8,)),...],[encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Cif(headmeta.Caf(base_stride=16)),...]]
                 #Now the final element of preprocess_compose changes from type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders> to 
                 #List[type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders>]
+                '''
+
+                '''Since base_stride is set to init=False and cannot be applied replace, we try the following implementation'''
+                new_encoders = []
+                for hs in self.head_stride:
+                    new_encs = []
+                    for enc in ori_encoders.encoders:
+                        if type(enc) != openpifpaf.encoder.SingleImage:
+                            new_meta = enc.meta.copy()
+                            new_meta.base_stride = hs
+                            new_enc = dataclasses.replace(enc,meta = new_meta)
+                        else:
+                            new_meta = enc.wrapped.meta.copy()
+                            new_meta.base_stride = hs
+                            new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
+                        new_encs.append(new_enc)
+                    new_encoders.append(ori_encoders.__class__(new_encs))
+
+
                 preprocess_compose.append(new_encoders)
         # self._preprocess() = preprocess_compose
         return preprocess_compose
