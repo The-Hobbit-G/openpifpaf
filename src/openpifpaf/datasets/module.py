@@ -183,11 +183,11 @@ class DataModule:
                     new_encs = []
                     for enc in ori_encoders.encoders:
                         if type(enc) != openpifpaf.encoder.SingleImage:
-                            new_meta = enc.meta.copy()
+                            new_meta = copy.deepcopy(enc.meta)
                             new_meta.base_stride = hs
                             new_enc = dataclasses.replace(enc,meta = new_meta)
                         else:
-                            new_meta = enc.wrapped.meta.copy()
+                            new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
                             new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
                         new_encs.append(new_enc)
