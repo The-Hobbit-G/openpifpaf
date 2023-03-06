@@ -157,8 +157,8 @@ class DataModule:
         preprocess_compose = copy.deepcopy(self._preprocess())
         if self.use_fpn:
             assert len(self.head_stride) >= 1
-            if (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.Encoders) or \
-                (type(preprocess_compose.preprocess_list[-1]) == openpifpaf.transforms.pair.Encoders):
+            if isinstance(preprocess_compose.preprocess_list[-1], openpifpaf.transforms.Encoders \
+                          or openpifpaf.transforms.pair.Encoders):
                 ori_encoders = preprocess_compose.pop(-1)
 
                 '''
