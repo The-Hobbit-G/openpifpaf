@@ -203,7 +203,9 @@ class Trainer():
                 assert len(targets) == len(outputs)
                 ###check the shape of outputs and targets:
                 for i in range(len(targets)):
-                    print('target shape: {}, output shape: {}'.format(len(targets[i]),len(outputs[i])))
+                    print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
+                    print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
+                                                                            outputs[i][0].size(),outputs[i][1].size()))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # average over the losses from different stage(could also do sum)
