@@ -53,6 +53,7 @@ class Shell(torch.nn.Module):
         if self.neck_net is not None:
             assert type(x) == tuple
             x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN in a bottom-up!!! fasion)
+            print(type(head_mask),type(head_mask[0]))
             assert type(head_mask[0]) == list
             if head_mask is not None:
                 # head_outputs = tuple(multi_apply(hn,x) if m else None for hn, m in zip(self.head_nets, head_mask[0]))  
