@@ -279,10 +279,20 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
         #     category_ids=[1],
         # )
         # else:
+        '''
         train_data = CocoDataset(
             image_dir=self.train_image_dir,
             ann_file=self.train_annotations,
             preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        '''
+        train_data = CocoDataset(
+            image_dir=self.train_image_dir,
+            ann_file=self.train_annotations,
+            preprocess=self.multiencoder_process(),
             annotation_filter=True,
             min_kp_anns=self.min_kp_anns,
             category_ids=[1],
@@ -305,10 +315,20 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
         #         category_ids=[1],
         #     )
         # else:
+        '''
         val_data = CocoDataset(
             image_dir=self.val_image_dir,
             ann_file=self.val_annotations,
             preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        '''
+        val_data = CocoDataset(
+            image_dir=self.val_image_dir,
+            ann_file=self.val_annotations,
+            preprocess=self.multiencoder_process(),
             annotation_filter=True,
             min_kp_anns=self.min_kp_anns,
             category_ids=[1],

@@ -157,7 +157,7 @@ def main():
     if use_fpn:
         datamodule.use_fpn = use_fpn
         datamodule.head_stride = args.head_stride
-        datamodule.multiencoder_process()
+        # datamodule.multiencoder_process()
 
     net_cpu, start_epoch = network.Factory().factory(head_metas=datamodule.head_metas)
     loss = network.losses.Factory().factory(datamodule.head_metas)
