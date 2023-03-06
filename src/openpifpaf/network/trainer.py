@@ -190,6 +190,7 @@ class Trainer():
 
         # train encoder
         with torch.autograd.profiler.record_function('model'):
+            print(type(targets),type(targets[0]),len(target))
             outputs = self.model(data, head_mask=[t is not None for t in targets])
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
