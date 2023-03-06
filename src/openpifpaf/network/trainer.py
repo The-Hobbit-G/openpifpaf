@@ -172,6 +172,8 @@ class Trainer():
                 # assert targets[0].is_pinned(), 'input targets must be pinned'
                 for target in targets[0]:
                     assert target.is_pinned()
+
+            print(type(targets),type(targets[0]))
             
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
