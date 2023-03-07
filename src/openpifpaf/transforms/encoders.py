@@ -8,7 +8,9 @@ class Encoders(Preprocess):
 
     def __call__(self, image, anns, meta):
         anns = [enc(image, anns, meta) for enc in self.encoders]
-        for ann in anns:
-            print('ann size {}'.format(ann.size()))
+        # for ann in anns:
+        #     print('ann size {}'.format(ann.size()))
+        for enc in self.encoders:
+            print(enc.meta.stride)
         meta['head_indices'] = [enc.meta.head_index for enc in self.encoders]
         return image, anns, meta
