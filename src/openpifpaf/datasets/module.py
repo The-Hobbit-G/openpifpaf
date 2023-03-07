@@ -190,6 +190,7 @@ class DataModule:
                             new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
                             new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
+                        print('new enc base_stride: {}'.format(new_enc.meta.base_stride))
                         new_encs.append(new_enc)
                     new_encoders.append(ori_encoders.__class__(new_encs))
 
