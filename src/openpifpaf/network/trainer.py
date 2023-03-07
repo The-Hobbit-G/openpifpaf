@@ -209,7 +209,7 @@ class Trainer():
                 #                                                             outputs[i][0].size(),outputs[i][1].size()))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
-                print(multistage_loss,multistage_head_losses)
+                print('multistage_loss: {}, multistage_head_losses: {}'.format(multistage_loss,multistage_head_losses))
                 # average over the losses from different stage(could also do sum)
                 loss = sum(multistage_loss)/len(multistage_loss)
                 head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
@@ -217,7 +217,7 @@ class Trainer():
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))
                 loss, head_losses = self.loss(outputs, targets)
-                print(loss,head_losses)
+                print('loss: {}, head_losses: {}'.format(loss,head_losses))
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize()
         if loss is not None:
