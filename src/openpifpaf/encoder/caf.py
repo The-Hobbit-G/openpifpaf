@@ -105,6 +105,8 @@ class AssociationFiller:
         self.visualizer.processed_image(image)
         self.visualizer.targets(fields, annotation_dicts=anns)
 
+        print('caf field size: {}'.format(fields.size()))
+
         return fields
 
     def fill(self, keypoint_sets, fill_values):
