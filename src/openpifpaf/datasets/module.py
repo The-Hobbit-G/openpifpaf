@@ -192,8 +192,8 @@ class DataModule:
                             new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
                         print('new enc base_stride: {}'.format(new_enc.meta.base_stride))
                         new_encs.append(new_enc)
-                    # new_encoder = ori_encoders.__class__(new_encs)
-                    new_encoder = openpifpaf.transforms.Encoders(new_encs)
+                    new_encoder = ori_encoders.__class__(new_encs)
+                    # new_encoder = openpifpaf.transforms.Encoders(new_encs)
                     print(type(new_encoder),len(new_encoder.encoders),new_encoder.encoders[0].meta.base_stride,\
                           new_encoder.encoders[1].meta.base_stride)
                     new_encoders.append(new_encoder)
