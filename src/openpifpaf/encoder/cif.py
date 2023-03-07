@@ -64,7 +64,7 @@ class CifGenerator():
         self.visualizer.processed_image(image)
         self.visualizer.targets(fields, annotation_dicts=anns)
 
-        print('cif field size: {}'.format(fields.size()))
+        # print('cif field size: {}'.format(fields.size()))
 
         return fields
 
