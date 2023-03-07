@@ -198,6 +198,7 @@ class Trainer():
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
         with torch.autograd.profiler.record_function('loss'):
+            print('targets type: {}'.format(type(targets)))
             if type(targets) == tuple:
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
