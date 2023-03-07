@@ -28,10 +28,10 @@ class Caf:
     padding: ClassVar[int] = 10
 
     def __post_init__(self):
-        print(type(self.rescaler))
+        # print(type(self.rescaler))
         if self.rescaler is None:
             self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
-            print('build new rescaler from scratch')
+            # print('build new rescaler from scratch')
 
         if self.visualizer is None:
             self.visualizer = CafVisualizer(self.meta)
