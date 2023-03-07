@@ -190,7 +190,7 @@ class Trainer():
 
         # train encoder
         with torch.autograd.profiler.record_function('model'):
-            print(type(targets),type(targets[0]),len(targets),len(targets[0]))
+            # print(type(targets),type(targets[0]),len(targets),len(targets[0]))
             if type(targets) == tuple:
                 outputs = self.model(data, head_mask=[t is not None for t in targets[0]])
             else:
