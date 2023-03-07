@@ -106,7 +106,7 @@ class AssociationFiller:
         self.visualizer.targets(fields, annotation_dicts=anns)
 
         print('caf field size: {}'.format(fields.size()))
-        print('caf meta stride: {}'.format(self.meta.stride))
+        print('caf meta stride: {}'.format(self.config.meta.stride))
         print('caf rescaler stride: {}'.format(self.rescaler.stride))
 
         return fields
