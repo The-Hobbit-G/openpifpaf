@@ -185,11 +185,18 @@ class DataModule:
                         if type(enc) != openpifpaf.encoder.SingleImage:
                             new_meta = copy.deepcopy(enc.meta)
                             new_meta.base_stride = hs
-                            new_enc = dataclasses.replace(enc,meta = new_meta)
+                            new_bmin = enc.bmin
+                            # new_enc = dataclasses.replace(enc,meta = new_meta) 
+                            # can't use dataclasses to renew the Caf,TCaf encoder because if we do so, we are replacing just one attribute(meta)
+                            # And all their old attributes are kept(including rescaler, the __post_init__ function won't renew the rescaler so the stride of the rescaler will never change)
+                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin)
                         else:
                             new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
-                            new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
+                            new_bmin = enc.wrapped.bmin
+                            # new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
+                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin))
+                        
                         print('new enc base_stride: {}'.format(new_enc.meta.base_stride))
                         new_encs.append(new_enc)
                     new_encoder = ori_encoders.__class__(new_encs)
