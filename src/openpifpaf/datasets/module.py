@@ -192,7 +192,9 @@ class DataModule:
                             new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
                         print('new enc base_stride: {}'.format(new_enc.meta.base_stride))
                         new_encs.append(new_enc)
-                    new_encoders.append(ori_encoders.__class__(new_encs))
+                    new_encoder = ori_encoders.__class__(new_encs)
+                    print(type(new_encoder),len(new_encoder.encoders))
+                    new_encoders.append(new_encoder)
 
                 #check the length
                 print('---------------------')
