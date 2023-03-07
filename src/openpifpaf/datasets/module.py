@@ -194,7 +194,7 @@ class DataModule:
                         new_encs.append(new_enc)
                     new_encoder = ori_encoders.__class__(new_encs)
                     print(type(new_encoder),len(new_encoder.encoders),new_encoder.encoders[0].meta.base_stride,\
-                          new_encoder.encoders[1].meta.base_stride,new_encoder.encoders[0].rescaler.stride,new_encoder.encoders[1].rescaler.stride)
+                          new_encoder.encoders[1].meta.base_stride)
                     new_encoders.append(new_encoder)
 
                 #check the length
