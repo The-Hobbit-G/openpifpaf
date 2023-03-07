@@ -30,6 +30,7 @@ class Caf:
     def __post_init__(self):
         if self.rescaler is None:
             self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
+            print('build new rescaler from scratch')
 
         if self.visualizer is None:
             self.visualizer = CafVisualizer(self.meta)
