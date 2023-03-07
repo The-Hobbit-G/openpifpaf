@@ -28,10 +28,8 @@ class Caf:
     padding: ClassVar[int] = 10
 
     def __post_init__(self):
-        # print(type(self.rescaler))
         if self.rescaler is None:
             self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
-            # print('build new rescaler from scratch')
 
         if self.visualizer is None:
             self.visualizer = CafVisualizer(self.meta)
@@ -107,9 +105,6 @@ class AssociationFiller:
         self.visualizer.processed_image(image)
         self.visualizer.targets(fields, annotation_dicts=anns)
 
-        # print('caf field size: {}'.format(fields.size()))
-        # print('caf meta stride: {}'.format(self.config.meta.stride))
-        # print('caf rescaler stride: {}'.format(self.rescaler.stride))
 
         return fields
 

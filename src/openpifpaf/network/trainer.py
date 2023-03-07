@@ -202,18 +202,18 @@ class Trainer():
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
                 ###check the shape of outputs and targets:
-                for i in range(len(targets)):
-                    print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
-                    print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
-                                                                            outputs[i][0].size(),outputs[i][1].size()))
+                # for i in range(len(targets)):
+                #     print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
+                #     print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
+                #                                                             outputs[i][0].size(),outputs[i][1].size()))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # average over the losses from different stage(could also do sum)
                 loss = sum(multistage_loss)/len(multistage_loss)
                 head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
             else:
-                print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
-                                                                        outputs[0].size(),outputs[1].size()))
+                # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
+                #                                                         outputs[0].size(),outputs[1].size()))
                 loss, head_losses = self.loss(outputs, targets)
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize()
