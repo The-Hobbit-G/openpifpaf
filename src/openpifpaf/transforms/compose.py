@@ -19,7 +19,7 @@ class Compose(Preprocess):
                 anns = []
                 meta = []
                 for result in process_results:
-                    print('ann size: {} {}'.format(result[1][0].size())),result[1][1].size()
+                    print('ann size: {} {}'.format(result[1][0].size(),result[1][1].size()))
                     assert(len(result)==3)
                     anns.append(result[1])
                     meta.append(result[2])
