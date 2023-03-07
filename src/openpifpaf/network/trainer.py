@@ -217,6 +217,7 @@ class Trainer():
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))
                 loss, head_losses = self.loss(outputs, targets)
+                print(loss,head_losses)
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize()
         if loss is not None:
