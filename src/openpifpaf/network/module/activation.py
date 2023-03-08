@@ -32,10 +32,10 @@ activations = {
 def act_layers(name):
     assert name in activations.keys()
     if name == "LeakyReLU":
-        return nn.LeakyReLU(negative_slope=0.1, inplace=True)
+        return nn.LeakyReLU(negative_slope=0.1)
     elif name == "GELU":
         return nn.GELU()
     elif name == "PReLU":
         return nn.PReLU()
     else:
-        return activations[name](inplace=True)
+        return activations[name]()
