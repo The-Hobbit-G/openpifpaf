@@ -20,7 +20,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/<username>/<path/to/dir>/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/train/resnet50_fpn/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
