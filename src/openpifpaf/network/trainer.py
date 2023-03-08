@@ -211,10 +211,9 @@ class Trainer():
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 print('multistage_loss: {}, multistage_head_losses: {}'.format(multistage_loss,multistage_head_losses))
                 # average over the losses from different stage(could also do sum)
-                # loss = sum(multistage_loss)
-                # loss = sum(multistage_loss)
+                loss = sum(multistage_loss)
                 head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
-                loss = sum(head_losses)
+                # loss = sum(head_losses)
             else:
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))

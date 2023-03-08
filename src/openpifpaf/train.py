@@ -143,6 +143,7 @@ def cli():
 
 
 def main():
+    torch.autograd.set_detect_anomaly(True)
     args = cli()
 
     #set a flag for whether using FPN to enable different pre_precessing for the data
