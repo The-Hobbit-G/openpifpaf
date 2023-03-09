@@ -34,6 +34,8 @@ class Predictor:
             LOG.info('Using multiple GPUs: %d', torch.cuda.device_count())
             self.model = torch.nn.DataParallel(self.model)
             self.model.base_net = self.model_cpu.base_net
+            #add neck_net
+            self.model.neck_net = self.model_cpu.neck_net
             self.model.head_nets = self.model_cpu.head_nets
 
         self.processor = decoder.factory(self.model_cpu.head_metas)
