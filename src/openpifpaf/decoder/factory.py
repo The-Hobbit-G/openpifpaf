@@ -102,7 +102,7 @@ class Factory:
 
             dec_str, _, index = dec_str.partition(':')
             index = int(index)
-            cls.decoder_request[dec_str].append(index)
+            cls.decoder_request[dec_str].append(index)   #We could have several instances for each kind of decoder(eg. 3cif,3caf,...)
 
         LOG.debug('setup decoder request: %s', cls.decoder_request)
 
