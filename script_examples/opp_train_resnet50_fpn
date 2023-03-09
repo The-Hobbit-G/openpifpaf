@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
-#SBATCH --output=/scratch/izar/<username>/<path/to/dir>/%x.out
+#SBATCH --output=/scratch/izar/jiguo/resnet50_fpn/%x.out
 
 shopt -s extglob
 
@@ -23,7 +23,7 @@ echo STARTING AT `date`
 xpdir="/scratch/izar/jiguo/train/resnet50_fpn/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
-tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
+tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
 mkdir -p ${xpdir}/logs
 
 
