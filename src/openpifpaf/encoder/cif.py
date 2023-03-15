@@ -128,6 +128,10 @@ class CifGenerator():
         bmin = self.config.bmin / self.config.meta.stride
         self.fields_bmin[f, miny:maxy, minx:maxx][mask] = bmin
 
+        # neglect extremely large object(100 is just a pre-defined threshold)
+        if scale >= 100:
+            scale = np.nan
+
         # update scale
         assert np.isnan(scale) or 0.0 < scale < 100.0
         self.fields_scale[f, miny:maxy, minx:maxx][mask] = scale
