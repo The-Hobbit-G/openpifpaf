@@ -171,8 +171,8 @@ class DataModule:
                     new_encoders = [openpifpaf.transforms.pair.Encoders([dataclasses.replace(enc,meta = dataclasses.replace(enc.meta, base_stride = hs)) if type(enc) != openpifpaf.encoder.SingleImage \
                                                                     else dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = dataclasses.replace(enc.wrapped.meta, base_stride = hs)))]\
                                                                             for enc in ori_encoders.encoders) for hs in self.head_stride]
-                #eg. [encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Cif(headmeta.Caf(base_stride=16)),...]-->[[encoder.Cif(headmeta.Cif(base_stride=4)),encoder.Cif(headmeta.Caf(base_stride=4,)),...],
-                # [encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Cif(headmeta.Caf(base_stride=8,)),...],[encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Cif(headmeta.Caf(base_stride=16)),...]]
+                #eg. [encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Caf(headmeta.Caf(base_stride=16)),...]-->[[encoder.Cif(headmeta.Cif(base_stride=4)),encoder.Caf(headmeta.Caf(base_stride=4,)),...],
+                # [encoder.Cif(headmeta.Cif(base_stride=8)),encoder.Caf(headmeta.Caf(base_stride=8,)),...],[encoder.Cif(headmeta.Cif(base_stride=16)),encoder.Caf(headmeta.Caf(base_stride=16)),...]]
                 #Now the final element of preprocess_compose changes from type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders> to 
                 #List[type<openpifpaf.transforms.Encoders/openpifpaf.transforms.pair.Encoders>]
                 '''
@@ -189,13 +189,13 @@ class DataModule:
                             # new_enc = dataclasses.replace(enc,meta = new_meta) 
                             # can't use dataclasses to renew the Caf,TCaf encoder because if we do so, we are replacing just one attribute(meta)
                             # And all their old attributes are kept(including rescaler, the __post_init__ function won't renew the rescaler so the stride of the rescaler will never change)
-                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin)
+                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True)
                         else:
                             new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
                             new_bmin = enc.wrapped.bmin
                             # new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
-                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin))
+                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True))
                         new_encs.append(new_enc)
                     new_encoder = ori_encoders.__class__(new_encs)
                     new_encoders.append(new_encoder)

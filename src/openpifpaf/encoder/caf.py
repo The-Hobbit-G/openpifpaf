@@ -27,6 +27,8 @@ class Caf:
     aspect_ratio: ClassVar[float] = 0.0
     padding: ClassVar[int] = 10
 
+    use_fpn: bool = False
+
     def __post_init__(self):
         if self.rescaler is None:
             self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
@@ -256,6 +258,9 @@ class CafGenerator(AssociationFiller):
     def fill_field_values(self, field_i, fij, fill_values):
         joint1i, joint2i = self.skeleton_m1[field_i]
         keypoints, scale = fill_values
+
+        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<4*self.config.meta.stride):
+            pass
 
         # update intensity
         self.intensities[field_i, fij[1], fij[0]] = 1.0
