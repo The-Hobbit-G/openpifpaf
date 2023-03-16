@@ -367,8 +367,8 @@ class RegressionLoss:
         d = torch.linalg.norm(d, ord=2, dim=2, keepdim=True)
 
         ##
-        print('t_scales shape: {}, t_scales: {}'.format(t_scales.shape,t_scales))
-        print('t_regs shape: {}, t_regs: {}'.format(t_regs.shape,t_regs))
+        # print('t_scales shape: {}, t_scales: {}'.format(t_scales.shape,t_scales))
+        # print('t_regs shape: {}, t_regs: {}'.format(t_regs.shape,t_regs))
 
 
         # 68% inside of t_sigma
