@@ -366,6 +366,11 @@ class RegressionLoss:
         # L2 distance for coordinate pair
         d = torch.linalg.norm(d, ord=2, dim=2, keepdim=True)
 
+        ##
+        print('t_scales shape: {}, t_scales: {}'.format(t_scales.shape,t_scales))
+        print('t_regs shape: {}, t_regs: {}'.format(t_regs.shape,t_regs))
+
+
         # 68% inside of t_sigma
         if t_scales.shape[1]:
             t_sigma = 0.5 * t_scales
