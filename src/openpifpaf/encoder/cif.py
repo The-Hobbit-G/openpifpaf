@@ -87,8 +87,8 @@ class CifGenerator():
             self.fill_keypoints(keypoints)
 
     def fill_keypoints(self, keypoints):
-        scale = self.rescaler.scale(keypoints) #each keypoints from the keypoint_sets are from the same object
-        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<4*self.config.meta.stride):
+        scale = self.rescaler.scale(keypoints) #each keypoints from the keypoint_sets is a set of keypoints from the same object
+        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
             pass
         for f, xyv in enumerate(keypoints):
             if xyv[2] <= self.config.v_threshold:

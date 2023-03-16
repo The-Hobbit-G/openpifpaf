@@ -259,7 +259,7 @@ class CafGenerator(AssociationFiller):
         joint1i, joint2i = self.skeleton_m1[field_i]
         keypoints, scale = fill_values
 
-        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<4*self.config.meta.stride):
+        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
             pass
 
         # update intensity
