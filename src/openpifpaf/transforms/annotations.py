@@ -25,7 +25,7 @@ class NormalizeAnnotations(Preprocess):
             if 'iscrowd' not in ann:
                 ann['iscrowd'] = False
 
-            ann['keypoints'] = np.asarray(ann['keypoints'], dtype=np.float32).reshape(-1, 3)
+            ann['keypoints'] = np.asarray(ann['keypoints'], dtype=np.float32).reshape(-1, 3) #(x,y,v) where v is visualbility
             if 'bbox' not in ann: #if there is any instance that has only the keypoints but not the bbox annotations, we can form the bbox from the keypoints,otherwise we just use the given bbox annotations
                 ann['bbox'] = cls.bbox_from_keypoints(ann['keypoints'])
             ann['bbox'] = np.asarray(ann['bbox'], dtype=np.float32)
