@@ -278,10 +278,10 @@ class CafGenerator(AssociationFiller):
             scale2 = scale * self.config.meta.sigmas[joint2i]
 
         # neglect very large instance
-        if scale1>=100:
-            scale1=np.nan
-        if scale2>=100:
-            scale2=np.nan
+        # if scale1>=100:
+        #     scale1=np.nan
+        # if scale2>=100:
+        #     scale2=np.nan
 
     
         assert np.isnan(scale1) or 0.0 < scale1 < 100.0
