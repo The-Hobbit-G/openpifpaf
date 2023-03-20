@@ -203,10 +203,12 @@ class Trainer():
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
                 ###check the shape of outputs and targets:
-                for i in range(len(targets)):
-                    print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
-                    print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
-                                                                            outputs[i][0].size(),outputs[i][1].size()))
+                '''cif target shape: (batch_size, num of keypoints=17, cif field channel=5, field_h, field_w)
+                   caf target shape: (batch_size, num of association=19, caf field channel=9, field_h, field_w)'''
+                # for i in range(len(targets)):
+                #     print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
+                #     print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
+                #                                                             outputs[i][0].size(),outputs[i][1].size()))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # print('multistage_loss: {}, multistage_head_losses: {}'.format(multistage_loss,multistage_head_losses))
