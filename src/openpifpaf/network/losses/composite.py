@@ -261,6 +261,8 @@ class CompositeLoss(torch.nn.Module):
         x = x[valid_id,:,:,:,:]
         t = t[valid_id,:,:,:,:]
 
+        print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
+
 
 
         # determine foreground and background masks based on ground truth
