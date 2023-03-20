@@ -253,6 +253,7 @@ class CompositeLoss(torch.nn.Module):
         #TODO: Filter out the targets without and instances(due to scale limit) and their corresponding featuremaps
         valid_id=[]
         for img_id in range(t.shape[0]):
+            print(t[img_id,:,1,:,:])
             if torch.isnan(t[img_id,:,1,:,:]).all():
                 continue
             else:
@@ -261,6 +262,7 @@ class CompositeLoss(torch.nn.Module):
         x = x[valid_id,:,:,:,:]
         t = t[valid_id,:,:,:,:]
 
+        print('valid id : {}'.format(valid_id))
         print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
 
 
