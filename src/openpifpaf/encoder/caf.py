@@ -261,11 +261,8 @@ class CafGenerator(AssociationFiller):
         keypoints, scale = fill_values
 
         if self.config.use_fpn:
-            if self.config.head_index == 0 and scale>8*self.config.meta.stride:
-                return
-            elif self.config.head_index == -1 and scale<=4*self.config.meta.stride:
-                return
-            elif self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
+            if (self.config.head_index == 0 and scale>8*self.config.meta.stride) or (self.config.head_index == -1 and scale<=4*self.config.meta.stride)\
+                or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride)):
                 return
         # update intensity
         self.intensities[field_i, fij[1], fij[0]] = 1.0
