@@ -179,7 +179,9 @@ class DataModule:
 
                 #Since base_stride is set to init=False and cannot be applied replace, we try the following implementation
                 new_encoders = []
-                for hs in self.head_stride:
+                for h_index,hs in enumerate(self.head_stride):
+                    if h_index == len(self.head_stride)-1:
+                        h_index = -1
                     new_encs = []
                     for enc in ori_encoders.encoders:
                         if type(enc) != openpifpaf.encoder.SingleImage:
@@ -189,13 +191,13 @@ class DataModule:
                             # new_enc = dataclasses.replace(enc,meta = new_meta) 
                             # can't use dataclasses to renew the Caf,TCaf encoder because if we do so, we are replacing just one attribute(meta)
                             # And all their old attributes are kept(including rescaler, the __post_init__ function won't renew the rescaler so the stride of the rescaler will never change)
-                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True)
+                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True, head_index = h_index)
                         else:
                             new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
                             new_bmin = enc.wrapped.bmin
                             # new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
-                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True))
+                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
                         new_encs.append(new_enc)
                     new_encoder = ori_encoders.__class__(new_encs)
                     new_encoders.append(new_encoder)

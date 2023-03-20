@@ -28,6 +28,7 @@ class Caf:
     padding: ClassVar[int] = 10
 
     use_fpn: bool = False
+    head_index: int = None
 
     def __post_init__(self):
         if self.rescaler is None:
@@ -259,9 +260,13 @@ class CafGenerator(AssociationFiller):
         joint1i, joint2i = self.skeleton_m1[field_i]
         keypoints, scale = fill_values
 
-        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
-            pass
-
+        if self.config.use_fpn:
+            if self.config.head_index == 0 and scale>8*self.config.meta.stride:
+                return
+            elif self.config.head_index == -1 and scale<=4*self.config.meta.stride:
+                return
+            elif self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
+                return
         # update intensity
         self.intensities[field_i, fij[1], fij[0]] = 1.0
 

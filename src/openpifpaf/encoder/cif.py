@@ -25,6 +25,7 @@ class Cif:
     padding: ClassVar[int] = 10
 
     use_fpn: bool = False
+    head_index: int = None
 
     def __call__(self, image, anns, meta):
         return CifGenerator(self)(image, anns, meta)
@@ -88,8 +89,15 @@ class CifGenerator():
 
     def fill_keypoints(self, keypoints):
         scale = self.rescaler.scale(keypoints) #each keypoints from the keypoint_sets is a set of keypoints from the same object
-        if self.config.use_fpn and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
-            pass
+        #and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
+        if self.config.use_fpn:
+            if self.config.head_index == 0 and scale>8*self.config.meta.stride:
+                return
+            elif self.config.head_index == -1 and scale<=4*self.config.meta.stride:
+                return
+            elif self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
+                return
+
         for f, xyv in enumerate(keypoints):
             if xyv[2] <= self.config.v_threshold:
                 continue
