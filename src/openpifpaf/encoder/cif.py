@@ -94,6 +94,7 @@ class CifGenerator():
         if self.config.use_fpn:
             if (self.config.head_index == 0 and scale>8*self.config.meta.stride) or (self.config.head_index == -1 and scale<=4*self.config.meta.stride)\
                 or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride)):
+                print('ignore')
                 return
 
         for f, xyv in enumerate(keypoints):
