@@ -250,8 +250,21 @@ class CompositeLoss(torch.nn.Module):
         assert x.shape[2] == 1 + self.n_confidences + self.n_vectors * 2 + self.n_scales
         assert t.shape[2] == self.n_confidences + self.n_vectors * 3 + self.n_scales
 
+        #TODO: Filter out the targets without and instances(due to scale limit) and their corresponding featuremaps
+        valid_id=[]
+        for img_id in range(t.shape[0]):
+            if torch.isnan(t[img_id,:,1,:,:]).all():
+                continue
+            else:
+                valid_id.append(img_id)
+
+        x = x[valid_id,:,:,:,:]
+        t = t[valid_id,:,:,:,:]
+
+
+
         # determine foreground and background masks based on ground truth
-        t = torch.transpose(t, 2, 4)
+        t = torch.transpose(t, 2, 4)  #t.shape = (batch_size, num of keypoints/associations, field_w, field_h, field_channels)
         finite = torch.isfinite(t)
         t_confidence_raw = t[:, :, :, :, 0:self.n_confidences]
         bg_mask = torch.all(t_confidence_raw == 0.0, dim=4)
