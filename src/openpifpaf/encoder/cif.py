@@ -90,6 +90,7 @@ class CifGenerator():
     def fill_keypoints(self, keypoints):
         scale = self.rescaler.scale(keypoints) #each keypoints from the keypoint_sets is a set of keypoints from the same object
         #and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride):
+        print('head index: {}, scale: {}'.format(self.config.head_index,scale))
         if self.config.use_fpn:
             if (self.config.head_index == 0 and scale>8*self.config.meta.stride) or (self.config.head_index == -1 and scale<=4*self.config.meta.stride)\
                 or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8*self.config.meta.stride or scale<=4*self.config.meta.stride)):
