@@ -260,7 +260,7 @@ class CompositeLoss(torch.nn.Module):
                 valid_id.append(img_id)
 
         if len(valid_id)<1:
-            return x.sum()*0
+            return [x.sum()*0]*3
         else:
             x = x[valid_id,:,:,:,:]
             t = t[valid_id,:,:,:,:]
