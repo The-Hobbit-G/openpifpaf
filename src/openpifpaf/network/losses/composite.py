@@ -259,8 +259,11 @@ class CompositeLoss(torch.nn.Module):
             else:
                 valid_id.append(img_id)
 
-        x = x[valid_id,:,:,:,:]
-        t = t[valid_id,:,:,:,:]
+        if len(valid_id)<1:
+            return x.sum()*0
+        else:
+            x = x[valid_id,:,:,:,:]
+            t = t[valid_id,:,:,:,:]
 
         print('valid id : {}'.format(valid_id))
         print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
