@@ -24,6 +24,9 @@ class CifDet:
     side_length: ClassVar[int] = 5
     padding: ClassVar[int] = 10
 
+    use_fpn: bool = False
+    head_index: int = None
+
     def __call__(self, image, anns, meta):
         return CifDetGenerator(self)(image, anns, meta)
 
@@ -84,6 +87,15 @@ class CifDetGenerator():
         for category_id, bbox in detections:
             xy = bbox[:2] + 0.5 * bbox[2:]
             wh = bbox[2:]
+            #TODO: assign boxes of different scales to different levels of FPN
+            scale = np.sqrt(wh[0]*wh[1])
+            if self.config.use_fpn:
+                if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
+                    or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+                    # print('ignore')
+                    continue
+
+
             self.fill_detection(category_id - 1, xy, wh)
 
     def fill_detection(self, f, xy, wh):
