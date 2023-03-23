@@ -158,8 +158,8 @@ class Trainer():
 
 
             #TODO: a temp test for val epoch(will be removed after debugging)
-            if epoch == 0:
-                self.val(val_scenes, epoch+1)
+            # if epoch == 0:
+            #     self.val(val_scenes, epoch+1)
 
 
             self.train(train_scenes, epoch)
