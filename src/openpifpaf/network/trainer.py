@@ -156,6 +156,12 @@ class Trainer():
             if hasattr(val_scenes.sampler, 'set_epoch'):
                 val_scenes.sampler.set_epoch(epoch)
 
+
+            #TODO: a temp test for val epoch(will be removed after debugging)
+            if epoch == 0:
+                self.val(val_scenes, epoch+1)
+
+
             self.train(train_scenes, epoch)
 
             #evaluate the model after the training is done or at specified epochs
@@ -213,7 +219,8 @@ class Trainer():
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # print('multistage_loss: {}, multistage_head_losses: {}'.format(multistage_loss,multistage_head_losses))
                 # average over the losses from different stage(could also do sum)
-                loss = sum(multistage_loss)
+                assert len(multistage_loss) == len(multistage_head_losses)
+                loss = sum(multistage_loss)/len(multistage_loss)
                 head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
                 # loss = sum(head_losses)
             else:
@@ -308,7 +315,7 @@ class Trainer():
                 assert len(targets) == len(outputs)
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # average over the losses from different stage(could also do sum)
-                loss = sum(multistage_loss)/len(multistage_loss)
+                loss = sum(multistage_loss)
                 head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
             else:
                 loss, head_losses = self.loss(outputs, targets)
