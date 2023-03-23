@@ -446,6 +446,18 @@ class Trainer():
             if self.n_val_batches and batch_idx + 1 >= self.n_val_batches:
                 break
 
+
+            #temp information for debugging val(will be removed after)
+            batch_info = {
+                    'type': 'val',
+                    'epoch': epoch, 'batch': batch_idx, 'n_batches': len(scenes),
+                    'lr': round(self.lr(), 8),
+                    'loss': round(loss, 3) if loss is not None else None,
+                    'head_losses': [round(l, 3) if l is not None else None
+                                    for l in head_losses],
+                }
+            LOG.info(batch_info)
+
         eval_time = time.time() - start_time
 
         LOG.info({
