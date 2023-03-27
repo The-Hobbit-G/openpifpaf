@@ -214,10 +214,11 @@ class Trainer():
                 ###check the shape of outputs and targets:
                 '''cif target shape: (batch_size, num of keypoints=17, cif field channel=5, field_h, field_w)
                    caf target shape: (batch_size, num of association=19, caf field channel=9, field_h, field_w)'''
-                # for i in range(len(targets)):
-                #     print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
-                #     print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
-                #                                                             outputs[i][0].size(),outputs[i][1].size()))
+                for i in range(len(targets)):
+                    print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
+                    print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
+                                                                            outputs[i][0].size(),outputs[i][1].size()))
+                    print('target type: {}, output type: {}'.format(type(targets[i][0]),type(outputs[i][0])))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
             
