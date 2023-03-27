@@ -27,11 +27,12 @@ class MultiLoader:
     last_task_index = None
     weights = None
 
-    def __init__(self, loaders: List[torch.utils.data.DataLoader], n_heads: int, *, n_batches=None):
+    def __init__(self, loaders: List[torch.utils.data.DataLoader], n_heads: int, *, n_batches=None, use_fpn=False):
         self.loaders = loaders
         self.n_heads = n_heads
         self.sampler = MultiSamplerProxy(loaders)
         self._weights = self.weights
+        self.use_fpn = use_fpn
 
         if self._weights is None:
             self._weights = [1.0 / len(loaders) for _ in range(len(loaders))]
@@ -69,13 +70,21 @@ class MultiLoader:
             # print('meta_batch[0] : {}'.format(meta_batch[0]))
             # print('meta_batch[0][0] : {}'.format(meta_batch[0][0]))
 
+            if self.use_fpn:
+                multistage_target_batch = [None]*len(target_batch)
+                for i in range(len(target_batch)):
+                    multi_target_batch = [None for _ in range(self.n_heads)]
+                    for j, tb in zip(meta_batch[0]['head_indices'], target_batch[i]):
+                        multi_target_batch[j] = tb
+                    multistage_target_batch[i] = multi_target_batch
+                yield image_batch, multistage_target_batch, meta_batch
 
+            else:
+                multi_target_batch = [None for _ in range(self.n_heads)]
+                for i, tb in zip(meta_batch[0]['head_indices'], target_batch):
+                    multi_target_batch[i] = tb
 
-            multi_target_batch = [None for _ in range(self.n_heads)]
-            for i, tb in zip(meta_batch[0]['head_indices'], target_batch):
-                multi_target_batch[i] = tb
-
-            yield image_batch, multi_target_batch, meta_batch
+                yield image_batch, multi_target_batch, meta_batch
 
             if sum(n_loaded) >= self.n_batches:
                 break

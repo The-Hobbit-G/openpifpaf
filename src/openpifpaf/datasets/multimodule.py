@@ -56,13 +56,22 @@ class MultiDataModule(DataModule):
         return [m for dm in self.datamodules for m in dm.metrics()]
 
     def train_loader(self):
-        return MultiLoader([dm.train_loader() for dm in self.datamodules], len(self.head_metas))
+        if self.use_fpn:
+            return MultiLoader([dm.train_loader() for dm in self.datamodules], len(self.head_metas),use_fpn=True)
+        else:
+            return MultiLoader([dm.train_loader() for dm in self.datamodules], len(self.head_metas))
 
     def val_loader(self):
-        return MultiLoader([dm.val_loader() for dm in self.datamodules], len(self.head_metas))
+        if self.use_fpn:
+            return MultiLoader([dm.val_loader()  for dm in self.datamodules], len(self.head_metas),use_fpn=True)
+        else:
+            return MultiLoader([dm.val_loader() for dm in self.datamodules], len(self.head_metas))
 
     def eval_loader(self):
-        return MultiLoader([dm.eval_loader() for dm in self.datamodules], len(self.head_metas))
+        if self.use_fpn:
+            return MultiLoader([dm.eval_loader() for dm in self.datamodules], len(self.head_metas),use_fpn=True)
+        else:
+            return MultiLoader([dm.eval_loader() for dm in self.datamodules], len(self.head_metas))
 
     def distributed_sampler(self, loader: MultiLoader):
         assert len(self.datamodules) == len(loader.loaders)
