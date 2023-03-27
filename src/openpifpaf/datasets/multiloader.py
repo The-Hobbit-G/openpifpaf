@@ -66,8 +66,8 @@ class MultiLoader:
 
             print('target batch type: {}, target batch length:{}'.format(type(target_batch),len(target_batch)))
             print('target 0 type: {}, length: {}'.format(type(target_batch[0]),len(target_batch[0])))
-            print('meta_batch[0] : {}'.format(meta_batch[0]))
-            print('meta_batch[0][0] : {}'.format(meta_batch[0][0]))
+            # print('meta_batch[0] : {}'.format(meta_batch[0]))
+            # print('meta_batch[0][0] : {}'.format(meta_batch[0][0]))
 
 
 
