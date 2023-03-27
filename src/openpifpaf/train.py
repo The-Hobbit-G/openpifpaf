@@ -6,6 +6,7 @@ import datetime
 import logging
 import os
 import socket
+import openpifpaf
 
 import torch
 
@@ -156,12 +157,15 @@ def main():
     
 
     datamodule = datasets.factory(args.dataset)
-    print(type(datamodule))
+    # print(type(datamodule))
     if use_fpn:
         datamodule.use_fpn = use_fpn
         datamodule.head_stride = args.head_stride
         # datamodule.multiencoder_process()
-        # if type(datamodule) == 
+        if type(datamodule) == openpifpaf.datasets.multimodule.MultiDataModule:
+            for dm in datamodule.datamodules:
+                dm.use_fpn = use_fpn
+                dm.head_stride = args.head_stride
 
     net_cpu, start_epoch = network.Factory().factory(head_metas=datamodule.head_metas)
     loss = network.losses.Factory().factory(datamodule.head_metas)
