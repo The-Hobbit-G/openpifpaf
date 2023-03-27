@@ -17,12 +17,12 @@ class Compose(Preprocess):
                 images = process_results[0][0]
                 #encoders won't do any manipulation to the image, so they are always the same
                 anns = []
-                meta = []
+                meta = process_results[0][2]
                 for result in process_results:
                     # print('ann size: {} {}'.format(result[1][0].size(),result[1][1].size()))
                     assert(len(result)==3)
                     anns.append(result[1])
-                    meta.append(result[2])
+                    # meta.append(result[2])
                 args = images, anns, meta #images will be the same as before, anns and meta would be type<list>
                 del process_results, images, anns, meta
             else:
