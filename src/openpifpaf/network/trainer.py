@@ -179,7 +179,8 @@ class Trainer():
                 for target in targets[0]:
                     assert target.is_pinned()
 
-            # print(type(targets),type(targets[0]))
+            print(type(targets),type(targets[0]),len(targets))
+            print(type(data),len(data))
             
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
