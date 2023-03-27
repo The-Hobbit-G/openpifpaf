@@ -63,6 +63,11 @@ class MultiLoader:
 
             # convert targets to multi-targets
             image_batch, target_batch, meta_batch = next_batch
+
+            print('target batch type: {}, target batch length:{}'.format(type(target_batch),len(target_batch)))
+
+
+
             multi_target_batch = [None for _ in range(self.n_heads)]
             for i, tb in zip(meta_batch[0]['head_indices'], target_batch):
                 multi_target_batch[i] = tb
