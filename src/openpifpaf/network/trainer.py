@@ -177,7 +177,8 @@ class Trainer():
             if targets[0] is not None:
                 # assert targets[0].is_pinned(), 'input targets must be pinned'
                 for target in targets[0]:
-                    assert target.is_pinned()
+                    if target is not None:
+                        assert target.is_pinned()
 
             print(type(targets),type(targets[0]),type(targets[1]),type(targets[2]))
             print(len(targets),len(targets[0]),len(targets[1]))
