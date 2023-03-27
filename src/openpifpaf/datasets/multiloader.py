@@ -65,7 +65,7 @@ class MultiLoader:
             image_batch, target_batch, meta_batch = next_batch
 
             print('target batch type: {}, target batch length:{}'.format(type(target_batch),len(target_batch)))
-            print('target 0 type: {}, length: {}'.format(type(target_batch[0]),len(target_batch[0])))
+            print('target 0 type: {}, length: {}, shape: {}'.format(type(target_batch[0]),len(target_batch[0]),target_batch[0].size()))
 
 
 
