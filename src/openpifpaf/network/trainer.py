@@ -179,7 +179,7 @@ class Trainer():
                 for target in targets[0]:
                     assert target.is_pinned()
 
-            print(type(targets),type(targets[0]),len(targets))
+            print(type(targets),type(targets[0]),len(targets),len(targets[0]))
             print(type(data),len(data))
             
             if type(targets[0]) == list:
