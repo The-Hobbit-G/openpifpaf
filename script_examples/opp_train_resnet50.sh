@@ -10,7 +10,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/train/resnet50_fpn/debug"
+xpdir="/scratch/izar/jiguo/train/resnet50/debug/cocokp_det"
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
@@ -22,7 +22,7 @@ cd ..
 mkdir -p ${xpdir}/checkpoints
 
 python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
-  --dataset=cocokp \
+  --dataset=cocokp-cocodet \
   --cocokp-square-edge=513 \
   --cocokp-extended-scale \
   --cocokp-orientation-invariant=0.1 \
