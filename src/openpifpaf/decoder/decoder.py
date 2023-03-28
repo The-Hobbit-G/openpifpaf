@@ -91,6 +91,7 @@ class Decoder:
 
             with torch.autograd.profiler.record_function('model'):
                 heads = model(image_batch)
+                print(type(heads),type(heads[0]))
 
             # to numpy
             with torch.autograd.profiler.record_function('tonumpy'):
