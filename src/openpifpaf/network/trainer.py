@@ -327,7 +327,11 @@ class Trainer():
                 # average over the losses from different stage(could also do sum)
                 assert len(multistage_loss) == len(multistage_head_losses)
                 loss = sum(multistage_loss)/len(multistage_loss)
-                head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
+                # head_losses = [sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses) for i in range(len(multistage_head_losses[0]))]
+                head_losses = [None] * len(multistage_head_losses[0])
+                for i in range(len(head_losses)):
+                    if multistage_head_losses[0][i] is not None:
+                        head_losses[i] = sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses)
             else:
                 loss, head_losses = self.loss(outputs, targets)
             loss = self.reduce_loss(loss)
