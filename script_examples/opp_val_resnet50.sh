@@ -26,7 +26,7 @@ for cpepoch in ${evalepoch}
 do
   evalfrom="/scratch/izar/jiguo/val/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
   echo "Start evaluating ${evalfrom}..."
-  srun time python3 -m openpifpaf.eval \
+  python3 -m openpifpaf.eval \
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocokp \
