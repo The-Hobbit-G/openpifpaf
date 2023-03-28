@@ -32,7 +32,7 @@ def model_migration(net_cpu):
 
     ##add default out_stages = -1 for pre-trained models without fpn
     if not hasattr(net_cpu.base_net, 'out_stage'):
-        net_cpu.base_net = -1
+        net_cpu.base_net.out_stage = -1
 
     for hn_i, hn in enumerate(net_cpu.head_nets):
         if not hn.meta.base_stride:
