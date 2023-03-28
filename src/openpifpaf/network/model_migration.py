@@ -30,6 +30,10 @@ def model_migration(net_cpu):
     if not hasattr(net_cpu, 'neck_net') and hasattr(net_cpu, '_neck_net'):
         net_cpu.neck_net = net_cpu._neck_net
 
+    ##add default out_stages = -1 for pre-trained models without fpn
+    if not hasattr(net_cpu.base_net, 'out_stage'):
+        net_cpu.base_net = -1
+
     for hn_i, hn in enumerate(net_cpu.head_nets):
         if not hn.meta.base_stride:
             hn.meta.base_stride = net_cpu.base_net.stride
