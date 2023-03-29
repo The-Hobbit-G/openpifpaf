@@ -1,5 +1,6 @@
 from collections import defaultdict
 import logging
+import copy
 from typing import Optional
 
 from .cifcaf import CifCaf, CifCafDense
@@ -44,6 +45,10 @@ def cli(parser, *, workers=None):
     group.add_argument('--caf-th', default=utils.CafScored.get_default_score_th(), type=float,
                        help='caf threshold')
 
+    #add head_stride
+    group.add_argument('--head_stride', default=[4,8,16], nargs='+',type=int,
+                           help='Config dict for the strides of headnet')
+
     TrackBase.cli(parser)
     for dec in DECODERS:
         dec.cli(parser)
@@ -77,6 +82,13 @@ def configure(args):
     utils.nms.Keypoints.set_instance_threshold(args.instance_threshold)
     CifDet.instance_threshold = args.instance_threshold
 
+
+    #add head_stride
+    Factory.base_stride = args.head_stride
+
+
+
+
     TrackBase.configure(args)
     for dec in DECODERS:
         dec.configure(args)
@@ -85,6 +97,7 @@ def configure(args):
 class Factory:
     decoder_request: Optional[dict] = None
     profile = False
+    base_stride = None
 
     @classmethod
     def decoder_request_from_args(cls, list_str):
@@ -151,7 +164,18 @@ class Factory:
     def __call__(cls, head_metas):
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
-        decoders = cls.decoders(head_metas)
+        
+        if type(cls.base_stride) == list:
+            new_head_meta = []
+            for hs in cls.base_stride:
+                for hm in head_metas:
+                    new_hm = copy.deepcopy(hm)
+                    new_hm.base_stride = hs
+                    print(new_hm)
+                    new_head_meta.append(new_hm)
+            decoders = cls.decoders(new_head_meta)
+        else:
+            decoders = cls.decoders(head_metas)
   
         for meta in head_metas:
             print('head_meta: {}'.format(meta))
