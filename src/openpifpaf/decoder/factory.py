@@ -155,8 +155,8 @@ class Factory:
 
         for dec in decoders:
             print(dec)
-            print(dec.cif_meta)
-            print(dec.caf_meta)
+            print(dec.cif_metas)
+            print(dec.caf_metas)
 
         if cls.profile:
             decode = decoders[0]
