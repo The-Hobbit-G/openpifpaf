@@ -114,6 +114,7 @@ class Factory:
                and class_name not in request:
                 return []
             decoders = sorted(dec_class.factory(head_metas), key=lambda d: d.priority, reverse=True)
+            print(len(decoders))
             for dec_i, dec in enumerate(decoders):
                 dec.request_index = dec_i
             if request is not None:
@@ -121,7 +122,6 @@ class Factory:
                 print(request)
                 print(indices)
                 decoders = (d for i, d in enumerate(decoders) if i in indices)
-                print(decoders,len(decoders))
             return decoders
 
         decoders = [d for dec_class in DECODERS for d in per_class(cls.decoder_request, dec_class)]
