@@ -36,7 +36,7 @@ do
     --batch-size 1 \
     --loader-workers 8 \
     --checkpoint ${evalfrom} \
-    --decoder cifcaf:0 cifcaf:1 cifdet:0 cifdet:1\
+    --decoder cifcaf:0 cifdet:0 cifdet:1\
     --base_stride 4 8 16 \
     --seed-threshold 0.2 \
     --force-complete-pose \
