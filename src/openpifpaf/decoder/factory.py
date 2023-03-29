@@ -12,6 +12,7 @@ from .track_base import TrackBase
 from .tracking_pose import TrackingPose
 from . import utils
 from ..profiler import Profiler  # , TorchProfiler
+from ..network.nets import multi_apply
 
 LOG = logging.getLogger(__name__)
 
@@ -165,21 +166,25 @@ class Factory:
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
         
-        print(type(cls.base_stride))
+        # print(type(cls.base_stride))
         if type(cls.base_stride) == list:
             new_head_meta = []
             for hs in cls.base_stride:
+                single_stage_hm = []
                 for hm in head_metas:
                     new_hm = copy.deepcopy(hm)
                     new_hm.base_stride = hs
                     print(new_hm)
-                    new_head_meta.append(new_hm)
-            decoders = cls.decoders(new_head_meta)
+                    single_stage_hm.append(new_hm)
+            new_head_meta.append(single_stage_hm)
+            new_head_meta = tuple(new_head_meta)
+            # decoders = cls.decoders(new_head_meta)
+            decoders = multi_apply(cls.decoders,new_head_meta)
         else:
             decoders = cls.decoders(head_metas)
   
-        for meta in head_metas:
-            print('head_meta: {}'.format(meta))
+        # for meta in head_metas:
+        #     print('head_meta: {}'.format(meta))
 
         for dec in decoders:
             print(dec)
