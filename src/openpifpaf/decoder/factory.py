@@ -165,6 +165,7 @@ class Factory:
     def __call__(cls, head_metas):
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
+        print('original head_meta length:{}'.format(len(head_metas)))
         
         # print(type(cls.base_stride))
         if type(cls.base_stride) == list:
