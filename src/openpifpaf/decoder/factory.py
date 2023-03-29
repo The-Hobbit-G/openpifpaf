@@ -186,11 +186,11 @@ class Factory:
         # for meta in head_metas:
         #     print('head_meta: {}'.format(meta))
 
-        print(len(decoders))
-        for dec in decoders:
-            print(dec,len(dec))
-            print(dec[0].cif_metas)
-            print(dec[0].caf_metas)
+        print(len(decoders[0]))
+        for dec in decoders[0]:
+            print(dec)
+            print(dec.cif_metas)
+            print(dec.caf_metas)
 
         if cls.profile:
             decode = decoders[0]
