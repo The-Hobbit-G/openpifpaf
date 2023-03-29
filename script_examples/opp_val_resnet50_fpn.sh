@@ -29,7 +29,7 @@ do
   python3 -m openpifpaf.eval \
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
-    --dataset=cocokp \
+    --dataset=cocokp-cocodet \
     --coco-eval-long-edge 641 \
     --cocokp-upsample=2 \
     --coco-no-eval-annotation-filter \

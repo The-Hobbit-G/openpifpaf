@@ -180,11 +180,11 @@ class Factory:
             new_head_meta = tuple(new_head_meta)
             # decoders = cls.decoders(new_head_meta)
             decoders = multi_apply(cls.decoders,new_head_meta)
+            # decoders = decoders[0]
         else:
             decoders = cls.decoders(head_metas)
   
-        # for meta in head_metas:
-        #     print('head_meta: {}'.format(meta))
+
         print(type(decoders),type(decoders[0]))
         print(len(decoders[0]))
         for dec in decoders[0]:
