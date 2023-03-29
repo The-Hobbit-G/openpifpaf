@@ -36,7 +36,7 @@ do
     --batch-size 1 \
     --loader-workers 8 \
     --checkpoint ${evalfrom} \
-    --decoder=cifcaf:0 cifcaf:1\
+    --decoder cifcaf:0 cifcaf:1\
     --seed-threshold 0.2 \
     --force-complete-pose \
     2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}_epoch${cpepoch}.log
