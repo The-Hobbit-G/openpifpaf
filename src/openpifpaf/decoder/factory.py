@@ -121,6 +121,7 @@ class Factory:
                 print(request)
                 print(indices)
                 decoders = (d for i, d in enumerate(decoders) if i in indices)
+                print(decoders,len(decoders))
             return decoders
 
         decoders = [d for dec_class in DECODERS for d in per_class(cls.decoder_request, dec_class)]
