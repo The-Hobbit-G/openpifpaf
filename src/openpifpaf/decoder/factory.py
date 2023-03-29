@@ -189,7 +189,7 @@ class Factory:
   
 
         print(type(decoders),type(decoders[0]))
-        print(len(decoders[0]))
+        print(len(decoders),len(decoders[0]))
         for dec in decoders[0]:
             print(dec)
             print(dec.cif_metas)
