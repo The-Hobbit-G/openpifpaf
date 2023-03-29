@@ -128,13 +128,13 @@ class Factory:
                and class_name not in request:
                 return []
             decoders = sorted(dec_class.factory(head_metas), key=lambda d: d.priority, reverse=True)
-            print(len(decoders))
+            # print(len(decoders))
             for dec_i, dec in enumerate(decoders):
                 dec.request_index = dec_i
             if request is not None:
                 indices = set(request[class_name])
-                print(request)
-                print(indices)
+                # print(request)
+                # print(indices)
                 decoders = (d for i, d in enumerate(decoders) if i in indices)
             return decoders
 
@@ -174,7 +174,7 @@ class Factory:
                 for hm in head_metas:
                     new_hm = copy.deepcopy(hm)
                     new_hm.base_stride = hs
-                    print(new_hm)
+                    # print(new_hm)
                     single_stage_hm.append(new_hm)
                 new_head_meta.append(single_stage_hm)
             # new_head_meta = tuple(new_head_meta)
@@ -185,7 +185,7 @@ class Factory:
   
         # for meta in head_metas:
         #     print('head_meta: {}'.format(meta))
-
+        print(type(decoders),type(decoders[0]))
         print(len(decoders[0]))
         for dec in decoders[0]:
             print(dec)
