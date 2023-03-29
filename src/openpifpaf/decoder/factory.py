@@ -194,6 +194,9 @@ class Factory:
             print(dec)
             print(dec.cif_metas)
             print(dec.caf_metas)
+        for dec in decoders[1]:
+            print(dec)
+            print(dec.metas)
 
         if cls.profile:
             decode = decoders[0]
