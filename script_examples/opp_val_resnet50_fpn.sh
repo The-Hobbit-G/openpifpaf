@@ -37,6 +37,7 @@ do
     --loader-workers 8 \
     --checkpoint ${evalfrom} \
     --decoder cifcaf:0 cifcaf:1 cifdet:0 cifdet:1\
+    --head_stride 4 8 16 \
     --seed-threshold 0.2 \
     --force-complete-pose \
     2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}_epoch${cpepoch}.log
