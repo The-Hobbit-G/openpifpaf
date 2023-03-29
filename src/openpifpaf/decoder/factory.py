@@ -166,6 +166,8 @@ class Factory:
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
         print('original head_meta length:{}'.format(len(head_metas)))
+        for meta in head_metas:
+            print(meta)
         
         # print(type(cls.base_stride))
         if type(cls.base_stride) == list:
