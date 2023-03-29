@@ -176,7 +176,7 @@ class Factory:
                     new_hm.base_stride = hs
                     print(new_hm)
                     single_stage_hm.append(new_hm)
-            new_head_meta.append(single_stage_hm)
+                new_head_meta.append(single_stage_hm)
             new_head_meta = tuple(new_head_meta)
             # decoders = cls.decoders(new_head_meta)
             decoders = multi_apply(cls.decoders,new_head_meta)
