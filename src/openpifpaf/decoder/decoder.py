@@ -100,6 +100,8 @@ class Decoder:
                 else:
                     heads = apply(lambda x: x.cpu().numpy(), heads)
 
+        print(type(heads),type(heads[0]),len(heads),len(heads[0]))
+
         # index by frame (item in batch)
         head_iter = apply(iter, heads)
         heads = []
