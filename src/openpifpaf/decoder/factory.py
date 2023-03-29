@@ -150,6 +150,8 @@ class Factory:
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
         decoders = cls.decoders(head_metas)
 
+        print('head_meta: {}'.format(head_metas))
+
         for dec in decoders:
             print(dec)
             print(dec.head_metas)
