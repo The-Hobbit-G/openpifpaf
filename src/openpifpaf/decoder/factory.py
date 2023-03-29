@@ -149,12 +149,14 @@ class Factory:
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
         decoders = cls.decoders(head_metas)
-
-        print('head_meta: {}'.format(head_metas))
+  
+        for meta in head_metas:
+            print('head_meta: {}'.format(meta))
 
         for dec in decoders:
             print(dec)
-            print(dec.head_metas)
+            print(dec.cif_meta)
+            print(dec.caf_meta)
 
         if cls.profile:
             decode = decoders[0]
