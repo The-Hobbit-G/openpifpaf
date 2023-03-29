@@ -118,6 +118,8 @@ class Factory:
                 dec.request_index = dec_i
             if request is not None:
                 indices = set(request[class_name])
+                print(request)
+                print(indices)
                 decoders = (d for i, d in enumerate(decoders) if i in indices)
             return decoders
 
