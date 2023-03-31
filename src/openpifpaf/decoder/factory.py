@@ -122,6 +122,8 @@ class Factory:
 
     @classmethod
     def decoders(cls, head_metas):
+        for meta in head_metas:
+            print(meta)
         def per_class(request, dec_class):
             class_name = dec_class.__name__.lower()
             if request is not None \
@@ -165,9 +167,9 @@ class Factory:
     def __call__(cls, head_metas):
         """Instantiate decoders."""
         LOG.debug('head names = %s', [meta.name for meta in head_metas])
-        print('original head_meta length:{}'.format(len(head_metas)))
-        for meta in head_metas:
-            print(meta)
+        # print('original head_meta length:{}'.format(len(head_metas)))
+        # for meta in head_metas:
+        #     print(meta)
         
         # print(type(cls.base_stride))
         if type(cls.base_stride) == list:
