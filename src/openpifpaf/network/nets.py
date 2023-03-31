@@ -7,6 +7,12 @@ LOG = logging.getLogger(__name__)
 
 
 def multi_apply(func, *args, **kwargs):
+    #When *args is used as an argument to a function, it tells Python to unpack the contents of the tuple and pass them as separate positional arguments to the function.
+    #In this case, if args is a tuple containing multiple arguments, and the * operator is used to unpack this tuple into separate arguments that are passed to the map() function.
+    #map function will apply pfunc to each element unpacked from the args(eg. if args = (op1,op2,op3), map will apply pfunc to each of the op and return a iterator)
+    #zip(*map_results) will first unpack all the map_results and then zip the corresponding element together(eg. map_results = [[1,2],[3,4],[5,6]], zip(*map_results) will be (1,3,5),(2,4,6))
+    #Then map(list, zip(*map_results)) will map these zipped elements to list type(eg.(1,3,5),(2,4,6)-->[1,3,5],[2,4,6])
+    #Finally, these lists are put in a tuple
     pfunc = partial(func, **kwargs) if kwargs else func
     map_results = map(pfunc, *args)
     return tuple(map(list, zip(*map_results)))

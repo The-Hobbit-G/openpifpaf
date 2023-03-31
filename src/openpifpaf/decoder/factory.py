@@ -122,8 +122,6 @@ class Factory:
 
     @classmethod
     def decoders(cls, head_metas):
-        for meta in head_metas:
-            print(meta)
         def per_class(request, dec_class):
             class_name = dec_class.__name__.lower()
             if request is not None \
@@ -184,21 +182,25 @@ class Factory:
                 new_head_meta.append(single_stage_hm)
             new_head_meta = tuple(new_head_meta)
             # decoders = cls.decoders(new_head_meta)
-            decoders = multi_apply(cls.decoders,new_head_meta)
-            # decoders = decoders[0]
+            decoders = multi_apply(cls.decoders,new_head_meta) 
+            ##new_head_meta would be tuple([cif1,caf1,cifdet1],[cif2,caf2,cifdet2]), in multi_apply, this tuple will first be unpacked to k=len(stride) list 
+            ##and the cls.decoders will be applied to each list in parallel. Each will return a result decoder list [CifCaf, Cifdet] with the corresponding stride
+            ##Then the zip(*map_results) in multi_apply will zip the k decoder outputs to a form of (CifCaf1,CifCaf2,...),(CifDet1,CifDet2,...) 
+            ##and map(list, zip(*map_results)) will map them into two lists [CifCaf1,CifCaf2,...],[CifDet1,CifDet2,...]
+            ##Finally, tuple(map(list, zip(*map_results))) will put these two lists in a tuple
         else:
             decoders = cls.decoders(head_metas)
   
 
-        print(type(decoders),type(decoders[0]))
-        print(len(decoders),len(decoders[0]))
-        for dec in decoders[0]:
-            print(dec)
-            print(dec.cif_metas)
-            print(dec.caf_metas)
-        for dec in decoders[1]:
-            print(dec)
-            print(dec.metas)
+        # print(type(decoders),type(decoders[0]))
+        # print(len(decoders),len(decoders[0]))
+        # for dec in decoders[0]:
+        #     print(dec)
+        #     print(dec.cif_metas)
+        #     print(dec.caf_metas)
+        # for dec in decoders[1]:
+        #     print(dec)
+        #     print(dec.metas)
 
         if cls.profile:
             decode = decoders[0]
