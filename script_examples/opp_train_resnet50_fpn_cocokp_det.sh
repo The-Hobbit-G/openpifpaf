@@ -27,6 +27,10 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocokp-extended-scale \
   --cocokp-orientation-invariant=0.1 \
   --cocokp-upsample=2 \
+  --cocodet-square-edge=513 \
+  --cocodet-extended-scale \
+  --cocodet-orientation-invariant=0.1 \
+  --cocodet-upsample=2 \
   --basenet=resnet50 \
   --necknet=FPN \
   --neck_in 512 1024 2048 \

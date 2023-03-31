@@ -10,7 +10,7 @@ evalxp='opp_train_resnet50_fpn'
 evalepoch=150
 
 
-xpdir="/scratch/izar/jiguo/val/debug/cocokp/resnet50_fpn"
+xpdir="/scratch/izar/jiguo/val/debug/cocokp_det/resnet50_fpn"
 
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
@@ -32,6 +32,7 @@ do
     --dataset=cocokp-cocodet \
     --coco-eval-long-edge 641 \
     --cocokp-upsample=2 \
+    --cocodet-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
     --loader-workers 8 \
