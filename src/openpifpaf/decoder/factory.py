@@ -47,7 +47,7 @@ def cli(parser, *, workers=None):
                        help='caf threshold')
 
     #add head_stride
-    group.add_argument('--base_stride', default=[4,8,16], nargs='+',type=int,
+    group.add_argument('--base_stride', default=None, nargs='+',type=int,
                            help='Config dict for the strides of headnet')
 
     TrackBase.cli(parser)
