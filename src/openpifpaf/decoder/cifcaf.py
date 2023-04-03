@@ -222,6 +222,7 @@ class CifCaf(Decoder):
         ]
 
     def __call__(self, fields, initial_annotations=None):
+        print('fields length:{}'.format(len(fields)))
         if not initial_annotations:
             initial_annotations_t = None
             initial_ids_t = None
