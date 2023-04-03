@@ -136,6 +136,9 @@ def evaluate(args):
     datamodule = datasets.factory(args.dataset)
     predictor = Predictor(head_metas=datamodule.head_metas)
 
+    if args.base_stride is not None:
+        datamodule.use_fpn = True
+
     data_loader = datamodule.eval_loader()
     prediction_loader = predictor.enumerated_dataloader(enumerate(data_loader))
     if args.loader_warmup:
