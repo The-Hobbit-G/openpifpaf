@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
-#SBATCH --output=/scratch/izar/jiguo/train/resnet50_fpn_new/%x.out
+#SBATCH --output=/scratch/izar/jiguo/train/resnet50_fpn/%x.out
 
 shopt -s extglob
 
@@ -20,7 +20,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/train/resnet50_fpn_new/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/train/resnet50_fpn/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
