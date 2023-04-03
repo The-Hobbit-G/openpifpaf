@@ -91,7 +91,7 @@ class Decoder:
 
             with torch.autograd.profiler.record_function('model'):
                 heads = model(image_batch)
-                print(type(heads),type(heads[0]),len(heads),len(heads[0]))
+                # print(type(heads),type(heads[0]),len(heads),len(heads[0]))
 
             # to numpy
             with torch.autograd.profiler.record_function('tonumpy'):
@@ -100,7 +100,7 @@ class Decoder:
                 else:
                     heads = apply(lambda x: x.cpu().numpy(), heads)
 
-        print(type(heads),type(heads[0]),len(heads),len(heads[0]))
+        # print(type(heads),type(heads[0]),len(heads),len(heads[0]))
 
         # index by frame (item in batch)
         head_iter = apply(iter, heads)
@@ -122,6 +122,7 @@ class Decoder:
 
         ##check fields_batch type and len
         print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch)))
+        print(len(fields_batch[0]))
 
         if gt_anns_batch is None:
             gt_anns_batch = [None for _ in fields_batch]
