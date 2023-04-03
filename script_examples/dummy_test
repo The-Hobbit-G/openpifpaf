@@ -1,9 +1,9 @@
 #!/bin/bash -l
 
-#SBATCH --nodes=4
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=20
-#SBATCH --mem=48G
+#SBATCH --mem=36G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
