@@ -15,8 +15,8 @@ class Multi(Decoder):
 
     def __call__(self, all_fields):
         out = []
-        print('all fields length: {}'.format(len(all_fields)))
-        print('decoders type: {}, decoders[0] type: {}'.format(type(self.decoders),type(self.decoders[0])))
+        # print('all fields length: {}'.format(len(all_fields)))
+        # print('decoders type: {}, decoders[0] type: {}'.format(type(self.decoders),type(self.decoders[0])))
         for task_i, decoder in enumerate(self.decoders):
             if decoder is None:
                 out.append(None)
