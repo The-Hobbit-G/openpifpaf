@@ -22,7 +22,7 @@ class Multi(Decoder):
                 out.append(None)
                 continue
             LOG.debug('task %d', task_i)
-            if type(decoder)==tuple:
+            if type(decoder)==list:
                 assert len(decoder)==len(all_fields)
                 for i in range(len(decoder)):
                     out+=decoder[i](all_fields[i])
