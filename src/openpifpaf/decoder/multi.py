@@ -2,6 +2,7 @@ import logging
 from typing import List
 
 from .decoder import Decoder
+from ..network.nets import multi_apply
 
 LOG = logging.getLogger(__name__)
 
@@ -20,7 +21,12 @@ class Multi(Decoder):
                 out.append(None)
                 continue
             LOG.debug('task %d', task_i)
-            out += decoder(all_fields)
+            if type(decoder)==tuple:
+                assert len(decoder)==len(all_fields)
+                for i in range(len(decoder)):
+                    out+=decoder[i](all_fields[i])
+            else:
+                out += decoder(all_fields)
 
         return out
 
