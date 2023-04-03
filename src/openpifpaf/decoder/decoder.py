@@ -120,6 +120,9 @@ class Decoder:
         fields_batch = self.fields_batch(model, image_batch, device=device)
         self.last_nn_time = time.perf_counter() - start_nn
 
+        ##check fields_batch type and len
+        print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch)))
+
         if gt_anns_batch is None:
             gt_anns_batch = [None for _ in fields_batch]
 
