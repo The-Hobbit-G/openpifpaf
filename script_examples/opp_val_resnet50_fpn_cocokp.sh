@@ -7,7 +7,7 @@ echo STARTING AT `date`
 
 
 evalxp='opp_train_resnet50_fpn'
-evalepoch=150
+evalepoch=130 140 150
 
 
 xpdir="/scratch/izar/jiguo/val/debug/cocokp/resnet50_fpn"
