@@ -1,5 +1,15 @@
 #!/bin/bash -l
 
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=48G
+#SBATCH --partition=gpu
+#SBATCH --qos=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --time=01:00:00
+#SBATCH --output=/scratch/izar/jiguo/val/cocokp/%x.out
+
 shopt -s extglob
 
 
@@ -10,7 +20,7 @@ evalxp='opp_train_resnet50_fpn'
 evalepoch=150
 
 
-xpdir="/scratch/izar/jiguo/val/debug/cocokp/resnet50_fpn"
+xpdir="/scratch/izar/jiguo/val/cocokp/${SLURM_JOB_NAME}"
 
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
@@ -26,7 +36,7 @@ for cpepoch in ${evalepoch}
 do
   evalfrom="/scratch/izar/jiguo/train/resnet50_fpn/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
   echo "Start evaluating ${evalfrom}..."
-  python3 -m openpifpaf.eval \
+  srun time python3 -m openpifpaf.eval \
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocokp \
