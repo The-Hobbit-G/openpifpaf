@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --time=03:00:00
+#SBATCH --time=06:00:00
 #SBATCH --output=/scratch/izar/jiguo/val/cocokp/%x.out
 
 shopt -s extglob
