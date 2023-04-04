@@ -31,12 +31,12 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
 
     # cli configurable
     train_annotations = 'data-mscoco/annotations/person_keypoints_train2017.json'
-    # val_annotations = 'data-mscoco/annotations/person_keypoints_val2017.json'
-    val_annotations = train_annotations
+    val_annotations = 'data-mscoco/annotations/person_keypoints_val2017.json'
+    # val_annotations = train_annotations
     eval_annotations = val_annotations
     train_image_dir = 'data-mscoco/images/train2017/'
-    # val_image_dir = 'data-mscoco/images/val2017/'
-    val_image_dir = train_image_dir
+    val_image_dir = 'data-mscoco/images/val2017/'
+    # val_image_dir = train_image_dir
     eval_image_dir = val_image_dir
 
     square_edge = 385
