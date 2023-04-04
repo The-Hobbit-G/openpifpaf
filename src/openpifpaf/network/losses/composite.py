@@ -250,7 +250,7 @@ class CompositeLoss(torch.nn.Module):
         assert x.shape[2] == 1 + self.n_confidences + self.n_vectors * 2 + self.n_scales
         assert t.shape[2] == self.n_confidences + self.n_vectors * 3 + self.n_scales
 
-        #TODO: Filter out the targets without and instances(due to scale limit) and their corresponding featuremaps
+        #TODO: Filter out the targets without any instances(due to scale limit) and their corresponding featuremaps
         valid_id=[]
         for img_id in range(t.shape[0]):
             # print(img_id,torch.isnan(t[img_id,:,1,:,:]).all())
@@ -265,8 +265,8 @@ class CompositeLoss(torch.nn.Module):
             x = x[valid_id,:,:,:,:]
             t = t[valid_id,:,:,:,:]
 
-        # print('valid id : {}'.format(valid_id))
-        # print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
+        print('valid id : {}'.format(valid_id))
+        print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
 
 
 
