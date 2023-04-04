@@ -90,8 +90,12 @@ class CifDetGenerator():
             #TODO: assign boxes of different scales to different levels of FPN
             scale = np.sqrt(wh[0]*wh[1])
             if self.config.use_fpn:
-                if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
-                    or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+                # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
+                #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+                #     # print('ignore')
+                #     continue
+                if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
+                    or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
                     # print('ignore')
                     continue
 
