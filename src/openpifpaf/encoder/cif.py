@@ -96,8 +96,14 @@ class CifGenerator():
             #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
             #     # print('ignore')
             #     return
-            if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
-                or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
+
+            # if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
+            #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
+            #     # print('ignore')
+            #     return
+
+            if (self.config.head_index == 0 and scale>8/self.config.meta.upsample_stride) or (self.config.head_index == -1 and scale<=4/self.config.meta.upsample_stride)\
+                or (self.config.head_index != 0 and self.config.head_index != -1 and (8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
                 # print('ignore')
                 return
 
