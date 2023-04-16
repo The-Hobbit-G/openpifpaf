@@ -1,0 +1,60 @@
+#!/bin/bash -l
+
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=48G
+#SBATCH --partition=gpu
+#SBATCH --qos=gpu
+#SBATCH --gres=gpu:1
+#SBATCH --time=00:30:00
+#SBATCH --output=/scratch/izar/jiguo/val/cocokp/%x.out
+
+shopt -s extglob
+
+
+echo STARTING AT `date`
+
+
+evalxp='opp_train_resnet50_fpn256_cocokp_tarthre4'
+evalepoch=150
+
+
+xpdir="/scratch/izar/jiguo/val/cocokp/${SLURM_JOB_NAME}"
+
+mkdir -p ${xpdir}
+# mkdir -p ${xpdir}/code
+# tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
+mkdir -p ${xpdir}/logs
+
+
+cd ..
+
+mkdir -p ${xpdir}/predictions
+
+for cpepoch in ${evalepoch}
+do
+  evalfrom="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
+  echo "Start evaluating ${evalfrom}..."
+  srun time python3 -m openpifpaf.eval \
+    --write-predictions \
+    --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
+    --dataset=cocokp \
+    --coco-eval-long-edge 801 \
+    --cocokp-upsample=2 \
+    --coco-no-eval-annotation-filter \
+    --batch-size 1 \
+    --loader-workers 8 \
+    --checkpoint ${evalfrom} \
+    --decoder cifcaf:0 \
+    --base_stride 4 8 16 \
+    --seed-threshold 0.2 \
+    --force-complete-pose \
+    2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}_epoch${cpepoch}.log
+  echo "Done evaluating ${evalfrom}"
+done
+
+cd -
+
+
+echo FINISHED at `date`
