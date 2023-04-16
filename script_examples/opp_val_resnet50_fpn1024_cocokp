@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --time=02:00:00
+#SBATCH --time=01:00:00
 #SBATCH --output=/scratch/izar/jiguo/val/cocokp/%x.out
 
 shopt -s extglob
@@ -16,7 +16,7 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50_fpn1024_cocokp'
+evalxp='opp_train_resnet50_fpn1024_cocokp_tarthre4'
 evalepoch="130 140 147"
 
 
