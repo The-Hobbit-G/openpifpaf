@@ -17,7 +17,7 @@ echo STARTING AT `date`
 
 
 evalxp='opp_train_resnet50_fpn1024_cocokp_tarthre4'
-evalepoch="130 140 150"
+evalepoch=150
 
 
 xpdir="/scratch/izar/jiguo/val/cocokp/${SLURM_JOB_NAME}"
@@ -40,7 +40,7 @@ do
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocokp \
-    --coco-eval-long-edge 641 \
+    --coco-eval-long-edge 1201 \
     --cocokp-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
