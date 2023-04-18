@@ -477,6 +477,7 @@ class Factory(Configurable):
             basenet = BASE_FACTORIES[self.base_name](self.base_out_stage)
             if self.base_name.startswith('resnet'):
                 basenet.pool0_stride = self.pool0stride
+            print('basenet.pool0_stride:',basenet.pool0_stride)
             neck_cfg = dict(
                 name = self.neck_name,
                 in_channels=self.neck_in,
@@ -498,6 +499,7 @@ class Factory(Configurable):
             basenet = BASE_FACTORIES[self.base_name](-1)
             if self.base_name.startswith('resnet'):
                 basenet.pool0_stride = self.pool0stride
+            print('basenet.pool0_stride:',basenet.pool0_stride)
             headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
             net_cpu = nets.Shell(basenet, headnets)
 
