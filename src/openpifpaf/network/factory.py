@@ -275,7 +275,7 @@ class Factory(Configurable):
         )
         group.add_argument('--basenet', default=cls.base_name,
                            help='base network, one of {}'.format(list(BASE_FACTORIES.keys())))
-        group.add_argument('--pool0stride', default=0, type=int, help='stride of the maxpooling layers in the input modules of ResNet')
+        # group.add_argument('--pool0stride', default=0, type=int, help='stride of the maxpooling layers in the input modules of ResNet')
 
         ##add a neck(FPN) to tackle performance issues related to instance scales
         group.add_argument('--necknet', default=cls.neck_name,
@@ -337,7 +337,7 @@ class Factory(Configurable):
             hn.configure(args)
 
         cls.base_name = args.basenet
-        cls.pool0stride = args.pool0stride
+        # cls.pool0stride = args.pool0stride
    
         ##add a neck(FPN) to tackle performance issues related to instance scales
         cls.neck_name = args.necknet
@@ -475,9 +475,9 @@ class Factory(Configurable):
         ##add a neck(FPN):
         if self.neck_name is not None:
             basenet = BASE_FACTORIES[self.base_name](self.base_out_stage)
-            if self.base_name.startswith('resnet'):
-                basenet.pool0_stride = self.pool0stride
-            print('basenet.pool0_stride:',basenet.pool0_stride)
+            # if self.base_name.startswith('resnet') and self.pool0stride != 0:
+            #     basenet = basenet.__class__(out_features=self.base_out_stage, pool0_stride=self.pool0stride)
+            # print('basenet.pool0_stride:',basenet.pool0_stride)
             neck_cfg = dict(
                 name = self.neck_name,
                 in_channels=self.neck_in,
@@ -497,9 +497,9 @@ class Factory(Configurable):
             net_cpu = nets.Shell(basenet, headnets, neck_net=necknet)
         else:
             basenet = BASE_FACTORIES[self.base_name](-1)
-            if self.base_name.startswith('resnet'):
-                basenet.pool0_stride = self.pool0stride
-            print('basenet.pool0_stride:',basenet.pool0_stride)
+            # if self.base_name.startswith('resnet'):
+            #     basenet.pool0_stride = self.pool0stride
+            # print('basenet.pool0_stride:',basenet.pool0_stride)
             headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
             net_cpu = nets.Shell(basenet, headnets)
 

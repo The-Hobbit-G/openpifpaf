@@ -28,7 +28,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocokp-orientation-invariant=0.1 \
   --cocokp-upsample=2 \
   --basenet=resnet50 \
-  --pool0stride=2 \
+  --resnet-pool0-stride=2 \
   --necknet=FPN \
   --neck_in 512 1024 2048 \
   --neck_out=1024 \
