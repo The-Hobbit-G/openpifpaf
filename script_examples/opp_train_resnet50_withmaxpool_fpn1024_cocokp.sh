@@ -35,7 +35,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --num_outs=3 \
   --start_level=0 \
   --base_outstage 2 3 4 \
-  --head_stride 8 16 32 \
+  --head_stride 4 8 16 \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
