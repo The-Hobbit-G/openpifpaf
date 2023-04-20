@@ -1,4 +1,11 @@
 "Visualize the scale distribution of instances."
+import signal
+
+# Get the signal number for SIGINT
+sig_num = signal.Signals.SIGINT.value
+
+# Get the current signal handler for SIGINT
+old_handler = signal.getsignal(sig_num)
 
 import argparse
 import copy
