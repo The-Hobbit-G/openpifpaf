@@ -28,6 +28,7 @@ def main():
 
     print(type(datamodule))
     print(len(train_loader))
+    print(train_loader)[0]
 
     for data in train_loader:
         print(type(data))
