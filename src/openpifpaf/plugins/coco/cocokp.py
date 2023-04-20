@@ -361,3 +361,93 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
             category_ids=[1],
             iou_type='keypoints',
         )]
+
+
+    #for visulization of scale distribution
+    def vis_preprocess(self):
+        # encoders = [openpifpaf.encoder.Cif(self.head_metas[0], bmin=self.bmin),
+        #             openpifpaf.encoder.Caf(self.head_metas[1], bmin=self.bmin)]
+        # if len(self.head_metas) > 2:
+        #     encoders.append(openpifpaf.encoder.Caf(self.head_metas[2], bmin=self.bmin))
+
+        if not self.augmentation:
+            return openpifpaf.transforms.Compose([
+            openpifpaf.transforms.NormalizeAnnotations(),
+            openpifpaf.transforms.RescaleAbsolute(self.square_edge),
+            openpifpaf.transforms.CenterPad(self.square_edge),
+            openpifpaf.transforms.EVAL_TRANSFORM,])
+
+        if self.extended_scale:
+            rescale_t = openpifpaf.transforms.RescaleRelative(
+                scale_range=(0.25 * self.rescale_images,
+                             2.0 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
+        else:
+            rescale_t = openpifpaf.transforms.RescaleRelative(
+                scale_range=(0.4 * self.rescale_images,
+                             2.0 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
+
+        return openpifpaf.transforms.Compose([
+            openpifpaf.transforms.NormalizeAnnotations(),
+            openpifpaf.transforms.RandomApply(
+                openpifpaf.transforms.HFlip(COCO_KEYPOINTS, HFLIP), 0.5),
+            rescale_t,
+            openpifpaf.transforms.RandomApply(
+                openpifpaf.transforms.Blur(), self.blur),
+            openpifpaf.transforms.RandomChoice(
+                [openpifpaf.transforms.RotateBy90(),
+                openpifpaf.transforms.RotateUniform(30.0)],
+                [self.orientation_invariant, 0.4],
+            ),
+            openpifpaf.transforms.Crop(self.square_edge, use_area_of_interest=True),
+            openpifpaf.transforms.CenterPad(self.square_edge),
+            openpifpaf.transforms.TRAIN_TRANSFORM,])
+    
+    def vis_train_loader(self):
+        '''
+        train_data = CocoDataset(
+            image_dir=self.train_image_dir,
+            ann_file=self.train_annotations,
+            preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        '''
+        train_data = CocoDataset(
+            image_dir=self.train_image_dir,
+            ann_file=self.train_annotations,
+            preprocess=self.vis_preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        return torch.utils.data.DataLoader(
+            train_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
+            pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
+            collate_fn=openpifpaf.datasets.collate_images_targets_meta)
+
+    def vis_val_loader(self):
+        '''
+        val_data = CocoDataset(
+            image_dir=self.val_image_dir,
+            ann_file=self.val_annotations,
+            preprocess=self._preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        '''
+        val_data = CocoDataset(
+            image_dir=self.val_image_dir,
+            ann_file=self.val_annotations,
+            preprocess=self.vis_preprocess(),
+            annotation_filter=True,
+            min_kp_anns=self.min_kp_anns,
+            category_ids=[1],
+        )
+        return torch.utils.data.DataLoader(
+            val_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
+            pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
+            collate_fn=openpifpaf.datasets.collate_images_targets_meta)
