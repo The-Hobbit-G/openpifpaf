@@ -26,6 +26,7 @@ def main():
     train_instance_scales = []
     val_instance_scales = []
 
+    print(type(datamodule))
     print(len(train_loader))
 
     for data in train_loader:
