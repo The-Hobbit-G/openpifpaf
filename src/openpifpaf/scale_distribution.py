@@ -29,11 +29,11 @@ def main():
     train_instance_scales = []
     val_instance_scales = []
 
-    for batch,(image,anns,_) in enumerate(train_loader):
+    for batch, (image, anns, _) in enumerate(train_loader):
         for ann in anns:
             train_instance_scales.append(ann['bbox'][2] * ann['bbox'][3])
 
-    for batch,(image,anns,_) in enumerate(val_loader):
+    for batch, (image, anns, _) in enumerate(val_loader):
         for ann in anns:
             val_instance_scales.append(ann['bbox'][2] * ann['bbox'][3])
 
