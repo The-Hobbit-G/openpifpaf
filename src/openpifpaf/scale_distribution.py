@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 
 import torch
 
-from . import datasets, encoder, logger, network, optimize, plugin, show, visualizer
-from . import __version__
+# from . import datasets, encoder, logger, network, optimize, plugin, show, visualizer
+# from . import __version__
+import openpifpaf.datasets as datasets
 
 
 
