@@ -1,7 +1,4 @@
 "Visualize the scale distribution of instances."
-import signal
-
-old_handler = signal.getsignal(signal.SIGINT)
 
 import argparse
 import copy
