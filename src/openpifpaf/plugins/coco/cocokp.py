@@ -424,8 +424,8 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
             category_ids=[1],
         )
         return torch.utils.data.DataLoader(
-            train_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
-            pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
+            train_data, batch_size=self.batch_size, shuffle=False,
+            pin_memory=False, num_workers=self.loader_workers, drop_last=True,
             collate_fn=openpifpaf.datasets.collate_images_targets_meta)
 
     def vis_val_loader(self):
@@ -448,6 +448,6 @@ class CocoKp(openpifpaf.datasets.DataModule, openpifpaf.Configurable):
             category_ids=[1],
         )
         return torch.utils.data.DataLoader(
-            val_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
-            pin_memory=self.pin_memory, num_workers=self.loader_workers, drop_last=True,
+            val_data, batch_size=self.batch_size, shuffle=False,
+            pin_memory=False, num_workers=self.loader_workers, drop_last=True,
             collate_fn=openpifpaf.datasets.collate_images_targets_meta)
