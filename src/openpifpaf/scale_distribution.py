@@ -25,8 +25,12 @@ def main():
     print('orientation_invariant: ', datamodule.orientation_invariant)
     print('upsample_stride: ', datamodule.upsample_stride)
 
-    print(type(datamodule))
-    print(len(train_loader))
+    # print(type(datamodule))
+    # print(len(train_loader))
+    datamodule.square_edge = 513
+    datamodule.extended_scale = False
+    datamodule.orientation_invariant = 0.1
+    datamodule.upsample_stride = 2
 
 
     train_loader = datamodule.vis_train_loader()
