@@ -20,14 +20,22 @@ import openpifpaf.datasets as datasets
 def main():
     datamodule = datasets.factory('cocokp')
 
+    print('square_edge: ', datamodule.square_edge)
+    print('extended_scale: ', datamodule.extended_scale)
+    print('orientation_invariant: ', datamodule.orientation_invariant)
+    print('upsample_stride: ', datamodule.upsample_stride)
+
+    print(type(datamodule))
+    print(len(train_loader))
+
+
     train_loader = datamodule.vis_train_loader()
     val_loader = datamodule.vis_val_loader()
 
     train_instance_scales = []
     val_instance_scales = []
 
-    print(type(datamodule))
-    print(len(train_loader))
+    
 
     for data in train_loader:
         print(type(data))
