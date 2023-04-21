@@ -50,6 +50,7 @@ def main():
         # print(type(data))
         # print(data)
         for ann in anns:
+            print(ann['bbox'])
             train_instance_scales.append(ann['bbox'][2] * ann['bbox'][3])
 
     for batch, (image, anns, _) in enumerate(val_loader):
