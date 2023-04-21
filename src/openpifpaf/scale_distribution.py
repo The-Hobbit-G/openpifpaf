@@ -50,13 +50,13 @@ def main():
         # print(type(data))
         # print(data)
         for ann in anns:
-            print(ann['bbox'])
-            print(ann['bbox'][0][2])
-            train_instance_scales.append(ann['bbox'][2] * ann['bbox'][3])
+            # print(ann['bbox'])
+            # print(ann['bbox'][0][2])
+            train_instance_scales.append(ann['bbox'][0][2].item() * ann['bbox'][0][3].item())
 
     for batch, (image, anns, _) in enumerate(val_loader):
         for ann in anns:
-            val_instance_scales.append(ann['bbox'][2] * ann['bbox'][3])
+            val_instance_scales.append(ann['bbox'][0][2].item() * ann['bbox'][0][3].item())
 
     #draw a histogram of train_instance_scales
     plt.hist(train_instance_scales, bins=50)
