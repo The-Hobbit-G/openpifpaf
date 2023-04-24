@@ -1,14 +1,11 @@
 #!/bin/bash -l
 
 #SBATCH --nodes=2
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=10
 #SBATCH --mem=64G
 #SBATCH --time=6:00:00
-#SBATCH --partition=gpu
-#SBATCH --qos=gpu
-#SBATCH --gres=gpu:0
-#SBATCH --output=/scratch/izar/jiguo/visualization/%x.out
+#SBATCH --output=/scratch/jiguo/visualization/%x.out
 
 shopt -s extglob
 
@@ -20,7 +17,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/visualization/${SLURM_JOB_NAME}"
+xpdir="/scratch/jiguo/visualization/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -50,7 +47,7 @@ cd ..
 #   --clip-grad-value=10.0 \
 #   2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
 
-srun time python3 openpifpaf/src/openpifpaf/visualize_scale_distribution.py
+srun time python3 openpifpaf/src/openpifpaf/scale_distribution.py
 cd -
 
 
