@@ -63,14 +63,14 @@ def main():
     plt.title("COCOKP Train Instance Scales")
     # plt.show()
     #save the histogram
-    plt.savefig('/scratch/izar/jiguo/visualization/train_instance_scales.png')
+    plt.savefig('/scratch/jiguo/visualization/train_instance_scales.png')
 
     #draw a histogram of val_instance_scales
     plt.hist(val_instance_scales, bins=50)
     plt.title("COCOKP Val Instance Scales")
     # plt.show()
     #save the histogram
-    plt.savefig('/scratch/izar/jiguo/visualization/val_instance_scales.png')
+    plt.savefig('/scratch/jiguo/visualization/val_instance_scales.png')
 
 
 
