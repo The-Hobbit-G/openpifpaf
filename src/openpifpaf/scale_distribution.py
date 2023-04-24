@@ -8,6 +8,7 @@ import os
 import socket
 import openpifpaf
 import matplotlib.pyplot as plt
+import numpy as np
 
 import torch
 
@@ -67,6 +68,7 @@ def main():
     plt.figure()
     plt.hist(train_instance_scales, bins=600)
     plt.title("COCOKP Train Instance Scales")
+    plt.xticks(np.arange(0, 600, 10))
     # plt.show()
     #save the histogram
     plt.savefig('/scratch/jiguo/visualization/train_instance_scales.png')
@@ -76,6 +78,8 @@ def main():
     plt.figure()
     plt.hist(val_instance_scales, bins=600)
     plt.title("COCOKP Val Instance Scales")
+    #set the x axis bins
+    plt.xticks(np.arange(0, 600, 10))
     # plt.show()
     #save the histogram
     plt.savefig('/scratch/jiguo/visualization/val_instance_scales.png')
