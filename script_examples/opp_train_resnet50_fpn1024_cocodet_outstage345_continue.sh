@@ -12,7 +12,7 @@ echo STARTING AT `date`
 
 xpdir="/scratch/izar/jiguo/train/resnet50_fpn/debug/cocodet"
 checkpoint="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.epoch117"
-optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.optim.epoch117
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.optim.epoch117"
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
