@@ -29,7 +29,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
   --checkpoint=${checkpoint} \
-  --resume-training=True \
+  --resume-training=${checkpoint} \
   --necknet=FPN \
   --neck_in 1024 2048 \
   --neck_out=1024 \
