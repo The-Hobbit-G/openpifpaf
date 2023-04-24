@@ -47,7 +47,7 @@ def main():
 
 
     for batch, (image, anns, _) in enumerate(train_loader):
-        if batch >= 500:
+        if batch >= 1000:
             break
         # print(type(data))
         # print(data)
@@ -57,7 +57,7 @@ def main():
             train_instance_scales.append((ann['bbox'][0][2].item() * ann['bbox'][0][3].item())**0.5)
 
     for batch, (image, anns, _) in enumerate(val_loader):
-        if batch >= 500:
+        if batch >= 1000:
             break
         for ann in anns:
             val_instance_scales.append((ann['bbox'][0][2].item() * ann['bbox'][0][3].item())**0.5)
@@ -65,7 +65,7 @@ def main():
     #draw a histogram of train_instance_scales
     #put the histogram in figure 1
     plt.figure()
-    plt.hist(train_instance_scales, bins=200)
+    plt.hist(train_instance_scales, bins=600)
     plt.title("COCOKP Train Instance Scales")
     # plt.show()
     #save the histogram
@@ -74,7 +74,7 @@ def main():
     #draw a histogram of val_instance_scales
     #put the histogram in a new figure
     plt.figure()
-    plt.hist(val_instance_scales, bins=200)
+    plt.hist(val_instance_scales, bins=600)
     plt.title("COCOKP Val Instance Scales")
     # plt.show()
     #save the histogram
