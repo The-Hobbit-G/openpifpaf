@@ -48,8 +48,8 @@ def main():
 
 
     for batch, (image, anns, _) in enumerate(train_loader):
-        if batch >= 1000:
-            break
+        # if batch >= 1000:
+        #     break
         # print(type(data))
         # print(data)
         for ann in anns:
@@ -58,8 +58,8 @@ def main():
             train_instance_scales.append((ann['bbox'][0][2].item() * ann['bbox'][0][3].item())**0.5)
 
     for batch, (image, anns, _) in enumerate(val_loader):
-        if batch >= 1000:
-            break
+        # if batch >= 1000:
+        #     break
         for ann in anns:
             val_instance_scales.append((ann['bbox'][0][2].item() * ann['bbox'][0][3].item())**0.5)
 
@@ -70,7 +70,8 @@ def main():
     plt.title("COCOKP Train Instance Scales")
     plt.xticks(np.arange(0, 600, 30))
     plt.xticks(rotation=90)
-    # plt.show()
+    plt.xlabel("Instance Scale")
+    plt.ylabel("Number of Instances")
     #save the histogram
     plt.savefig('/scratch/jiguo/visualization/train_instance_scales.png')
 
@@ -83,6 +84,10 @@ def main():
     plt.xticks(np.arange(0, 600, 30))
     #rotate the x axis bins
     plt.xticks(rotation=90)
+    #set x axis label
+    plt.xlabel("Instance Scale")
+    #set y axis label
+    plt.ylabel("Number of Instances")
     # plt.show()
     #save the histogram
     plt.savefig('/scratch/jiguo/visualization/val_instance_scales.png')
