@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=64G
 #SBATCH --time=6:00:00
-#SBATCH --gres=cpu
+#SBATCH --qos=parallel
 #SBATCH --output=/scratch/izar/jiguo/visualization/%x.out
 
 shopt -s extglob
