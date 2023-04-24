@@ -22,6 +22,7 @@ echo STARTING AT `date`
 
 xpdir="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/${SLURM_JOB_NAME}"
 checkpoint="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.epoch117"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.optim.epoch117
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -40,7 +41,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
   --checkpoint=${checkpoint} \
-  --resume-training=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --necknet=FPN \
   --neck_in 1024 2048 \
   --neck_out=1024 \
