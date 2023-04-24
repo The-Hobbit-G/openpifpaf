@@ -16,7 +16,7 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50'
+evalxp='opp_train_resnet50_cocodet'
 evalepoch=150
 
 
@@ -34,18 +34,18 @@ mkdir -p ${xpdir}/predictions
 
 for cpepoch in ${evalepoch}
 do
-  evalfrom="/scratch/izar/jiguo/val/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
+  evalfrom="/scratch/izar/jiguo/train/cocodet/resnet50/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
   echo "Start evaluating ${evalfrom}..."
   srun time python3 -m openpifpaf.eval \
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocodet \
     --coco-eval-long-edge 641 \
-    --cocokp-upsample=2 \
+    --cocodet-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
     --loader-workers 8 \
-    --checkpoint resnet50 \
+    --checkpoint ${evalfrom} \
     --decoder=cifdet:0 \
     --seed-threshold 0.2 \
     --force-complete-pose \
