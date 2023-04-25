@@ -40,7 +40,7 @@ do
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocodet \
-    --coco-eval-long-edge 641 \
+    --coco-eval-long-edge 1601 \
     --cocodet-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
