@@ -16,6 +16,7 @@ class Compose(Preprocess):
             if (self.preprocess_list.index(p) == len(self.preprocess_list)-1) and (type(p) == list):
                 images = None
                 meta = None
+                
                 for p_single in p:
                     result = p_single(*args)
                     if images is None:
