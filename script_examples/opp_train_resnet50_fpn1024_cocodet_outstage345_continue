@@ -3,7 +3,7 @@
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=20
-#SBATCH --mem=96G
+#SBATCH --mem=128G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
@@ -21,8 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.epoch117"
-optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345.pt.optim.epoch117"
+checkpoint="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345_continue/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345_continue.pt.epoch121"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/opp_train_resnet50_fpn1024_cocodet_outstage345_continue/checkpoints/opp_train_resnet50_fpn1024_cocodet_outstage345_continue.pt.optim.epoch121"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
