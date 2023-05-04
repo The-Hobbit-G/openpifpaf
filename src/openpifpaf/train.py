@@ -7,6 +7,7 @@ import logging
 import os
 import socket
 import openpifpaf
+import psutil
 
 import torch
 
@@ -205,12 +206,17 @@ def main():
     else:
         net = net_cpu
 
+
+    print("CPU memory usage before train_loader and val_loader: {:.2f} MB".format(psutil.Process().memory_info().rss / 1024 ** 2))
+
     logger.train_configure(args)
     train_loader = datamodule.train_loader()
     val_loader = datamodule.val_loader()
     if torch.distributed.is_initialized():
         train_loader = datamodule.distributed_sampler(train_loader)
         val_loader = datamodule.distributed_sampler(val_loader)
+
+    print("CPU memory usage after train_loader and val_loader: {:.2f} MB".format(psutil.Process().memory_info().rss / 1024 ** 2))
 
     optimizer = optimize.factory_optimizer(
         args, list(net.parameters()) + list(loss.parameters()))

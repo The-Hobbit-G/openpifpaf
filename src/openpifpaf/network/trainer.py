@@ -6,6 +6,7 @@ import hashlib
 import logging
 import shutil
 import time
+import psutil
 
 import torch
 
@@ -180,9 +181,9 @@ class Trainer():
                     if target is not None:
                         assert target.is_pinned()
 
-            # print(type(targets),type(targets[0]),type(targets[1]),type(targets[2]))
-            # print(len(targets),len(targets[0]),len(targets[1]))
-            # print(type(data),len(data))
+            print(type(targets),type(targets[0]),type(targets[1]),type(targets[2]))
+            print(len(targets),len(targets[0]),len(targets[1]))
+            print(type(data),len(data))
             
             if type(targets[0]) == list:
                 with torch.autograd.profiler.record_function('to-device'):
@@ -371,6 +372,8 @@ class Trainer():
             batch_start = time.time()
             apply_gradients = batch_idx % self.stride_apply == 0
             loss, head_losses = self.train_batch(data, target, apply_gradients)
+
+            print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
 
             # update epoch accumulates
             if loss is not None:
