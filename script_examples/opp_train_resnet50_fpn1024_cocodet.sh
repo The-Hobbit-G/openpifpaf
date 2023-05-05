@@ -21,7 +21,8 @@ cd ..
 
 mkdir -p ${xpdir}/checkpoints
 
-python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
+python3 -m openpifpaf.train --ddp \
+  --output ${xpdir}/checkpoints/debug.pt \
   --dataset=cocodet \
   --cocodet-square-edge=513 \
   --cocodet-extended-scale \
