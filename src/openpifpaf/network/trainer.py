@@ -7,6 +7,7 @@ import logging
 import shutil
 import time
 import psutil
+import resource
 
 import torch
 
@@ -374,6 +375,7 @@ class Trainer():
             loss, head_losses = self.train_batch(data, target, apply_gradients)
 
             print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
+            print("shared CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2))
 
             # update epoch accumulates
             if loss is not None:
