@@ -373,7 +373,7 @@ class Trainer():
             apply_gradients = batch_idx % self.stride_apply == 0
             loss, head_losses = self.train_batch(data, target, apply_gradients)
 
-            # print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
+            print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
 
             # update epoch accumulates
             if loss is not None:
