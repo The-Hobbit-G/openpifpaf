@@ -21,8 +21,8 @@ cd ..
 
 mkdir -p ${xpdir}/checkpoints
 
-srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
-  --output ${xpdir}/checkpoints/${SLURM_JOB_NAME}.pt \
+python3 -m openpifpaf.train --ddp \
+  --output ${xpdir}/checkpoints/debug.pt \
   --dataset=cocodet \
   --cocodet-square-edge=513 \
   --cocodet-extended-scale \
@@ -45,7 +45,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --weight-decay=1e-5 \
   --b-scale=10.0 \
   --clip-grad-value=10.0 \
-  2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
+  2>&1 | tee ${xpdir}/logs/debug.log
 
 cd -
 
