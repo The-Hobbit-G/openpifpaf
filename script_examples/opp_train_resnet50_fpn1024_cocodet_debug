@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=8
-#SBATCH --cpus-per-task=5
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=10
 #SBATCH --mem=64G
 #SBATCH --partition=debug
 #SBATCH --qos=gpu
