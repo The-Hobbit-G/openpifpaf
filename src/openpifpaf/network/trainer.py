@@ -369,12 +369,12 @@ class Trainer():
         self.optimizer.zero_grad()
         for batch_idx, (data, target, _) in enumerate(scenes):
 
-            soft, _ = resource.getrlimit(resource.RLIMIT_AS)
-            print("Current shared memory soft limit: {} bytes".format(soft))
-            hard, _ = resource.getrlimit(resource.RLIMIT_AS)
-            print("Current shared memory hard limit: {} bytes".format(hard))
-            print("CPU memory usage before {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
-            print("shared CPU memory before {}th batch: {:.2f} MB".format(batch_idx, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2))
+            # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
+            # print("Current shared memory soft limit: {} bytes".format(soft))
+            # hard, _ = resource.getrlimit(resource.RLIMIT_AS)
+            # print("Current shared memory hard limit: {} bytes".format(hard))
+            # print("CPU memory usage before {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
+            # print("shared CPU memory before {}th batch: {:.2f} MB".format(batch_idx, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2))
 
             preprocess_time = time.time() - last_batch_end
 
@@ -382,8 +382,8 @@ class Trainer():
             apply_gradients = batch_idx % self.stride_apply == 0
             loss, head_losses = self.train_batch(data, target, apply_gradients)
 
-            print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
-            print("shared CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2))
+            # print("CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, psutil.Process().memory_info().rss / 1024 ** 2))
+            # print("shared CPU memory usage after {}th batch: {:.2f} MB".format(batch_idx, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2))
 
             
 
