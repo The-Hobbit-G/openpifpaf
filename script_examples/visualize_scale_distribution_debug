@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#SBATCH --nodes=1
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=64G
@@ -17,7 +17,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/jiguo/visualization/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/train/cocodet/resnet50_fpn1024/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -26,28 +26,34 @@ mkdir -p ${xpdir}/logs
 
 cd ..
 
-# mkdir -p ${xpdir}/checkpoints
+mkdir -p ${xpdir}/checkpoints
 
-# srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
-#   --output ${xpdir}/checkpoints/${SLURM_JOB_NAME}.pt \
-#   --dataset=cocodet \
-#   --cocodet-square-edge=513 \
-#   --cocodet-extended-scale \
-#   --cocodet-orientation-invariant=0.1 \
-#   --cocodet-upsample=2 \
-#   --basenet=resnet50 \
-#   --epochs=150 \
-#   --batch-size=8 \
-#   --lr=0.0001 \
-#   --lr-decay 130 140 \
-#   --lr-decay-epochs=10 \
-#   --momentum=0.9 \
-#   --weight-decay=1e-5 \
-#   --b-scale=10.0 \
-#   --clip-grad-value=10.0 \
-#   2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
+srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
+  --output ${xpdir}/checkpoints/${SLURM_JOB_NAME}.pt \
+  --dataset=cocodet \
+  --cocodet-square-edge=513 \
+  --cocodet-extended-scale \
+  --cocodet-orientation-invariant=0.1 \
+  --cocodet-upsample=2 \
+  --basenet=resnet50 \
+  --necknet=FPN \
+  --neck_in 512 1024 2048 \
+  --neck_out=1024 \
+  --num_outs=3 \
+  --start_level=0 \
+  --base_outstage 2 3 4 \
+  --head_stride 4 8 16 \
+  --epochs=150 \
+  --batch-size=8 \
+  --lr=0.0001 \
+  --lr-decay 130 140 \
+  --lr-decay-epochs=10 \
+  --momentum=0.9 \
+  --weight-decay=1e-5 \
+  --b-scale=10.0 \
+  --clip-grad-value=10.0 \
+  2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
 
-srun time python3 openpifpaf/src/openpifpaf/scale_distribution.py
 cd -
 
 
