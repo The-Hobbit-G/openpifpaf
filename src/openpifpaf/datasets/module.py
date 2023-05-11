@@ -72,7 +72,7 @@ class DataModule:
         # Do not propose more than 16 loaders. More loaders use more
         # shared memory. When shared memory is exceeded, all jobs
         # on that machine crash.
-        return min(16, self.batch_size)
+        return min(4, self.batch_size)  ###change back to 16 later!!!
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
