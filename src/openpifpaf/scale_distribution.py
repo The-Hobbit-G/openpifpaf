@@ -67,19 +67,19 @@ def main():
     #put the histogram in figure 1
     plt.figure()
     plt.hist(train_instance_scales, bins=600)
-    plt.title("COCOKP Train Instance Scales")
+    plt.title("COCODET Train Instance Scales")
     plt.xticks(np.arange(0, 600, 30))
     plt.xticks(rotation=90)
     plt.xlabel("Instance Scale")
     plt.ylabel("Number of Instances")
     #save the histogram
-    plt.savefig('/scratch/jiguo/visualization/train_instance_scales.png')
+    plt.savefig('/scratch/jiguo/visualization/COCODET_train_instance_scales.png')
 
     #draw a histogram of val_instance_scales
     #put the histogram in a new figure
     plt.figure()
     plt.hist(val_instance_scales, bins=600)
-    plt.title("COCOKP Val Instance Scales")
+    plt.title("COCODET Val Instance Scales")
     #set the x axis bins
     plt.xticks(np.arange(0, 600, 30))
     #rotate the x axis bins
@@ -90,7 +90,7 @@ def main():
     plt.ylabel("Number of Instances")
     # plt.show()
     #save the histogram
-    plt.savefig('/scratch/jiguo/visualization/val_instance_scales.png')
+    plt.savefig('/scratch/jiguo/visualization/COCODET_val_instance_scales.png')
 
 
 

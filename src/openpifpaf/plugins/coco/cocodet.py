@@ -297,7 +297,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
         )
 
         return torch.utils.data.DataLoader(
-            train_data, batch_size=self.batch_size, shuffle=False,
+            train_data, batch_size=self.batch_size, shuffle=True,
             pin_memory=True, num_workers=0, drop_last=True,
             collate_fn=openpifpaf.datasets.collate_images_targets_meta)
 
@@ -320,6 +320,6 @@ class CocoDet(openpifpaf.datasets.DataModule):
             category_ids=[],
         )
         return torch.utils.data.DataLoader(
-            val_data, batch_size=self.batch_size, shuffle=False,
+            val_data, batch_size=self.batch_size, shuffle=True,
             pin_memory=True, num_workers=0, drop_last=True,
             collate_fn=openpifpaf.datasets.collate_images_targets_meta)
