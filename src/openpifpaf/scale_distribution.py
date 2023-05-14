@@ -48,13 +48,13 @@ def main():
 
 
     for batch, (image, anns, _) in enumerate(train_loader):
-        if batch >= 1000:
-            break
+        # if batch >= 1000:
+        #     break
         # print(type(data))
         # print(data)
         for ann in anns:
-            print(ann['bbox'])
-            print(ann['bbox'][0][2],ann['bbox'][0][3])
+            # print(ann['bbox'])
+            # print(ann['bbox'][0][2],ann['bbox'][0][3])
             train_instance_scales.append((ann['bbox'][0][2].item() * ann['bbox'][0][3].item())**0.5)
 
     for batch, (image, anns, _) in enumerate(val_loader):
