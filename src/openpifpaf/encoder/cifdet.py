@@ -85,8 +85,8 @@ class CifDetGenerator():
 
     def fill(self, detections):
         for category_id, bbox in detections:
-            xy = bbox[:2] + 0.5 * bbox[2:]
-            wh = bbox[2:]
+            xy = bbox[:2] + 0.5 * bbox[2:]  #center of the bbox
+            wh = bbox[2:] #width and height of the bbox
             #TODO: assign boxes of different scales to different levels of FPN
             scale = np.sqrt(wh[0]*wh[1])
             if self.config.use_fpn:
