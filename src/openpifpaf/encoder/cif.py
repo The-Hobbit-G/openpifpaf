@@ -86,6 +86,8 @@ class CifGenerator():
     def fill(self, keypoint_sets):
         for keypoints in keypoint_sets:
             self.fill_keypoints(keypoints)
+        #keypoint_sets is a list of keypoints from different objects in the image
+        #keypoints is a set of keypoints from the same object
 
     def fill_keypoints(self, keypoints):
         scale = self.rescaler.scale(keypoints) #each keypoints from the keypoint_sets is a set of keypoints from the same object
@@ -107,6 +109,7 @@ class CifGenerator():
                 # print('ignore')
                 return
 
+        #xyv is the coordinate of one keypoint in the keypoints of one instance in the featuremap
         for f, xyv in enumerate(keypoints):
             if xyv[2] <= self.config.v_threshold:
                 continue
@@ -122,7 +125,8 @@ class CifGenerator():
     def fill_coordinate(self, f, xyv, scale):
         ij = np.round(xyv[:2] - self.s_offset).astype(np.intc) + self.config.padding
         minx, miny = int(ij[0]), int(ij[1])
-        maxx, maxy = minx + self.config.side_length, miny + self.config.side_length
+        maxx, maxy = minx + self.config.side_length, miny + self.config.side_length 
+        #side_length determines the size of Gaussian kernel length and s_offset is half of the side_length
         if minx < 0 or maxx > self.intensities.shape[2] or \
            miny < 0 or maxy > self.intensities.shape[1]:
             return
