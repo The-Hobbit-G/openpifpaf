@@ -220,7 +220,7 @@ class Trainer():
                     print('target len: {}, output len: {}'.format(len(targets[i]),len(outputs[i])))
                     print('target shape: {} {}, output shape: {} {}'.format(targets[i][0].size(),targets[i][1].size(),\
                                                                             outputs[i][0].size(),outputs[i][1].size()))
-                    print('target type: {}, output type: {}'.format(type(targets[i][2]),type(outputs[i][2])))
+                    # print('target type: {}, output type: {}'.format(type(targets[i][2]),type(outputs[i][2])))
 
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
                 # print(len(targets[0]),len(outputs[0]))
