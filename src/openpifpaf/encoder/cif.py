@@ -144,6 +144,7 @@ class CifGenerator():
         #print out ij, minx, miny, maxx, maxy, offset, sink_reg, sink_l, mask, mask_peak in a nice form
         print('keypoint: {}'.format(xyv))
         print('padding: {}'.format(self.config.padding))
+        print('keypoint after padding: {}'.format(xyv[:2] + self.config.padding))
         print('ij: {}'.format(ij))
         print('minx: {}'.format(minx))
         print('miny: {}'.format(miny))
