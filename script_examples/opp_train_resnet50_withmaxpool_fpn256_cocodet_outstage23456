@@ -47,6 +47,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --start_level=0 \
   --base_outstage 2 3 4 5 6 \
   --head_stride 8 16 32 64 128 \
+  --add_extra_convs=on_output \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
