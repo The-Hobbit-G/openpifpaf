@@ -141,6 +141,20 @@ class CifGenerator():
         mask_peak = np.logical_and(mask, sink_l < 0.7)
         self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
 
+        #print out ij, minx, miny, maxx, maxy, offset, sink_reg, sink_l, mask, mask_peak in a nice form
+        print('ij: {}'.format(ij))
+        print('minx: {}'.format(minx))
+        print('miny: {}'.format(miny))
+        print('maxx: {}'.format(maxx))
+        print('maxy: {}'.format(maxy))
+        print('offset: {}'.format(offset))
+        print('sink_reg: {}'.format(sink_reg))
+        print('sink_l: {}'.format(sink_l))
+        print('mask: {}'.format(mask))
+        print('mask_peak: {}'.format(mask_peak))
+        #print out self.fields_reg_l[f, miny:maxy, minx:maxx][mask]
+
+
         # update intensity
         self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
         self.intensities[f, miny:maxy, minx:maxx][mask_peak] = 1.0
