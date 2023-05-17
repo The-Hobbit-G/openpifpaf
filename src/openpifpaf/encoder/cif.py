@@ -127,34 +127,52 @@ class CifGenerator():
         minx, miny = int(ij[0]), int(ij[1])
         maxx, maxy = minx + self.config.side_length, miny + self.config.side_length 
         #side_length determines the size of Gaussian kernel length and s_offset is half of the side_length
+        #minx, miny, maxx, maxy will form a Gaussian kernel with size side_length*side_length that covers the keypoint
+        #eg. 
+        # keypoint after padding: [40.206573 46.96121 ]
+        # ij: [39 45]
+        # minx: 39
+        # miny: 45
+        # maxx: 43(not included)
+        # maxy: 49(not included)
         if minx < 0 or maxx > self.intensities.shape[2] or \
            miny < 0 or maxy > self.intensities.shape[1]:
             return
 
         offset = xyv[:2] - (ij + self.s_offset - self.config.padding)
         offset = offset.reshape(2, 1, 1)
+        # offset is mainly caused by np.round().astype(np.intc), we want to put the keypoint right in the center of the Gaussian kernel
+        # But the Gaussian kernel is discrete, so we need to know the offset between the keypoint and the center of the Gaussian kernel
+        # eg.
+        # center of Gaussian kernel : (39+42)/2, (45+48)/2 = (40.5, 46.5)
+        # keypoint: (40.206573, 46.96121)
+        # offset: (40.206573-40.5, 46.96121-46.5) = (-0.293427, 0.46121)
 
         # mask
-        sink_reg = self.sink + offset
-        sink_l = np.linalg.norm(sink_reg, axis=0)
-        mask = sink_l < self.fields_reg_l[f, miny:maxy, minx:maxx]
-        mask_peak = np.logical_and(mask, sink_l < 0.7)
-        self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
+        #self.sink is in the shape of (2, kernel side length, kernel side length)
+        #where the first dimension is the difference between the x coordinate of the center of the Gaussian kernel and the x coordinate of each pixel in the kernel
+        #the second dimension is the difference between the y coordinate of the center of the Gaussian kernel and the y coordinate of each pixel in the kernel
+        #so the self.sink[:,i,j] is a vector pointing from i,j in the kernel to the center of the Gaussian kernel
+        sink_reg = self.sink + offset #adding the offset to the sink will get us the vectors pointing to the keypoint
+        sink_l = np.linalg.norm(sink_reg, axis=0) #sink_l is the length of the vectors, namely the distance between each pixel in the kernel and the keypoint
+        mask = sink_l < self.fields_reg_l[f, miny:maxy, minx:maxx] #mask is a boolean array, where True means the distance between the pixel and the keypoint is smaller than the distance between the pixel and the keypoint in the previous iteration
+        mask_peak = np.logical_and(mask, sink_l < 0.7)#mask_peak is a boolean array, where True means the distance between the pixel and the keypoint is smaller than the distance between the pixel and the keypoint in the previous iteration and smaller than 0.7(normally the pixels closest to the keypoint)
+        self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]#update the distance between the pixel and the keypoint in the previous iteration
 
         #print out ij, minx, miny, maxx, maxy, offset, sink_reg, sink_l, mask, mask_peak in a nice form
-        print('keypoint: {}'.format(xyv))
-        print('padding: {}'.format(self.config.padding))
-        print('keypoint after padding: {}'.format(xyv[:2] + self.config.padding))
-        print('ij: {}'.format(ij))
-        print('minx: {}'.format(minx))
-        print('miny: {}'.format(miny))
-        print('maxx: {}'.format(maxx))
-        print('maxy: {}'.format(maxy))
-        print('offset: {}'.format(offset))
-        print('sink_reg: {}'.format(sink_reg))
-        print('sink_l: {}'.format(sink_l))
-        print('mask: {}'.format(mask))
-        print('mask_peak: {}'.format(mask_peak))
+        # print('keypoint: {}'.format(xyv))
+        # print('padding: {}'.format(self.config.padding))
+        # print('keypoint after padding: {}'.format(xyv[:2] + self.config.padding))
+        # print('ij: {}'.format(ij))
+        # print('minx: {}'.format(minx))
+        # print('miny: {}'.format(miny))
+        # print('maxx: {}'.format(maxx))
+        # print('maxy: {}'.format(maxy))
+        # print('offset: {}'.format(offset))
+        # print('sink_reg: {}'.format(sink_reg))
+        # print('sink_l: {}'.format(sink_l))
+        # print('mask: {}'.format(mask))
+        # print('mask_peak: {}'.format(mask_peak))
         #print out self.fields_reg_l[f, miny:maxy, minx:maxx][mask]
 
 
@@ -162,7 +180,7 @@ class CifGenerator():
         self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
         self.intensities[f, miny:maxy, minx:maxx][mask_peak] = 1.0
 
-        # update regression
+        # update regression (not quite useful for constructing the field)
         patch = self.fields_reg[f, :, miny:maxy, minx:maxx]
         patch[:, mask] = sink_reg[:, mask]
 
