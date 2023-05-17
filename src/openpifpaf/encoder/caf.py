@@ -325,7 +325,7 @@ class CafGenerator(AssociationFiller):
         mask_valid_area(fields_scale1, valid_area, fill_value=np.nan)
         mask_valid_area(fields_scale2, valid_area, fill_value=np.nan)
 
-        print('caf fields reg is nan: {}'.format(np.isnan(fields_reg1).all()))
+        # print('caf fields reg is nan: {}'.format(np.isnan(fields_reg1).all()))
 
         return torch.from_numpy(np.concatenate([
             np.expand_dims(intensities, 1),
