@@ -209,6 +209,8 @@ class CifGenerator():
         mask_valid_area(fields_bmin, valid_area, fill_value=np.nan)
         mask_valid_area(fields_scale, valid_area, fill_value=np.nan)
 
+        print('cif fields reg is nan: {}'.format(np.isnan(fields_reg).all()))
+
         return torch.from_numpy(np.concatenate([
             np.expand_dims(intensities, 1),
             fields_reg,
