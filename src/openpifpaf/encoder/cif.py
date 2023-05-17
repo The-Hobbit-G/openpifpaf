@@ -142,6 +142,7 @@ class CifGenerator():
         self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
 
         #print out ij, minx, miny, maxx, maxy, offset, sink_reg, sink_l, mask, mask_peak in a nice form
+        print('keypoint: {}'.format(xyv))
         print('ij: {}'.format(ij))
         print('minx: {}'.format(minx))
         print('miny: {}'.format(miny))
