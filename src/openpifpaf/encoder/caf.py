@@ -41,7 +41,9 @@ class Caf:
             self.fill_plan = [
                 (caf_i, joint1i - 1, joint2i - 1)
                 for caf_i, (joint1i, joint2i) in enumerate(self.meta.skeleton)
-            ]
+            ] 
+            # caf_i is the index of the i_th joint connection and joint1i and joint2i are the indices of the joints connected by the i_th joint connection
+            # -1 because python index from 0
 
     def __call__(self, image, anns, meta):
         return CafGenerator(self)(image, anns, meta)
@@ -101,7 +103,7 @@ class AssociationFiller:
         p = self.config.padding
         self.fields_reg_l[:, p:-p, p:-p][:, bg_mask == 0] = 1.0
 
-        fill_values = self.all_fill_values(keypoint_sets, anns)
+        fill_values = self.all_fill_values(keypoint_sets, anns) #returns a list of [(keypoints at the corresponding stride of an instance, scale of the visiable part of that instance)]
         self.fill(keypoint_sets, fill_values)
         fields = self.fields_as_tensor(valid_area)
 
@@ -133,8 +135,9 @@ class AssociationFiller:
 
     def fill_keypoints(self, keypoints, fill_values):
         for field_i, joint1i, joint2i in self.config.fill_plan:
-            joint1 = keypoints[joint1i]
-            joint2 = keypoints[joint2i]
+            joint1 = keypoints[joint1i] #keypoints coordinate of the first joint connected by the i_th joint connection
+            joint2 = keypoints[joint2i] #keypoints coordinate of the second joint connected by the i_th joint connection
+            #check if the joint is visible
             if joint1[2] <= self.config.v_threshold or joint2[2] <= self.config.v_threshold:
                 continue
 
