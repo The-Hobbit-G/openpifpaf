@@ -202,8 +202,8 @@ class DataModule:
                                     new_enc.side_length = new_side_length
                                     
                             elif isinstance(enc, openpifpaf.encoder.Caf):
-                                if type(enc.side_length)==list: 
-                                    assert(len(enc.side_length)==len(self.head_stride))
+                                if type(enc.min_size)==list: 
+                                    assert(len(enc.min_size)==len(self.head_stride))
                                     new_min_size = copy.deepcopy(enc.min_size)[h_index]
                                     # new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, min_size=new_min_size, use_fpn = True, head_index = h_index)
                                     new_enc.min_size = new_min_size
@@ -225,8 +225,8 @@ class DataModule:
                                 # else:
                                 #     new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
                             elif isinstance(enc.wrapped, openpifpaf.encoder.Caf):
-                                if type(enc.wrapped.side_length)==list: 
-                                    assert(len(enc.wrapped.side_length)==len(self.head_stride))
+                                if type(enc.wrapped.min_size)==list: 
+                                    assert(len(enc.wrapped.min_size)==len(self.head_stride))
                                     new_min_size = copy.deepcopy(enc.wrapped.min_size)[h_index]
                                     # new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,min_size=new_min_size,use_fpn = True, head_index = h_index))
                                     new_enc.wrapped.min_size = new_min_size
