@@ -9,9 +9,9 @@ LOG = logging.getLogger(__name__)
 
 def cli(parser):
     group = parser.add_argument_group('encoders')
-    group.add_argument('--cif-side-length', default=Cif.side_length, type=int,
+    group.add_argument('--cif-side-length', default=Cif.side_length, nargs='+', type=int,
                        help='side length of the CIF field')
-    group.add_argument('--caf-min-size', default=Caf.min_size, type=int,
+    group.add_argument('--caf-min-size', default=Caf.min_size, nargs='+', type=int,
                        help='min side length of the CAF field')
     group.add_argument('--caf-fixed-size', default=Caf.fixed_size, action='store_true',
                        help='fixed caf size')

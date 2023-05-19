@@ -21,7 +21,8 @@ class CifDet:
     bmin: float = 1.0  #: in pixels
     visualizer: CifDetVisualizer = None
 
-    side_length: ClassVar[int] = 5
+    # side_length: ClassVar[int] = 5
+    side_length = 5
     padding: ClassVar[int] = 10
 
     use_fpn: bool = False

@@ -21,7 +21,8 @@ class Cif:
     bmin: float = 0.1  #: in pixels
     visualizer: CifVisualizer = None
 
-    side_length: ClassVar[int] = 4
+    # side_length: ClassVar[int] = 4
+    side_length = 4
     padding: ClassVar[int] = 10
 
     use_fpn: bool = False

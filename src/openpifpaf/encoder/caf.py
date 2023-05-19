@@ -22,7 +22,8 @@ class Caf:
     visualizer: CafVisualizer = None
     fill_plan: List[Tuple[int, int, int]] = None
 
-    min_size: ClassVar[int] = 3
+    # min_size: ClassVar[int] = 3
+    min_size = 3
     fixed_size: ClassVar[bool] = False
     aspect_ratio: ClassVar[float] = 0.0
     padding: ClassVar[int] = 10
@@ -184,20 +185,22 @@ class AssociationFiller:
         xyv = np.stack(np.meshgrid(
             np.linspace(-0.5 * (s - 1), 0.5 * (s - 1), s),
             np.linspace(-0.5 * (s - 1), 0.5 * (s - 1), s),
-        ), axis=-1).reshape(-1, 2)
+        ), axis=-1).reshape(-1, 2)   #creat a grid for each point along the connection between two joints
 
         # set fields
-        num = max(2, int(np.ceil(offset_d)))
+        num = max(2, int(np.ceil(offset_d))) #number of points that we need do construct paf along the connection between two joints
         fmargin = (s / 2) / (offset_d + np.spacing(1))
         fmargin = np.clip(fmargin, 0.25, 0.4)
         # fmargin = 0.0
-        frange = np.linspace(fmargin, 1.0 - fmargin, num=num)
+        frange = np.linspace(fmargin, 1.0 - fmargin, num=num) #the fraction of the connection between two joints that we need to construct paf
         if self.config.fixed_size:
             frange = [0.5]
         filled_ij = set()
         for f in frange:
             for xyo in xyv:
-                fij = np.round(joint1[:2] + f * offset + xyo).astype(np.intc) + self.config.padding
+                fij = np.round(joint1[:2] + f * offset + xyo).astype(np.intc) + self.config.padding   
+                #adding one fraction at a time to the first joint coordinate to get the coordinate of the point that we need to construc paf(fij) along the connection
+                #+xyo allows us to estimate the size of the connection between two joints
                 if fij[0] < 0 or fij[0] >= self.field_shape[2] or \
                    fij[1] < 0 or fij[1] >= self.field_shape[1]:
                     continue
@@ -219,7 +222,7 @@ class AssociationFiller:
                 sink_l = np.fabs(
                     offset[1] * f_offset[0]
                     - offset[0] * f_offset[1]
-                ) / (offset_d + 0.01)
+                ) / (offset_d + 0.01) #sunk_l is the projection length of f_offset on the connection between two joints which is offset. (A /dot B / ||B|| = the projection length of A on B)
                 if sink_l > self.fields_reg_l[field_i, fij[1], fij[0]]:
                     continue
                 self.fields_reg_l[field_i, fij[1], fij[0]] = sink_l
