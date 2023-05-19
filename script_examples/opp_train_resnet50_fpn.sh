@@ -30,7 +30,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --basenet=resnet50 \
   --necknet=FPN \
   --neck_in 512 1024 2048 \
-  --neck_out=1024 \
+  --neck_out=256 \
   --num_outs=3 \
   --start_level=0 \
   --base_outstage 2 3 4 \
