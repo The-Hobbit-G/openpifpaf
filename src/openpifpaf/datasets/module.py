@@ -193,41 +193,45 @@ class DataModule:
                             # And all their old attributes are kept(including rescaler, the __post_init__ function won't renew the rescaler so the stride of the rescaler will never change)
                             
                             #adjust the Gaussian kernel size at each stage
+                            new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True, head_index = h_index)
                             if isinstance(enc, openpifpaf.encoder.Cif) or isinstance(enc, openpifpaf.encoder.CifDet):
                                 if type(enc.side_length)==list: 
                                     assert(len(enc.side_length)==len(self.head_stride))
                                     new_side_length = copy.deepcopy(enc.side_length)[h_index]
-                                    new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, side_length=new_side_length, use_fpn = True, head_index = h_index)
-                                else:
-                                    new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True, head_index = h_index)
+                                    # new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, side_length=new_side_length, use_fpn = True, head_index = h_index)
+                                    new_enc.side_length = new_side_length
+                                    
                             elif isinstance(enc, openpifpaf.encoder.Caf):
                                 if type(enc.side_length)==list: 
                                     assert(len(enc.side_length)==len(self.head_stride))
                                     new_min_size = copy.deepcopy(enc.min_size)[h_index]
-                                    new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, min_size=new_min_size, use_fpn = True, head_index = h_index)
-                                else:
-                                    new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True, head_index = h_index)
+                                    # new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, min_size=new_min_size, use_fpn = True, head_index = h_index)
+                                    new_enc.min_size = new_min_size
+                                # else:
+                                #     new_enc = enc.__class__(meta=new_meta, bmin = new_bmin, use_fpn = True, head_index = h_index)
                         else:
                             new_meta = copy.deepcopy(enc.wrapped.meta)
                             new_meta.base_stride = hs
                             new_bmin = enc.wrapped.bmin
                             # new_enc = dataclasses.replace(enc, wrapped = dataclasses.replace(enc.wrapped, meta = new_meta))
-
+                            new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
                             #adjust the Gaussian kernel size at each stage
                             if isinstance(enc.wrapped, openpifpaf.encoder.Cif) or isinstance(enc.wrapped, openpifpaf.encoder.CifDet):
                                 if type(enc.wrapped.side_length)==list: 
                                     assert(len(enc.wrapped.side_length)==len(self.head_stride))
                                     new_side_length = copy.deepcopy(enc.wrapped.side_length)[h_index]
-                                    new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,side_length=new_side_length,use_fpn = True, head_index = h_index))
-                                else:
-                                    new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
+                                    # new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,side_length=new_side_length,use_fpn = True, head_index = h_index))
+                                    new_enc.wrapped.side_length = new_side_length
+                                # else:
+                                #     new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
                             elif isinstance(enc.wrapped, openpifpaf.encoder.Caf):
                                 if type(enc.wrapped.side_length)==list: 
                                     assert(len(enc.wrapped.side_length)==len(self.head_stride))
                                     new_min_size = copy.deepcopy(enc.wrapped.min_size)[h_index]
-                                    new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,min_size=new_min_size,use_fpn = True, head_index = h_index))
-                                else:
-                                    new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
+                                    # new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,min_size=new_min_size,use_fpn = True, head_index = h_index))
+                                    new_enc.wrapped.min_size = new_min_size
+                                # else:
+                                #     new_enc = dataclasses.replace(enc, wrapped = enc.wrapped.__class__(meta=new_meta,bmin=new_bmin,use_fpn = True, head_index = h_index))
                         new_encs.append(new_enc)
                     new_encoder = ori_encoders.__class__(new_encs)
                     new_encoders.append(new_encoder)
