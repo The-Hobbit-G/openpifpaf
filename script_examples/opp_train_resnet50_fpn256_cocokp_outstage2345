@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
-#SBATCH --time=72:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/%x.out
 
 shopt -s extglob
@@ -21,6 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${SLURM_JOB_NAME}"
+checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_outstage2345/checkpoints/opp_train_resnet50_fpn256_cocokp_outstage2345.pt.epoch120"
+optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_outstage2345/checkpoints/opp_train_resnet50_fpn256_cocokp_outstage2345.pt.optim.epoch120"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -38,7 +40,8 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocokp-extended-scale \
   --cocokp-orientation-invariant=0.1 \
   --cocokp-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --necknet=FPN \
   --neck_in 512 1024 2048 \
   --neck_out=256 \
@@ -49,7 +52,6 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --add_extra_convs=on_output \
   --epochs=150 \
   --batch-size=8 \
-  --loader-workers=4 \
   --lr=0.0001 \
   --lr-decay 130 140 \
   --lr-decay-epochs=10 \
