@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=/scratch/izar/jiguo/val/cocodet/resnet50_fpn256/%x.out
 
 shopt -s extglob
