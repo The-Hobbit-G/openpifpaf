@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
-#SBATCH --time=72:00:00
+#SBATCH --time=48:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocodet/resnet50_with_maxpool/resnet50_fpn256/%x.out
 
 shopt -s extglob
@@ -21,6 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocodet/resnet50_with_maxpool/resnet50_fpn256/${SLURM_JOB_NAME}"
+checkpoint="/scratch/izar/jiguo/train/cocodet/resnet50_with_maxpool/resnet50_fpn256/opp_train_resnet50_withmaxpool_fpn256_cocodet_outstage23456/checkpoints/opp_train_resnet50_withmaxpool_fpn256_cocodet_outstage23456.pt.epoch106"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/resnet50_with_maxpool/resnet50_fpn256/opp_train_resnet50_withmaxpool_fpn256_cocodet_outstage23456/checkpoints/opp_train_resnet50_withmaxpool_fpn256_cocodet_outstage23456.pt.optim.epoch106"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -38,7 +40,8 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocodet-extended-scale \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --resnet-pool0-stride=2 \
   --necknet=FPN \
   --neck_in 512 1024 2048 \
