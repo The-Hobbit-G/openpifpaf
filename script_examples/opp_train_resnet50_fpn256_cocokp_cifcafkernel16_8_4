@@ -21,6 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${SLURM_JOB_NAME}"
+checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.epoch028"
+optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.optim.epoch028"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -38,7 +40,8 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocokp-extended-scale \
   --cocokp-orientation-invariant=0.1 \
   --cocokp-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --necknet=FPN \
   --neck_in 512 1024 2048 \
   --neck_out=256 \
@@ -50,6 +53,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --caf-min-size 16 8 4 \
   --epochs=150 \
   --batch-size=8 \
+  --loader-workers=4 \
   --lr=0.0001 \
   --lr-decay 80 120 140 \
   --lr-decay-epochs=10 \
