@@ -3,6 +3,7 @@ import logging
 from .annrescaler import AnnRescaler
 from .caf import Caf
 from .cif import Cif
+from .cifdet import CifDet
 
 LOG = logging.getLogger(__name__)
 
@@ -17,6 +18,8 @@ def cli(parser):
                        help='fixed caf size')
     group.add_argument('--caf-aspect-ratio', default=Caf.aspect_ratio, type=float,
                        help='CAF width relative to its length')
+    group.add_argument('--cifdet-side-length', default=CifDet.side_length, nargs='+', type=int,
+                       help='side length of the CIFDET field')
     assert AnnRescaler.suppress_selfhidden
     group.add_argument('--encoder-no-suppress-selfhidden',
                        dest='encoder_suppress_selfhidden',
@@ -40,6 +43,9 @@ def configure(args):
     Caf.min_size = args.caf_min_size
     Caf.fixed_size = args.caf_fixed_size
     Caf.aspect_ratio = args.caf_aspect_ratio
+
+    # configure CIFDET
+    CifDet.side_length = args.cifdet_side_length
 
     # configure AnnRescaler
     AnnRescaler.suppress_selfhidden = args.encoder_suppress_selfhidden

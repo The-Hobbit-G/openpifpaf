@@ -8,7 +8,7 @@ import torch
 from .annrescaler import AnnRescalerDet
 from .. import headmeta
 from ..visualizer import CifDet as CifDetVisualizer
-from ..utils import create_sink, mask_valid_area
+from ..utils import create_sink, mask_valid_area, create_sink_2d
 
 LOG = logging.getLogger(__name__)
 
@@ -106,8 +106,12 @@ class CifDetGenerator():
                     # print('ignore')
                     continue
 
-
-            self.fill_detection(category_id - 1, xy, wh)
+            if self.config.side_length == -1:
+                self.fill_detection_full(category_id - 1, xy, wh)
+            elif self.config.side_length == -2:
+                self.fill_detection_max4(category_id - 1, xy, wh)
+            else: 
+                self.fill_detection(category_id - 1, xy, wh)
 
     def fill_detection(self, f, xy, wh):
         ij = np.round(xy - self.s_offset).astype(np.intc) + self.config.padding
@@ -148,6 +152,177 @@ class CifDetGenerator():
         bmin = max(0.1 * half_scale, self.config.bmin / self.config.meta.stride)
         self.fields_reg_bmin[f, miny:maxy, minx:maxx][mask] = bmin
         self.fields_wh_bmin[f, miny:maxy, minx:maxx][mask] = bmin
+
+
+
+    def fill_detection_full(self, f, xy, wh):
+        '''
+        Use a wxh field pointing towards the center
+        '''
+        xy_offset = [-0.5, -0.5]
+        #xy_offset = [0, 0]
+        # minx, miny = xy[0]-wh[0], xy[1]-wh[1]
+        # maxx, maxy = np.max(kps[kps[:,2]>0, 0]), np.max(kps[kps[:,2]>0, 1])
+        # w = np.round(maxx - minx + 0.5).astype(np.int)
+
+        # h = np.round(maxy- miny + 0.5).astype(np.int)
+        w = np.round(wh[0] + 0.5).astype(np.int)
+        h = np.round(wh[1] + 0.5).astype(np.int)
+
+        # xyv = kps[-1]
+        xy_offset = [(w - 1.0) / 2.0, (h - 1.0) / 2.0]
+
+        ij = np.round(xy - xy_offset).astype(np.int) + self.config.padding
+        offset = xy - (ij + xy_offset - self.config.padding)
+        minx, miny = int(ij[0]), int(ij[1])
+
+        # if not self.obutterfly:
+        #     if w<=0:
+        #         raise Exception('w= ', w, ' is negative or zero')
+        #     if h<=0:
+        #         raise Exception('h= ', h, ' is negative or zero')
+        # else:
+        if w==0:
+            w = 1
+        if h==0:
+            h=1
+
+        maxx, maxy = minx + w, miny + h
+
+        sink = create_sink_2d(w, h)
+
+        if minx + w/2 < 0 or maxx - w/2 > self.intensities.shape[2] or \
+           miny + h/2 < 0 or maxy - h/2 > self.intensities.shape[1]:
+            return
+
+        minx_n = max(0, minx)
+        miny_n = max(0, miny)
+        maxx_n = min(maxx, self.intensities.shape[2])
+        maxy_n = min(maxy, self.intensities.shape[1])
+        sink = sink[:, (miny_n-miny):(miny_n-miny) + (maxy_n-miny_n), (minx_n-minx):(minx_n-minx) + (maxx_n-minx_n)] # sink[:, 0: maxy_n-miny_n, 0: maxx_n-minx_n]
+        minx = minx_n
+        maxx = maxx_n
+        miny = miny_n
+        maxy = maxy_n
+        offset = offset.reshape(2, 1, 1)
+
+        # update intensity
+        # self.intensities[f, miny:maxy, minx:maxx] = 1.0
+        # update regression
+        sink_reg = sink + offset
+        sink_l = np.linalg.norm(sink_reg, axis=0)
+        mask = sink_l < self.fields_reg_l[f, miny:maxy, minx:maxx]
+
+        self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
+
+        # update intensity
+        self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
+        # self.intensities[f, miny:maxy, minx:maxx][mask_fringe] = np.nan
+
+        # update regression
+        self.fields_reg[f, :, miny:maxy, minx:maxx][:, mask] = sink_reg[:, mask]
+
+        # update wh
+        assert wh[0] > 0.0
+        assert wh[1] > 0.0
+        self.fields_wh[f, :, miny:maxy, minx:maxx][:, mask] = np.expand_dims(wh, 1)
+
+        # update bmin
+        half_scale = 0.5 * min(wh[0], wh[1])
+        bmin = max(0.1 * half_scale, self.config.bmin / self.config.meta.stride)
+        self.fields_reg_bmin[f, miny:maxy, minx:maxx][mask] = bmin
+        self.fields_wh_bmin[f, miny:maxy, minx:maxx][mask] = bmin
+
+    
+
+    def fill_detection_max4(self, f, xy, wh):
+        '''
+        Use a 4x4 field with ignore region surrounding it.
+        '''
+        xy_offset = [-0.5, -0.5]
+
+        w = np.round(wh[0] + 0.5).astype(np.int)
+        h = np.round(wh[1] + 0.5).astype(np.int)
+
+        # xyv = kps[-1]
+
+        xy_offset = [(4 - 1.0) / 2.0, (4 - 1.0) / 2.0]
+        
+        ij = np.round(xy - xy_offset).astype(np.int) + self.config.padding
+        offset = xy - (ij + xy_offset - self.config.padding)
+        minx, miny = int(ij[0]), int(ij[1])
+        maxx, maxy = minx + 4, miny + 4
+
+        if minx + 2 < 0 or maxx - 2 > self.intensities.shape[2] or \
+           miny + 2 < 0 or maxy - 2 > self.intensities.shape[1]:
+            return
+
+        if w > 16 or h>16:
+            sigma_ignore, sigma_eff = 0.5, 0.2
+            w_ignore, h_ignore = np.round(sigma_ignore*w + 0.5).astype(np.int), np.round(sigma_ignore*h+ 0.5).astype(np.int)
+            xy_offset = [(w_ignore - 1.0) / 2.0, (h_ignore - 1.0) / 2.0]
+            ij = np.round(xy - xy_offset).astype(np.int) + self.config.padding
+            if w>16:
+                minx_ignore = int(ij[0])
+            else:
+                minx_ignore = minx
+                w_ignore = 4
+            if h>16:
+                miny_ignore = int(ij[1])
+            else:
+                miny_ignore = miny
+                h_ignore = 4
+            maxx_ignore, maxy_ignore = minx_ignore + w_ignore, miny_ignore + h_ignore
+            self.intensities[f, miny_ignore:maxy_ignore, minx_ignore:maxx_ignore] = np.nan
+        w = 4
+        h = 4
+
+        sink = create_sink_2d(w, h)
+
+        minx_n = max(0, minx)
+        miny_n = max(0, miny)
+        maxx_n = min(maxx, self.intensities.shape[2])
+        maxy_n = min(maxy, self.intensities.shape[1])
+        sink = sink[:, (miny_n-miny):(miny_n-miny) + (maxy_n-miny_n), (minx_n-minx):(minx_n-minx) + (maxx_n-minx_n)]
+        minx = minx_n
+        maxx = maxx_n
+        miny = miny_n
+        maxy = maxy_n
+        offset = offset.reshape(2, 1, 1)
+
+         # update intensity
+        # self.intensities[f, miny:maxy, minx:maxx] = 1.0
+        # update regression
+        sink_reg = sink + offset
+        sink_l = np.linalg.norm(sink_reg, axis=0)
+        mask = sink_l < self.fields_reg_l[f, miny:maxy, minx:maxx]
+
+        self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
+
+        # update intensity
+        self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
+        # self.intensities[f, miny:maxy, minx:maxx][mask_fringe] = np.nan
+
+        # update regression
+        self.fields_reg[f, :, miny:maxy, minx:maxx][:, mask] = sink_reg[:, mask]
+
+        # update wh
+        assert wh[0] > 0.0
+        assert wh[1] > 0.0
+        self.fields_wh[f, :, miny:maxy, minx:maxx][:, mask] = np.expand_dims(wh, 1)
+
+        # update bmin
+        half_scale = 0.5 * min(wh[0], wh[1])
+        bmin = max(0.1 * half_scale, self.config.bmin / self.config.meta.stride)
+        self.fields_reg_bmin[f, miny:maxy, minx:maxx][mask] = bmin
+        self.fields_wh_bmin[f, miny:maxy, minx:maxx][mask] = bmin
+
+
+
+
+
+
+
 
     def fields(self, valid_area):
         p = self.config.padding
