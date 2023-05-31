@@ -47,8 +47,9 @@ class CifDetGenerator():
         self.fields_wh_bmin = None
         self.fields_reg_l = None
 
-        self.sink = create_sink(config.side_length)
-        self.s_offset = (config.side_length - 1.0) / 2.0
+        if config.side_length >= 1:
+            self.sink = create_sink(config.side_length)
+            self.s_offset = (config.side_length - 1.0) / 2.0
 
     def __call__(self, image, anns, meta):
         width_height_original = image.shape[2:0:-1]
