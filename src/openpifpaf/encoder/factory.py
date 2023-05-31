@@ -45,7 +45,10 @@ def configure(args):
     Caf.aspect_ratio = args.caf_aspect_ratio
 
     # configure CIFDET
-    CifDet.side_length = args.cifdet_side_length
+    if len(args.cifdet_side_length) == 1:
+        CifDet.side_length = args.cifdet_side_length[0]
+    else:
+        CifDet.side_length = args.cifdet_side_length
 
     # configure AnnRescaler
     AnnRescaler.suppress_selfhidden = args.encoder_suppress_selfhidden
