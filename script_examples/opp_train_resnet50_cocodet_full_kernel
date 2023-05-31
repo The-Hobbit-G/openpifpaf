@@ -1,5 +1,15 @@
 #!/bin/bash -l
 
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=48G
+#SBATCH --partition=gpu
+#SBATCH --qos=debug
+#SBATCH --gres=gpu:1
+#SBATCH --time=00:30:00
+#SBATCH --output=/scratch/izar/jiguo/train/cocodet/resnet50/%x.out
+
 shopt -s extglob
 
 export MASTER_ADDR=$(hostname)
@@ -10,10 +20,10 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/train/resnet50_fpn/debug/cocodet"
+xpdir="/scratch/izar/jiguo/train/cocodet/resnet50/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
-# mkdir -p ${xpdir}/code
-# tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
+mkdir -p ${xpdir}/code
+tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
 mkdir -p ${xpdir}/logs
 
 
@@ -21,7 +31,8 @@ cd ..
 
 mkdir -p ${xpdir}/checkpoints
 
-python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
+srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
+  --output ${xpdir}/checkpoints/${SLURM_JOB_NAME}.pt \
   --dataset=cocodet \
   --cocodet-square-edge=513 \
   --cocodet-extended-scale \
@@ -38,7 +49,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --weight-decay=1e-5 \
   --b-scale=10.0 \
   --clip-grad-value=10.0 \
-  2>&1 | tee ${xpdir}/logs/debug.log
+  2>&1 | tee ${xpdir}/logs/${SLURM_JOB_NAME}.log"
 
 cd -
 
