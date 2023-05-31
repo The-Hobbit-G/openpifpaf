@@ -4,8 +4,8 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=48G
-#SBATCH --partition=gpu
-#SBATCH --qos=debug
+#SBATCH --partition=debug
+#SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --time=00:30:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocodet/resnet50/%x.out
