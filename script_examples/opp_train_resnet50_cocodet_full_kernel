@@ -6,7 +6,7 @@
 #SBATCH --mem=64G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocodet/resnet50/%x.out
 
@@ -22,8 +22,8 @@ echo STARTING AT `date`
 
 xpdir="/scratch/izar/jiguo/train/cocodet/resnet50/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
-mkdir -p ${xpdir}/code
-tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
+# mkdir -p ${xpdir}/code
+# tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
 mkdir -p ${xpdir}/logs
 
 
