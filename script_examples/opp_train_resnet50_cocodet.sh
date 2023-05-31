@@ -28,7 +28,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
   --basenet=resnet50 \
-  --cifdet-side-length=-2 \
+  --cifdet-side-length=16 \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
