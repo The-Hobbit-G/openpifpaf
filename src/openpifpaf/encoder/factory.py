@@ -45,7 +45,7 @@ def configure(args):
     Caf.aspect_ratio = args.caf_aspect_ratio
 
     # configure CIFDET
-    if len(args.cifdet_side_length) == 1:
+    if type(args.cifdet_side_length)==list and len(args.cifdet_side_length) == 1:
         CifDet.side_length = args.cifdet_side_length[0]
     else:
         CifDet.side_length = args.cifdet_side_length
