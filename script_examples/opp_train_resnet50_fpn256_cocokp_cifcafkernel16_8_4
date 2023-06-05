@@ -21,8 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.epoch065"
-optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.optim.epoch065"
+checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.epoch102"
+optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.optim.epoch102"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
