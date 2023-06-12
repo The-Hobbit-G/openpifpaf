@@ -7,7 +7,7 @@
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
-#SBATCH --time=72:00:00
+#SBATCH --time=24:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/%x.out
 
 shopt -s extglob
@@ -21,8 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.epoch102"
-optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.optim.epoch102"
+checkpoint="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.epoch141"
+optimizer_cp="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4/checkpoints/opp_train_resnet50_fpn256_cocokp_cifcafkernel16_8_4.pt.optim.epoch141"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
