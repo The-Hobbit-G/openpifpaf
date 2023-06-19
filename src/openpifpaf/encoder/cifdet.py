@@ -291,26 +291,29 @@ class CifDetGenerator():
         maxy = maxy_n
         offset = offset.reshape(2, 1, 1)
 
-         # update intensity
-        # self.intensities[f, miny:maxy, minx:maxx] = 1.0
+        # update intensity
+        ####
+        self.intensities[f, miny:maxy, minx:maxx] = 1.0
         # update regression
         sink_reg = sink + offset
         sink_l = np.linalg.norm(sink_reg, axis=0)
         mask = sink_l < self.fields_reg_l[f, miny:maxy, minx:maxx]
-
+        ####
+        self.fields_reg[f, :, miny:maxy, minx:maxx][:, mask] = \
+            sink_reg[:, mask]
         self.fields_reg_l[f, miny:maxy, minx:maxx][mask] = sink_l[mask]
 
         # update intensity
-        self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
+        # self.intensities[f, miny:maxy, minx:maxx][mask] = 1.0
         # self.intensities[f, miny:maxy, minx:maxx][mask_fringe] = np.nan
 
         # update regression
-        self.fields_reg[f, :, miny:maxy, minx:maxx][:, mask] = sink_reg[:, mask]
+        # self.fields_reg[f, :, miny:maxy, minx:maxx][:, mask] = sink_reg[:, mask]
 
         # update wh
         assert wh[0] > 0.0
         assert wh[1] > 0.0
-        self.fields_wh[f, :, miny:maxy, minx:maxx][:, mask] = np.expand_dims(wh, 1)
+        self.fields_wh[f, :, miny:maxy, minx:maxx][:, mask] = np.expand_dims(np.log(wh), 1)
 
         # update bmin
         half_scale = 0.5 * min(wh[0], wh[1])
