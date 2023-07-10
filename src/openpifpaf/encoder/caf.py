@@ -87,6 +87,9 @@ class AssociationFiller:
 
     def fill_field_values(self, field_i, fij, fill_values):
         raise NotImplementedError
+    
+    def fill_cafdet_field_values(self, field_i, fij, fill_value):
+        raise NotImplementedError
 
     def fields_as_tensor(self, valid_area):
         raise NotImplementedError
@@ -359,7 +362,8 @@ class AssociationFiller:
                     continue
                 self.fields_reg_l[category_id-1][field_i, fij[1], fij[0]] = sink_l
 
-                self.fill_cafdet_field_values(field_i, fij, fill_value, category_id)
+                self.fill_cafdet_field_values(field_i, fij, fill_value) 
+                #category_id is not necessary here since it's contained in fill_value
 
 
 class CafGenerator(AssociationFiller):
