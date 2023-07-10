@@ -30,8 +30,11 @@ class Shell(torch.nn.Module):
         self.head_nets = None
         self.process_input = process_input
         self.process_heads = process_heads
-
-        self.set_head_nets(head_nets)
+        
+        if head_nets[0].__class__ == list:
+            self.set_multi_head_nets(head_nets)
+        else:
+            self.set_head_nets(head_nets)
 
     @property
     def head_metas(self):
@@ -49,6 +52,24 @@ class Shell(torch.nn.Module):
 
 
         self.head_nets = head_nets
+
+
+    def set_single_head_nets(self, head_nets):
+        if not isinstance(head_nets, torch.nn.ModuleList):
+            head_nets = torch.nn.ModuleList(head_nets)
+
+        for hn_i, hn in enumerate(head_nets):
+            hn.meta.head_index = hn_i
+            hn.meta.base_stride = self.base_net.stride
+        return head_nets
+
+    def set_multi_head_nets(self, head_nets):
+        # set all cifcag heads for cifcaf detector
+        # head_nets is a list of lists of head_nets [(cifdet1, cafdet1), (cifdet2, cafdet2), ...]
+        # we want the output to be [(cifdet1, cafdet1), (cifdet2, cafdet2), ...]
+        # and the targets to be [(ciftarget1, caftarget1), (ciftarget2, caftarget2), ...]
+        # apply set_head_nets to each head_net list in head_nets
+        self.head_nets = [self.set_single_head_nets(hn) for hn in head_nets]
 
     def forward(self, image_batch, *, head_mask=None):
         if self.process_input is not None:
@@ -75,10 +96,18 @@ class Shell(torch.nn.Module):
                 # head_outputs = self.process_heads(head_outputs)
                 head_outputs = multi_apply(self.process_heads,head_outputs)
         else:
-            if head_mask is not None:
-                head_outputs = tuple(hn(x) if m else None for hn, m in zip(self.head_nets, head_mask))
+            if type(self.head_nets) == list and isinstance(self.head_nets[0], torch.nn.ModuleList):
+                #in this case, head_outputs would be a tuple of tuples , and each inner tuple contains the outputs of the cifdet,cafdet head of one category
+                #tuple(tuple(cifdet1,cafdet1),tuple(cifdet2,cafdet2),...)
+                if head_mask is not None:
+                    head_outputs = tuple(tuple(hn(x) if m else None for hn, m in zip(hns,head_mask)) for hns in self.head_nets)
+                else:
+                    head_outputs = tuple(tuple(hn(x) for hn in hns) for hns in self.head_nets)
             else:
-                head_outputs = tuple(hn(x) for hn in self.head_nets)
+                if head_mask is not None:
+                    head_outputs = tuple(hn(x) if m else None for hn, m in zip(self.head_nets, head_mask))
+                else:
+                    head_outputs = tuple(hn(x) for hn in self.head_nets)
 
             if self.process_heads is not None:
                 head_outputs = self.process_heads(head_outputs)

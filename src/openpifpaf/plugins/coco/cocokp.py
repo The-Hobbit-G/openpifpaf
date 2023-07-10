@@ -8,7 +8,11 @@ from .dataset import CocoDataset
 from .constants import (
     COCO_CATEGORIES,
     COCO_KEYPOINTS,
+    COCODET_KEYPOINTS, #for detection with cifcaf
+    COCODET_FULL_KEYPOINTS, #for detection with cifcaf
     COCO_PERSON_SKELETON,
+    COCODET_SKELETON,  #for detection with cifcaf
+    COCODET_FULL_SKELETON, #for detection with cifcaf
     COCO_PERSON_SIGMAS,
     COCO_PERSON_SCORE_WEIGHTS,
     COCO_UPRIGHT_POSE,

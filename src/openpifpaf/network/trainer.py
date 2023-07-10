@@ -186,12 +186,20 @@ class Trainer():
             # print(len(targets),len(targets[0]),len(targets[1]))
             # print(type(data),len(data))
             
-            if type(targets[0]) == list:
+            if type(targets[0]) == list and self.model.neck_net is not None:
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
                     targets = tuple([[head.to(self.device, non_blocking=True)
                             if head is not None else None
                             for head in target] if target is not None else None for target in targets]) #now the target would be tuple([tensors,...],[tensors,...],...)
+            elif type(targets[0]) == list and self.model.neck_net is None:
+                with torch.autograd.profiler.record_function('to-device'):
+                    data = data.to(self.device, non_blocking=True)
+                    assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
+                    targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
+                                      targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
+                                        for i in range(len(targets[0]))])
+                    #in this case, the new targets would be tuple([cifdet_target1,cafdet_target1],[cifdet_target2,cafdet_target2],...)
             else:
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
@@ -210,7 +218,7 @@ class Trainer():
                 torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
         with torch.autograd.profiler.record_function('loss'):
             # print('targets type: {}'.format(type(targets)))
-            if type(targets) == tuple:
+            if type(targets) == tuple and self.model.neck_net is not None:
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
                 ###check the shape of outputs and targets:
@@ -239,6 +247,17 @@ class Trainer():
                     if multistage_head_losses[0][i] is not None:
                         head_losses[i] = sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses)
                 # loss = sum(head_losses)
+            elif type(targets) == tuple and self.model.neck_net is None:
+                # deal with the case where we use cifcaf detection head
+                assert type(outputs[0]) == tuple
+                assert len(targets) == len(outputs)
+                multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
+                assert len(multiclass_loss) == len(multiclass_head_losses)
+                loss = sum(multiclass_loss)
+                head_losses = [None] * len(multiclass_head_losses[0])
+                for i in range(len(head_losses)):
+                    if multiclass_head_losses[0][i] is not None:
+                        head_losses[i] = sum([head_loss[i] for head_loss in multiclass_head_losses])
             else:
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))

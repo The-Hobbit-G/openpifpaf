@@ -65,6 +65,8 @@ class Cif(Base):
 
     training_weights: List[float] = None
 
+    categories: List[str] = None  #to be used in detction with cifcaf
+
     @property
     def n_fields(self):
         return len(self.keypoints)
@@ -92,6 +94,8 @@ class Caf(Base):
     decoder_confidence_scales: List[float] = None
 
     training_weights: List[float] = None
+
+    categories: List[str] = None #to be used in detction with cifcaf
 
     @property
     def n_fields(self):

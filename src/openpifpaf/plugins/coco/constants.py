@@ -7,6 +7,14 @@ COCO_PERSON_SKELETON = [
     (2, 4), (3, 5), (4, 6), (5, 7),
 ]
 
+COCODET_FULL_SKELETON = [
+    (1,2),(1,3),(1,4),(1,5),
+]
+
+COCODET_SKELETON = [
+    (1,2),(1,3),
+]
+
 
 KINEMATIC_TREE_SKELETON = [
     (1, 2), (2, 4),  # left head
@@ -38,6 +46,20 @@ COCO_KEYPOINTS = [
     'right_knee',      # 15
     'left_ankle',      # 16
     'right_ankle',     # 17
+]
+
+COCODET_FULL_KEYPOINTS = [
+    'center',            # 1
+    'top_left',        # 2
+    'top_right',       # 3
+    'bottom_left',        # 4
+    'bottom_right',       # 5
+]
+
+COCODET_KEYPOINTS = [
+    'center',            # 1
+    'top_left',        # 2
+    'bottom_right',       # 3
 ]
 
 

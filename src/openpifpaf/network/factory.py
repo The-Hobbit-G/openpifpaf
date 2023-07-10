@@ -500,8 +500,22 @@ class Factory(Configurable):
             # if self.base_name.startswith('resnet'):
             #     basenet.pool0_stride = self.pool0stride
             # print('basenet.pool0_stride:',basenet.pool0_stride)
-            headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
+            #TODO: config cifcafdet head
+            if head_metas[0].name == 'cif' and len(head_metas[0].categories) > 1:
+                assert head_metas[0].categories == head_metas[1].categories
+                headnets = []
+                n_categories = len(head_metas[0].categories)
+                for _ in range(n_categories):
+                    head = []
+                    for h in head_metas:
+                        head.append(HEADS[h.__class__](h, basenet.out_features))
+                    headnets.append(head)
+                #headnets would be in the shape of [[cifdet1,cafdet1],[cifdet2,caffdet2],...] and 
+                #the length of headnets would be the number of categories
+            else:
+                headnets = [HEADS[h.__class__](h, basenet.out_features) for h in head_metas]
             net_cpu = nets.Shell(basenet, headnets)
+
 
         
         

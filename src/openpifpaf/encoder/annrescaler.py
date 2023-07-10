@@ -175,6 +175,22 @@ class AnnRescaler():
         LOG.debug('instance scale = %.3f (factor = %.2f, clipped factor = %.2f)',
                   scale, factor, factor_clipped)
         return scale
+    
+    def cif_detections(self, anns):
+        category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
+                             ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride,(ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
+                           for ann in anns if not ann['iscrowd']]
+        #The resulting list, category_bboxes, contains tuples where each tuple consists of 
+        #the category ID and the adjusted bounding box coordinates(in the order of center, top_left, bottom_right).
+        #[(category_id, [center_x, center_y, top_left_x, top_left_y, bottom_right_x, bottom_right_y])]
+        return category_bboxes
+    
+    def detections_scale(self, category_bboxes):
+        category_id, bbox = category_bboxes
+        assert len(bbox) == 6
+        #compute the area of the bbox
+        area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3])
+        return area**0.5
 
 
 class AnnRescalerDet():
@@ -196,7 +212,11 @@ class AnnRescalerDet():
     def detections(self, anns):
         category_bboxes = [(ann['category_id'], ann['bbox'] / self.stride)
                            for ann in anns if not ann['iscrowd']]
+        #The resulting list, category_bboxes, contains tuples where each tuple consists of 
+        #the category ID and the adjusted bounding box coordinates.
         return category_bboxes
+
+    
 
     def bg_mask(self, anns, width_height, *, crowd_margin):
         """Create background mask taking crowd annotations into account."""

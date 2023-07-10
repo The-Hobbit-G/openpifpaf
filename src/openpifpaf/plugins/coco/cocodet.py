@@ -8,6 +8,15 @@ from .cocokp import CocoKp
 from .constants import (
     COCO_CATEGORIES,
     COCO_KEYPOINTS,
+    COCODET_KEYPOINTS, #for detection with cifcaf
+    COCODET_FULL_KEYPOINTS, #for detection with cifcaf
+    COCO_PERSON_SKELETON,
+    COCODET_SKELETON,  #for detection with cifcaf
+    COCODET_FULL_SKELETON, #for detection with cifcaf
+    COCO_PERSON_SIGMAS,
+    COCO_PERSON_SCORE_WEIGHTS,
+    COCO_UPRIGHT_POSE,
+    DENSER_COCO_PERSON_CONNECTIONS,
     HFLIP,
 )
 from .dataset import CocoDataset
@@ -37,13 +46,32 @@ class CocoDet(openpifpaf.datasets.DataModule):
     rescale_images = 1.0
     upsample_stride = 1
 
+    #add bmin for cocodet with cifcaf
+    bmin = 0.1
+
     eval_annotation_filter = True
 
+    '''
     def __init__(self):
         super().__init__()
         cifdet = openpifpaf.headmeta.CifDet('cifdet', 'cocodet', COCO_CATEGORIES)
         cifdet.upsample_stride = self.upsample_stride
         self.head_metas = [cifdet]
+    '''
+
+    def __init__(self):
+        super().__init__()
+        cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
+                                      keypoints=COCODET_KEYPOINTS,
+                                      draw_skeleton=COCODET_SKELETON,
+                                      categories=COCO_CATEGORIES,)
+        cifdet.upsample_stride = self.upsample_stride
+        cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
+                                      keypoints=COCODET_KEYPOINTS,
+                                      skeleton=COCODET_SKELETON,
+                                      categories=COCO_CATEGORIES,)
+        cafdet.upsample_stride = self.upsample_stride
+        self.head_metas = [cifdet, cafdet]
 
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
@@ -83,6 +111,10 @@ class CocoDet(openpifpaf.datasets.DataModule):
         group.add_argument('--cocodet-upsample',
                            default=cls.upsample_stride, type=int,
                            help='head upsample stride')
+        #add bmin for cocodet with cifcaf
+        group.add_argument('--cocodet-bmin',
+                           default=cls.bmin, type=float,
+                           help='bmin')
 
     @classmethod
     def configure(cls, args: argparse.Namespace):
@@ -104,8 +136,12 @@ class CocoDet(openpifpaf.datasets.DataModule):
         cls.rescale_images = args.cocodet_rescale_images
         cls.upsample_stride = args.cocodet_upsample
 
+        #add bmin for cocodet with cifcaf
+        cls.bmin = args.cocodet_bmin
+
         cls.eval_annotation_filter = args.coco_eval_annotation_filter
 
+    '''
     def _preprocess(self):
         enc = openpifpaf.encoder.CifDet(self.head_metas[0])
 
@@ -147,6 +183,52 @@ class CocoDet(openpifpaf.datasets.DataModule):
             openpifpaf.transforms.UnclippedArea(threshold=0.75),
             openpifpaf.transforms.TRAIN_TRANSFORM,
             openpifpaf.transforms.Encoders([enc]),
+        ])
+    '''
+    
+    def _preprocess(self):
+        # enc = openpifpaf.encoder.CifDet(self.head_metas[0])
+        encoders = [openpifpaf.encoder.Cif(self.head_metas[0], bmin=self.bmin),
+                    openpifpaf.encoder.Caf(self.head_metas[1], bmin=self.bmin)]
+
+        if not self.augmentation:
+            return openpifpaf.transforms.Compose([
+                openpifpaf.transforms.NormalizeAnnotations(),
+                openpifpaf.transforms.RescaleAbsolute(self.square_edge),
+                openpifpaf.transforms.CenterPad(self.square_edge),
+                openpifpaf.transforms.EVAL_TRANSFORM,
+                openpifpaf.transforms.Encoders(encoders),
+            ])
+
+        if self.extended_scale:
+            rescale_t = openpifpaf.transforms.RescaleRelative(
+                scale_range=(0.5 * self.rescale_images,
+                             2.0 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
+        else:
+            rescale_t = openpifpaf.transforms.RescaleRelative(
+                scale_range=(0.7 * self.rescale_images,
+                             1.5 * self.rescale_images),
+                power_law=True, stretch_range=(0.75, 1.33))
+
+        return openpifpaf.transforms.Compose([
+            openpifpaf.transforms.NormalizeAnnotations(),
+            openpifpaf.transforms.RandomApply(
+                openpifpaf.transforms.HFlip(COCO_KEYPOINTS, HFLIP), 0.5),
+            rescale_t,
+            openpifpaf.transforms.RandomApply(
+                openpifpaf.transforms.Blur(), self.blur),
+            openpifpaf.transforms.RandomChoice(
+                [openpifpaf.transforms.RotateBy90(),
+                 openpifpaf.transforms.RotateUniform(10.0)],
+                [self.orientation_invariant, 0.2],
+            ),
+            openpifpaf.transforms.Crop(self.square_edge, use_area_of_interest=True),
+            openpifpaf.transforms.CenterPad(self.square_edge),
+            openpifpaf.transforms.MinSize(min_side=4.0),
+            openpifpaf.transforms.UnclippedArea(threshold=0.75),
+            openpifpaf.transforms.TRAIN_TRANSFORM,
+            openpifpaf.transforms.Encoders(encoders),
         ])
 
     def train_loader(self):
