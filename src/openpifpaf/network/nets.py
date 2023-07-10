@@ -69,7 +69,7 @@ class Shell(torch.nn.Module):
         # we want the output to be [(cifdet1, cafdet1), (cifdet2, cafdet2), ...]
         # and the targets to be [(ciftarget1, caftarget1), (ciftarget2, caftarget2), ...]
         # apply set_head_nets to each head_net list in head_nets
-        self.head_nets = [self.set_single_head_nets(hn) for hn in head_nets]
+        self.head_nets = torch.nn.ModuleList([self.set_single_head_nets(hn) for hn in head_nets])
 
     def forward(self, image_batch, *, head_mask=None):
         if self.process_input is not None:
