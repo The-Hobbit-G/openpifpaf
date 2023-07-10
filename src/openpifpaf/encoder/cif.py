@@ -160,9 +160,9 @@ class CifGenerator():
 
     def fill_cifdet(self, detections):
         for category_id, bbox in detections:
-            xy_center = bbox[:2]  #center of the bbox
-            xy_top_left = bbox[2:4]
-            xy_bottom_right = bbox[4:]
+            xy_center = np.asarray(bbox[:2])  #center of the bbox
+            xy_top_left = np.asarray(bbox[2:4])
+            xy_bottom_right = np.asarray(bbox[4:])
             wh = [xy_bottom_right[0] - xy_top_left[0], xy_bottom_right[1] - xy_top_left[1]] #width and height of the bbox
             #TODO: assign boxes of different scales to different levels of FPN
             scale = np.sqrt(wh[0]*wh[1])
