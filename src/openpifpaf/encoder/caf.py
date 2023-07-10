@@ -121,7 +121,7 @@ class AssociationFiller:
             width_height_original = image.shape[2:0:-1]
             detections = self.rescaler.cif_detections(anns)
             bg_mask = self.rescaler.bg_mask(anns, width_height_original,
-                                        crowd_margin=(self.config.side_length - 1) / 2)
+                                        crowd_margin=(self.config.min_size - 1) / 2)
             #TODO: figure out field shape
             n_fields = self.config.meta.n_fields
             self.field_shape = (
