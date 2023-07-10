@@ -212,7 +212,7 @@ class AssociationFiller:
 
     def fill_caf_detections(self, detection, fill_value):
         category_id, bbox = detection
-        cafdet_keypoints = [np.asarray([bbox[2*i],bbox[2*i+1]]) for i in range(self.config.meta.n_fields)]
+        cafdet_keypoints = [np.asarray([bbox[2*i],bbox[2*i+1]]) for i in range(len(self.config.meta.keypoints))]
         print(cafdet_keypoints,len(cafdet_keypoints))
 
         for field_i, joint1i, joint2i in self.config.fill_plan:
