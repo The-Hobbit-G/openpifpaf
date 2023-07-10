@@ -213,10 +213,10 @@ class AssociationFiller:
     def fill_caf_detections(self, detection, fill_value):
         category_id, bbox = detection
         cafdet_keypoints = [np.asarray([bbox[2*i],bbox[2*i+1]]) for i in range(len(self.config.meta.keypoints))]
-        print(cafdet_keypoints,len(cafdet_keypoints))
+        # print(cafdet_keypoints,len(cafdet_keypoints))
 
         for field_i, joint1i, joint2i in self.config.fill_plan:
-            print(field_i, joint1i, joint2i)
+            # print(field_i, joint1i, joint2i)
             joint1 = cafdet_keypoints[joint1i] #keypoints coordinate of the first joint connected by the i_th joint connection
             joint2 = cafdet_keypoints[joint2i] #keypoints coordinate of the second joint connected by the i_th joint connection
             #check if the joint is visible
@@ -475,7 +475,7 @@ class CafGenerator(AssociationFiller):
         detection, scale = fill_value
 
         category_id, bbox = detection
-        cafdet_keypoints = [np.asarray([bbox[2*i],bbox[2*i+1]]) for i in range(self.config.meta.n_fields)]
+        cafdet_keypoints = [np.asarray([bbox[2*i],bbox[2*i+1]]) for i in range(len(self.config.meta.keypoints))]
 
         if self.config.use_fpn:
             # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
