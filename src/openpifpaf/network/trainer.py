@@ -255,7 +255,7 @@ class Trainer():
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
                 # deal with the case where we use cifcaf detection head
                 assert type(outputs[0]) == tuple
-                print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
+                # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
