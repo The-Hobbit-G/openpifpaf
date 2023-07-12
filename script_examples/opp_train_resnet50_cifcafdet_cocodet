@@ -3,11 +3,11 @@
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=20
-#SBATCH --mem=48G
+#SBATCH --mem=96G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
-#SBATCH --time=02:00:00
+#SBATCH --time=72:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/%x.out
 
 shopt -s extglob
