@@ -49,14 +49,14 @@ def model_migration(net_cpu):
                     hn.meta.head_index = hn_i
                 if hn.meta.name == 'cif' and 'score_weights' not in vars(hn.meta):
                     hn.meta.score_weights = [3.0] * 3 + [1.0] * (hn.meta.n_fields - 3)
-
-    for hn_i, hn in enumerate(net_cpu.head_nets):
-        if not hn.meta.base_stride:
-            hn.meta.base_stride = net_cpu.base_net.stride
-        if hn.meta.head_index is None:
-            hn.meta.head_index = hn_i
-        if hn.meta.name == 'cif' and 'score_weights' not in vars(hn.meta):
-            hn.meta.score_weights = [3.0] * 3 + [1.0] * (hn.meta.n_fields - 3)
+    else:
+        for hn_i, hn in enumerate(net_cpu.head_nets):
+            if not hn.meta.base_stride:
+                hn.meta.base_stride = net_cpu.base_net.stride
+            if hn.meta.head_index is None:
+                hn.meta.head_index = hn_i
+            if hn.meta.name == 'cif' and 'score_weights' not in vars(hn.meta):
+                hn.meta.score_weights = [3.0] * 3 + [1.0] * (hn.meta.n_fields - 3)
 
     for mm in MODEL_MIGRATION:
         mm(net_cpu)
