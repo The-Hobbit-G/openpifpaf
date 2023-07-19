@@ -337,11 +337,19 @@ class Trainer():
 
     def val_batch(self, data, targets):
         if self.device:
-            if type(targets[0]) == list:
+            if type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
+                                             (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
                 data = data.to(self.device, non_blocking=True)
                 targets = tuple([head.to(self.device, non_blocking=True)
                         if head is not None else None
                         for head in target] for target in targets) 
+            elif type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is None) or \
+                                             (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
+                data = data.to(self.device, non_blocking=True)
+                assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
+                targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
+                                    targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
+                                    for i in range(len(targets[0]))])
             else:
                 data = data.to(self.device, non_blocking=True)
                 targets = [head.to(self.device, non_blocking=True)
@@ -351,7 +359,8 @@ class Trainer():
         with torch.inference_mode():
             outputs = self.model(data)
 
-            if type(targets) == tuple:
+            if type(targets) == tuple and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
+                                             (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
                 assert type(outputs[0]) == tuple
                 assert len(targets) == len(outputs)
                 multistage_loss, multistage_head_losses = multi_apply(self.loss,outputs,targets)
@@ -363,6 +372,19 @@ class Trainer():
                 for i in range(len(head_losses)):
                     if multistage_head_losses[0][i] is not None:
                         head_losses[i] = sum([head_loss[i] for head_loss in multistage_head_losses])/len(multistage_head_losses)
+            elif type(targets) == tuple and ((isinstance(self.model,nets.Shell) and self.model.neck_net is None) or \
+                                             (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
+                # deal with the case where we use cifcaf detection head
+                assert type(outputs[0]) == tuple
+                # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
+                assert len(targets) == len(outputs)
+                multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
+                assert len(multiclass_loss) == len(multiclass_head_losses)
+                loss = sum(multiclass_loss)
+                head_losses = [None] * len(multiclass_head_losses[0])
+                for i in range(len(head_losses)):
+                    if multiclass_head_losses[0][i] is not None:
+                        head_losses[i] = sum([head_loss[i] for head_loss in multiclass_head_losses])
             else:
                 loss, head_losses = self.loss(outputs, targets)
             loss = self.reduce_loss(loss)
