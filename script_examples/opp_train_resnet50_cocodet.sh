@@ -11,6 +11,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/resnet50_fpn/debug/cocodet"
+checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.epoch001"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.optim.epoch001"
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
@@ -27,7 +29,8 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-extended-scale \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
