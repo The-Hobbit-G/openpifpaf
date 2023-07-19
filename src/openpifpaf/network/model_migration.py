@@ -3,6 +3,8 @@ from .nets import model_defaults
 from .tracking_base import TrackingBase
 from ..signal import Signal
 
+import torch 
+
 MODEL_MIGRATION = set()
 
 
@@ -37,6 +39,16 @@ def model_migration(net_cpu):
     ##add default none for necknet for pre-trained models without fpn
     if not hasattr(net_cpu, 'neck_net'):
         net_cpu.neck_net = None
+
+    if isinstance(net_cpu.head_nets, torch.nn.ModuleList) and isinstance(net_cpu.head_nets[0],torch.nn.ModuleList):
+        for class_id, class_hn in enumerate(net_cpu.head_nets):
+            for hn_i, hn in enumerate(class_hn):
+                if not hn.meta.base_stride:
+                    hn.meta.base_stride = net_cpu.base_net.stride
+                if hn.meta.head_index is None:
+                    hn.meta.head_index = hn_i
+                if hn.meta.name == 'cif' and 'score_weights' not in vars(hn.meta):
+                    hn.meta.score_weights = [3.0] * 3 + [1.0] * (hn.meta.n_fields - 3)
 
     for hn_i, hn in enumerate(net_cpu.head_nets):
         if not hn.meta.base_stride:
