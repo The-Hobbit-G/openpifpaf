@@ -406,21 +406,38 @@ class Factory(Configurable):
             net_cpu.set_head_nets(headnets)
         elif self.head_consolidation == 'filter_and_extend':
             LOG.info('filtering for dataset heads and extending existing heads')
-            existing_headnets = {(hn.meta.dataset, hn.meta.name): hn
-                                 for hn in net_cpu.head_nets}
-            headnets = []
-            for meta_i, meta in enumerate(head_metas):
-                if (meta.dataset, meta.name) in existing_headnets:
-                    hn = existing_headnets[(meta.dataset, meta.name)]
-                    headnets.append(hn)
-                    # Match head metas by name and overwrite with meta from checkpoint.
-                    # This makes sure that the head metas have their head_index and
-                    # base_stride attributes set.
-                    head_metas[meta_i] = hn.meta
-                else:
-                    headnets.append(
-                        HEADS[meta.__class__](meta, net_cpu.base_net.out_features))
-            net_cpu.set_head_nets(headnets)
+            if net_cpu.head_nets[0].__class__ == torch.nn.ModuleList:
+                existing_headnets = {(hn.meta.dataset, hn.meta.name): hn
+                                    for hn in net_cpu.head_nets}
+                headnets = []
+                for meta_i, meta in enumerate(head_metas):
+                    if (meta.dataset, meta.name) in existing_headnets:
+                        hn = existing_headnets[(meta.dataset, meta.name)]
+                        headnets.append(hn)
+                        # Match head metas by name and overwrite with meta from checkpoint.
+                        # This makes sure that the head metas have their head_index and
+                        # base_stride attributes set.
+                        head_metas[meta_i] = hn.meta
+                    else:
+                        headnets.append(
+                            HEADS[meta.__class__](meta, net_cpu.base_net.out_features))
+                net_cpu.set_head_nets(headnets)
+            else:
+                existing_headnets = [{(hn.meta.dataset, hn.meta.name): hn
+                                    for hn in class_hn} for class_hn in net_cpu.head_nets]
+                headnets = []
+                for class_i,class_head in enumerate(existing_headnets):
+                    class_heads = []
+                    for meta_i, meta in enumerate(head_metas):
+                        if (meta.dataset, meta.name) in class_head:
+                            hn = class_head[(meta.dataset, meta.name)]
+                            class_heads.append(hn)
+                        else:
+                            class_heads.append(
+                                HEADS[meta.__class__](meta, net_cpu.base_net.out_features))
+                    headnets.append(class_heads)
+                net_cpu.set_multi_head_nets(headnets)
+            
         else:
             raise Exception('head strategy {} unknown'.format(self.head_consolidation))
 
