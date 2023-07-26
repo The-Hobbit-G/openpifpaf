@@ -416,6 +416,7 @@ class Factory(Configurable):
                         if (meta.dataset, meta.name) in class_head:
                             hn = class_head[(meta.dataset, meta.name)]
                             class_heads.append(hn)
+                            head_metas[meta_i] = hn.meta
                         else:
                             class_heads.append(
                                 HEADS[meta.__class__](meta, net_cpu.base_net.out_features))
