@@ -29,7 +29,8 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-extended-scale \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
