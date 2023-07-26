@@ -177,6 +177,8 @@ class AnnRescaler():
         return scale
     
     def cif_detections(self, anns):
+        for ann in anns:
+            print(ann['bbox'],type(ann['bbox']))
         category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
                              ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride,(ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
                            for ann in anns if not ann['iscrowd']]
