@@ -30,7 +30,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
   --checkpoint=${checkpoint} \
-  --resume-training=${optimizer_cp} \
+  --resume-training=${optimizer_cp} \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
