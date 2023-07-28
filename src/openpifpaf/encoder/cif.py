@@ -85,6 +85,7 @@ class CifGenerator():
             #fields would be in the order of [center,top_left,bottom_right], and there would be n_categories of them
 
             #TODO: visualize the fields
+            print(type(image))
             for detection in detections:
                 center_point = detection[1][:2]
                 top_left_point = detection[1][2:4]
