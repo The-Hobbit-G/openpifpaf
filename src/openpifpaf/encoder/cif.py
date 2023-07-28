@@ -97,7 +97,7 @@ class CifGenerator():
                 image = cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0,255,0), -1)
                 #draw bottom right point in image with blue color using opencv
                 image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
-            cv2.imwrite('/home/jiguo/test.jpg', image)
+            cv2.imwrite('test.jpg', image)
 
 
         return fields
