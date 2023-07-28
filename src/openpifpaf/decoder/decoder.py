@@ -123,6 +123,7 @@ class Decoder:
         # print(len(fields_batch[0]))
         # print(type(fields_batch[0][0]),len(fields_batch[0][0]))
 
+        '''The following parts won't be executed in most cases'''
         if gt_anns_batch is None:
             gt_anns_batch = [None for _ in fields_batch]
 

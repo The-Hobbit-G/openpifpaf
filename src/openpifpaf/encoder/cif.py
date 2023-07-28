@@ -5,6 +5,8 @@ from typing import ClassVar
 import numpy as np
 import torch
 
+import cv2
+
 from .annrescaler import AnnRescaler
 from .. import headmeta
 from ..visualizer import Cif as CifVisualizer
@@ -83,6 +85,18 @@ class CifGenerator():
             #fields would be in the order of [center,top_left,bottom_right], and there would be n_categories of them
 
             #TODO: visualize the fields
+            for detection in detections:
+                center_point = detection[1][:2]
+                top_left_point = detection[1][2:4]
+                bottom_right_point = detection[1][4:]
+                #draw center point in image with red color using opencv
+                image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
+                #draw top left point in image with green color using opencv
+                image = cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0,255,0), -1)
+                #draw bottom right point in image with blue color using opencv
+                image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
+            cv2.imwrite('/home/jiguo/test.jpg', image)
+
 
         return fields
 
