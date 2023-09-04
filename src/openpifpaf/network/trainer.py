@@ -429,21 +429,21 @@ class Trainer():
             print("meta length: {}".format(len(meta)))
             print('cif_detections length: {}'.format(len(meta[0]['cif_detections'][0][1])))
 
-            # cif_detections = meta[0]['cif_detections']
-            # cif_stride = meta[0]['cif_stride']
-            # image = data[0]
+            cif_detections = meta[0]['cif_detections']
+            cif_stride = meta[0]['cif_stride']
+            image = data[0].cpu().numpy().transpose(1,2,0)
     
-            # for detection in cif_detections:
-            #     center_point = detection[1][:2] 
-            #     top_left_point = detection[1][2:4] 
-            #     bottom_right_point = detection[1][4:] 
-            #     #draw center point in image with red color using opencv
-            #     image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
-            #     #draw top left point in image with green color using opencv
-            #     image = cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0,255,0), -1)
-            #     #draw bottom right point in image with blue color using opencv
-            #     image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
-            # cv2.imwrite('test.jpg', image)
+            for detection in cif_detections:
+                center_point = detection[1][:2] * cif_stride
+                top_left_point = detection[1][2:4] * cif_stride
+                bottom_right_point = detection[1][4:] * cif_stride
+                #draw center point in image with red color using opencv
+                image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
+                #draw top left point in image with green color using opencv
+                image = cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0,255,0), -1)
+                #draw bottom right point in image with blue color using opencv
+                image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
+            cv2.imwrite('test_{}.jpg'.format(meta[0]['image_id']), image)
 
             # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
             # print("Current shared memory soft limit: {} bytes".format(soft))
