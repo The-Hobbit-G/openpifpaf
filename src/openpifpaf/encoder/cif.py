@@ -86,6 +86,7 @@ class CifGenerator():
 
             #TODO: visualize the fields
             # print(type(image)) #<class 'torch.tensor'>
+            print(meta['dataset_index'])
             # image = image.numpy()
             # for detection in detections:
             #     center_point = detection[1][:2]
