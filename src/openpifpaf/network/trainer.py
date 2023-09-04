@@ -421,6 +421,8 @@ class Trainer():
         for batch_idx, (data, target, meta) in enumerate(scenes):
 
             #check annotations
+            print(type(meta))
+            print(meta)
             print(meta['dataset_index'])
 
             # cif_detections = target[0][1]
