@@ -88,7 +88,9 @@ class CifGenerator():
             # print(type(image)) #<class 'torch.tensor'>
             # print(meta['dataset_index'])
             for detection in detections:
-                detection[1] = tuple([dec * self.rescaler.stride for dec in detection[1]])
+                temp_list = list(detection)
+                temp_list[1] *= self.rescaler.stride
+                detection = tuple(temp_list)
             # image = image.numpy()
             # for detection in detections:
             #     center_point = detection[1][:2] * self.rescaler.stride
