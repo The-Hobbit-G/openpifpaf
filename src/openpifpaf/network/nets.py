@@ -96,7 +96,7 @@ class Shell(torch.nn.Module):
                 # head_outputs = self.process_heads(head_outputs)
                 head_outputs = multi_apply(self.process_heads,head_outputs)
         else:
-            print(type(self.head_nets),type(self.head_nets[0]))
+            # print(type(self.head_nets),type(self.head_nets[0]))
             if isinstance(self.head_nets, torch.nn.ModuleList) and isinstance(self.head_nets[0], torch.nn.ModuleList):
                 #in this case, head_outputs would be a tuple of tuples , and each inner tuple contains the outputs of the cifdet,cafdet head of one category
                 #tuple(tuple(cifdet1,cafdet1),tuple(cifdet2,cafdet2),...)
