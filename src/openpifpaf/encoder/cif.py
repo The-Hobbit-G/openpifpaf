@@ -87,11 +87,11 @@ class CifGenerator():
             #TODO: visualize the fields
             # print(type(image)) #<class 'torch.tensor'>
             # print(meta['dataset_index'])
-            unstride_detections = []
-            for detection in detections:
-                temp_list = list(detection)
-                temp_list[1] *= self.rescaler.stride
-                unstride_detections.append(tuple(temp_list))
+            # unstride_detections = []
+            # for detection in detections:
+            #     temp_list = list(detection)
+            #     temp_list[1] *= self.rescaler.stride
+            #     unstride_detections.append(tuple(temp_list))
             # image = image.numpy()
             # for detection in detections:
             #     center_point = detection[1][:2] * self.rescaler.stride
@@ -107,7 +107,7 @@ class CifGenerator():
 
 
         # return fields
-        return [fields, unstride_detections]
+        return [fields, detections]
 
     def init_fields(self, n_fields, bg_mask):
         field_w = bg_mask.shape[1] + 2 * self.config.padding
