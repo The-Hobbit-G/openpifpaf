@@ -432,6 +432,7 @@ class Trainer():
             cif_detections = meta[0]['cif_detections']
             cif_stride = meta[0]['cif_stride']
             image = data[0].cpu().numpy().transpose(1,2,0)
+            print(image.shape,type(image))
     
             for detection in cif_detections:
                 center_point = detection[1][:2] * cif_stride
