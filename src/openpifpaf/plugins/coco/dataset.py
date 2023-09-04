@@ -129,7 +129,7 @@ class CocoDataset(torch.utils.data.Dataset):
 
         # preprocess image and annotations
         image, anns, meta = self.preprocess(image, anns, meta)
-        
+        print(meta['dataset_index'])
         #TODO: use add_encoder attribute to add specific encoders for outputs at different stage
         # strides = [4,8,16] #stides should be given by the user or gained from the basenet(need to be done later)
         # for i in range(len(strides)):

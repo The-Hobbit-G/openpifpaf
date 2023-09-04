@@ -89,9 +89,9 @@ class CifGenerator():
             print(meta['dataset_index'])
             # image = image.numpy()
             # for detection in detections:
-            #     center_point = detection[1][:2]
-            #     top_left_point = detection[1][2:4]
-            #     bottom_right_point = detection[1][4:]
+            #     center_point = detection[1][:2] * self.rescaler.stride
+            #     top_left_point = detection[1][2:4] * self.rescaler.stride
+            #     bottom_right_point = detection[1][4:] * self.rescaler.stride
             #     #draw center point in image with red color using opencv
             #     image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
             #     #draw top left point in image with green color using opencv
