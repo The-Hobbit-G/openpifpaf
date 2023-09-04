@@ -423,16 +423,16 @@ class Trainer():
             #check annotations
             # print(type(meta))
             # print(meta)
-            print(type(data),data.size())
+            print(type(data),data.size(),data[0].size())
             print(meta[0]['dataset_index'],meta[0]['image_id'])
             print(meta[0]['cif_detections'],meta[0]['cif_stride'])
             print("meta length: {}".format(len(meta)))
             print('cif_detections length: {}'.format(len(meta[0]['cif_detections'][0][1])))
 
-            # cif_detections = target[0][1]
-            # target = [target[0][0],target[1]]
-            # image = data.cpu().numpy()
-
+            # cif_detections = meta[0]['cif_detections']
+            # cif_stride = meta[0]['cif_stride']
+            # image = data[0]
+    
             # for detection in cif_detections:
             #     center_point = detection[1][:2] 
             #     top_left_point = detection[1][2:4] 
