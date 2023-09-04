@@ -8,6 +8,7 @@ import shutil
 import time
 import psutil
 import resource
+import cv2
 
 import torch
 
@@ -417,7 +418,26 @@ class Trainer():
         head_epoch_counts = None
         last_batch_end = time.time()
         self.optimizer.zero_grad()
-        for batch_idx, (data, target, _) in enumerate(scenes):
+        for batch_idx, (data, target, meta) in enumerate(scenes):
+
+            #check annotations
+            print(meta['dataset_index'])
+
+            # cif_detections = target[0][1]
+            # target = [target[0][0],target[1]]
+            # image = data.cpu().numpy()
+
+            # for detection in cif_detections:
+            #     center_point = detection[1][:2] 
+            #     top_left_point = detection[1][2:4] 
+            #     bottom_right_point = detection[1][4:] 
+            #     #draw center point in image with red color using opencv
+            #     image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
+            #     #draw top left point in image with green color using opencv
+            #     image = cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0,255,0), -1)
+            #     #draw bottom right point in image with blue color using opencv
+            #     image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
+            # cv2.imwrite('test.jpg', image)
 
             # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
             # print("Current shared memory soft limit: {} bytes".format(soft))
