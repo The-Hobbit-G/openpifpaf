@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
-#SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/%x.out
+#SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet_check/resnet50/%x.out
 
 shopt -s extglob
 
@@ -20,9 +20,8 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.epoch101"
-optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.optim.epoch101"
+xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_check/resnet50/${SLURM_JOB_NAME}"
+
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
 # tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -40,8 +39,7 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocodet-extended-scale \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
-  --checkpoint=${checkpoint} \
-  --resume-training=${optimizer_cp} \
+  --basenet=resnet50 \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
