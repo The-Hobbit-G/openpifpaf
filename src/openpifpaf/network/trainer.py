@@ -9,6 +9,7 @@ import time
 import psutil
 import resource
 import cv2
+import numpy as np
 
 import torch
 
@@ -431,7 +432,7 @@ class Trainer():
 
             cif_detections = meta[0]['cif_detections']
             cif_stride = meta[0]['cif_stride']
-            image = data[0].cpu().numpy().transpose(1,2,0)
+            image = data[0].cpu().numpy().transpose(1,2,0).astype(np.uint8).copy()
             print(image.shape,type(image))
     
             for detection in cif_detections:
