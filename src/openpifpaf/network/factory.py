@@ -519,7 +519,8 @@ class Factory(Configurable):
             #     basenet.pool0_stride = self.pool0stride
             # print('basenet.pool0_stride:',basenet.pool0_stride)
             #TODO: config cifcafdet head
-            if head_metas[0].name == 'cif' and len(head_metas[0].categories) > 1:
+            if head_metas[0].name == 'cif' and head_metas[0].categories is not None:
+                assert len(head_metas[0].categories) > 1
                 assert head_metas[0].categories == head_metas[1].categories
                 headnets = []
                 n_categories = len(head_metas[0].categories)
