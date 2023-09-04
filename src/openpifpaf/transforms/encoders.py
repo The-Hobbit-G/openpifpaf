@@ -11,8 +11,10 @@ class Encoders(Preprocess):
         #in case of using cifcafdet, anns would be [[cif1,cif2,...], [caf1,caf2,...]]
         
         cif_detections = anns[0][1]
+        cif_stride = anns[0][2]
         anns = [anns[0][0], anns[1]]
         meta['cif_detections'] = cif_detections
+        meta['cif_stride'] = cif_stride
 
 
         # for ann in anns:

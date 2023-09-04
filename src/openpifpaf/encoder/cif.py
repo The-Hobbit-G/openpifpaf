@@ -107,7 +107,7 @@ class CifGenerator():
 
 
         # return fields
-        return [fields, detections]
+        return [fields, detections, self.rescaler.stride]
 
     def init_fields(self, n_fields, bg_mask):
         field_w = bg_mask.shape[1] + 2 * self.config.padding
