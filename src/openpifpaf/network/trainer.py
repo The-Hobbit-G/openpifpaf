@@ -423,7 +423,7 @@ class Trainer():
             #check annotations
             # print(type(meta))
             # print(meta)
-            print(type(data),len(data))
+            print(type(data),data.size())
             print(meta[0]['dataset_index'],meta[0]['image_id'])
             print(meta[0]['cif_detections'],meta[0]['cif_stride'])
             print('cif_detections length: {}'.format(len(meta[0]['cif_detections'][0][1])))
