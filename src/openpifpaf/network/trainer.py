@@ -419,13 +419,13 @@ class Trainer():
         head_epoch_counts = None
         last_batch_end = time.time()
         self.optimizer.zero_grad()
-        for batch_idx, (data, target, meta) in enumerate(scenes):
+        for batch_idx, (data, target, _) in enumerate(scenes):
 
             #check annotations
             # print(type(meta))
             # print(meta)
             
-            ''''''
+            '''
             print(data)
             print(type(data),data.size(),data[0].size())
             print(meta[0]['dataset_index'],meta[0]['image_id'])
@@ -452,6 +452,7 @@ class Trainer():
                 #draw bottom right point in image with blue color using opencv
                 image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
             cv2.imwrite('/home/jiguo/test_{}.jpg'.format(meta[0]['image_id']), image)
+            '''
             
 
             # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
