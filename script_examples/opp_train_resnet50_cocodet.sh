@@ -31,7 +31,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocodet-upsample=2 \
   --basenet=resnet50 \
   --epochs=150 \
-  --batch-size=1 \
+  --batch-size=8 \
   --lr=0.0001 \
   --lr-decay 130 140 \
   --lr-decay-epochs=10 \
