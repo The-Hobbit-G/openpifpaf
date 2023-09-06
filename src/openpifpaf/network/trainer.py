@@ -444,6 +444,7 @@ class Trainer():
                 center_point = detection[1][:2] * cif_stride
                 top_left_point = detection[1][2:4] * cif_stride
                 bottom_right_point = detection[1][4:] * cif_stride
+                print('center point: {}, top left point: {}, bottom right point: {}'.format(center_point,top_left_point,bottom_right_point))
                 #draw center point in image with red color using opencv
                 image = cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0,0,255), -1)
                 #draw top left point in image with green color using opencv
