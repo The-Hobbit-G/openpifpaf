@@ -425,7 +425,8 @@ class Trainer():
             # print(type(meta))
             # print(meta)
             
-            '''
+            ''''''
+            print(data)
             print(type(data),data.size(),data[0].size())
             print(meta[0]['dataset_index'],meta[0]['image_id'])
             print(meta[0]['cif_detections'],meta[0]['cif_stride'])
@@ -433,7 +434,7 @@ class Trainer():
             print('cif_detections length: {}'.format(len(meta[0]['cif_detections'][0][1])))
 
             cif_detections = meta[0]['cif_detections']
-            cif_stride = meta[0]['cif_stride']
+            cif_stride = meta[0]['cif_stride']  #in this case is 8 (base_stride=16, upsampling=2)
             image = data[0].cpu().numpy().transpose(1,2,0).astype(np.uint8).copy()
             print(image.shape,type(image))
 
@@ -450,7 +451,7 @@ class Trainer():
                 #draw bottom right point in image with blue color using opencv
                 image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
             cv2.imwrite('/home/jiguo/test_{}.jpg'.format(meta[0]['image_id']), image)
-            '''
+            
 
             # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
             # print("Current shared memory soft limit: {} bytes".format(soft))
