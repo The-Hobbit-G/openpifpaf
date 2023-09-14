@@ -190,6 +190,7 @@ class Trainer():
             # print(len(targets),len(targets[0]),len(targets[1]))
             # print(type(data),len(data))
             
+            #for FPN case
             if type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
                 with torch.autograd.profiler.record_function('to-device'):
@@ -197,6 +198,7 @@ class Trainer():
                     targets = tuple([[head.to(self.device, non_blocking=True)
                             if head is not None else None
                             for head in target] if target is not None else None for target in targets]) #now the target would be tuple([tensors,...],[tensors,...],...)
+            #for cifcafdet case
             elif type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is None) or \
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
                 with torch.autograd.profiler.record_function('to-device'):
@@ -340,12 +342,14 @@ class Trainer():
 
     def val_batch(self, data, targets):
         if self.device:
+            #for FPN case
             if type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
                 data = data.to(self.device, non_blocking=True)
                 targets = tuple([head.to(self.device, non_blocking=True)
                         if head is not None else None
                         for head in target] for target in targets) 
+            #for cifcafdet case
             elif type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is None) or \
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
                 data = data.to(self.device, non_blocking=True)

@@ -95,7 +95,7 @@ class AssociationFiller:
         raise NotImplementedError
 
     def __call__(self, image, anns, meta):
-        if self.config.meta.dataset == 'cocokp':
+        if self.config.meta.dataset == 'cocokp' and len(self.config.meta.keypoints) > 5:
             width_height_original = image.shape[2:0:-1]
 
             keypoint_sets = self.rescaler.keypoint_sets(anns)

@@ -28,6 +28,8 @@ try:
 except ImportError:
     pass
 
+TEST_CATEGOERY = ['person']
+
 
 class CocoDet(openpifpaf.datasets.DataModule):
     # cli configurable
@@ -37,6 +39,17 @@ class CocoDet(openpifpaf.datasets.DataModule):
     train_image_dir = 'data-mscoco/images/train2017/'
     val_image_dir = 'data-mscoco/images/val2017/'
     eval_image_dir = val_image_dir
+
+
+    ##test cifcafdet with just one categoty
+    # train_annotations = 'data-mscoco/annotations/person_keypoints_train2017.json'
+    # val_annotations = 'data-mscoco/annotations/person_keypoints_val2017.json'
+    # # val_annotations = train_annotations
+    # eval_annotations = val_annotations
+    # train_image_dir = 'data-mscoco/images/train2017/'
+    # val_image_dir = 'data-mscoco/images/val2017/'
+    # # val_image_dir = train_image_dir
+    # eval_image_dir = val_image_dir
 
     square_edge = 513
     extended_scale = False
@@ -65,13 +78,13 @@ class CocoDet(openpifpaf.datasets.DataModule):
                                       keypoints=COCODET_KEYPOINTS,
                                       sigmas=None,
                                       draw_skeleton=COCODET_SKELETON,
-                                      categories=COCO_CATEGORIES,)
+                                      categories=TEST_CATEGOERY,)
         cifdet.upsample_stride = self.upsample_stride
         cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
                                       keypoints=COCODET_KEYPOINTS,
                                       sigmas=None,
                                       skeleton=COCODET_SKELETON,
-                                      categories=COCO_CATEGORIES,)
+                                      categories=TEST_CATEGOERY,)
         cafdet.upsample_stride = self.upsample_stride
         self.head_metas = [cifdet, cafdet]
 
@@ -249,7 +262,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.train_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[],
+            category_ids=[1],
         )
 
         return torch.utils.data.DataLoader(
@@ -273,7 +286,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.val_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[],
+            category_ids=[1],
         )
         return torch.utils.data.DataLoader(
             val_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
@@ -297,7 +310,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.eval_annotations,
             preprocess=self._eval_preprocess(),
             annotation_filter=self.eval_annotation_filter,
-            category_ids=[],
+            category_ids=[1],
         )
         return torch.utils.data.DataLoader(
             eval_data, batch_size=self.batch_size, shuffle=False,

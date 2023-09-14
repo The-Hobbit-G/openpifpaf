@@ -52,7 +52,7 @@ class CifGenerator():
         self.s_offset = (config.side_length - 1.0) / 2.0
 
     def __call__(self, image, anns, meta):
-        if self.config.meta.dataset == 'cocokp':
+        if self.config.meta.dataset == 'cocokp' and len(self.config.meta.keypoints) > 5:
             width_height_original = image.shape[2:0:-1]
 
             ###This operation maps the gd keypoint coordinates into its coordinates in the featuremap to formulate the target for regression part(vectoral part) in CifCaf

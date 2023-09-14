@@ -3,12 +3,12 @@
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=2
 #SBATCH --cpus-per-task=20
-#SBATCH --mem=120G
+#SBATCH --mem=48G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
-#SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet_check/resnet50/%x.out
+#SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet_single_cat/resnet50/%x.out
 
 shopt -s extglob
 
@@ -20,7 +20,7 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_check/resnet50/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_single_cat/resnet50/${SLURM_JOB_NAME}"
 
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
