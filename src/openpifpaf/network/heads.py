@@ -354,6 +354,8 @@ class CompositeField4(HeadNetwork):
             feature_width
         )
 
+        ##Don't need to care about sigmoid of the confidence, because it is already done in the BCE loss function
+
         if not self.training and self.inplace_ops:
             # classification
             classes_x = x[:, :, 1:1 + self.meta.n_confidences]

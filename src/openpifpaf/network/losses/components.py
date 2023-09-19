@@ -88,6 +88,7 @@ class Bce(torch.nn.Module):
             x[bg_clamp_mask] = self.background_clamp
         bce = torch.nn.functional.binary_cross_entropy_with_logits(
             x, t_zeroone, reduction='none')
+        # This loss combines a Sigmoid layer and the BCELoss in one single class.
         # torch.clamp_max_(bce, 10.0)
         if self.soft_clamp is not None:
             bce = self.soft_clamp(bce)
