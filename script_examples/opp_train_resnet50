@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
-#SBATCH --output=/scratch/izar/<username>/<path/to/dir>/%x.out
+#SBATCH --output=/scratch/izar/jiguo/train/cocokp/resnet50/%x.out
 
 shopt -s extglob
 
@@ -20,10 +20,10 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 echo STARTING AT `date`
 
 
-xpdir="/scratch/izar/<username>/<path/to/dir>/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/train/cocokp/resnet50/${SLURM_JOB_NAME}"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
-tar -czvf ${xpdir}/code/code.tar.gz <path/to/code/dir>
+tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
 mkdir -p ${xpdir}/logs
 
 
