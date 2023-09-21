@@ -247,7 +247,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
         ])
 
     def train_loader(self):
-        
+        '''
         train_data = CocoDataset(
             image_dir=self.train_image_dir,
             ann_file=self.train_annotations,
@@ -262,9 +262,9 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.train_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[1],
+            category_ids=[0],
         )
-        '''
+        
 
         return torch.utils.data.DataLoader(
             train_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
@@ -272,7 +272,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             collate_fn=openpifpaf.datasets.collate_images_targets_meta)
 
     def val_loader(self):
-        
+        '''
         val_data = CocoDataset(
             image_dir=self.val_image_dir,
             ann_file=self.val_annotations,
@@ -287,9 +287,9 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.val_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[1],
+            category_ids=[0],
         )
-        '''
+        
 
         return torch.utils.data.DataLoader(
             val_data, batch_size=self.batch_size, shuffle=not self.debug and self.augmentation,
