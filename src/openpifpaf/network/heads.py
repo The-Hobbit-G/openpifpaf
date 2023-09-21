@@ -290,7 +290,10 @@ class CompositeField4(HeadNetwork):
         self.dropout = torch.nn.Dropout2d(p=self.dropout_p)
 
         # convolution
-        self.n_components = 1 + meta.n_confidences + meta.n_vectors * 2 + meta.n_scales
+        self.n_components = 1 + meta.n_confidences + meta.n_vectors * 2 + meta.n_scales 
+        #1 is for the logs2_c,logs2_reg, which is a predicted spread b
+        #But when compute the composite loss for caf, we only predict one spread from the network, so the output n_component = target n_component - 1
+        #(in case of cif, 5 = 1+1+1*2+1 = 5; in case of caf 8 = 1+1+2*2+2 = 9-1)
         self.conv = torch.nn.Conv2d(
             in_features, meta.n_fields * self.n_components * (meta.upsample_stride ** 2),
             kernel_size, padding=padding, dilation=dilation,
