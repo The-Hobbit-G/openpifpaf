@@ -251,6 +251,7 @@ class CompositeLoss(torch.nn.Module):
         assert t.shape[2] == self.n_confidences + self.n_vectors * 3 + self.n_scales
 
         #TODO: Filter out the targets without any instances(due to scale limit) and their corresponding featuremaps
+        ''' comment out the filter for FPN since the target shape of cifcafdet is different from the one for FPN
         valid_id=[]
         for img_id in range(t.shape[0]):
             # print(img_id,torch.isnan(t[img_id,:,1,:,:]).all())
@@ -264,6 +265,7 @@ class CompositeLoss(torch.nn.Module):
         else:
             x = x[valid_id,:,:,:,:]
             t = t[valid_id,:,:,:,:]
+        '''
 
         # print('valid id : {}'.format(valid_id))
         # print('x shape: {}, t shape: {}'.format(x.shape,t.shape))
@@ -274,8 +276,10 @@ class CompositeLoss(torch.nn.Module):
         t = torch.transpose(t, 2, 4)  #t.shape = (batch_size, num of keypoints/associations, field_w, field_h, field_channels)
         finite = torch.isfinite(t)
         t_confidence_raw = t[:, :, :, :, 0:self.n_confidences]
-        bg_mask = torch.all(t_confidence_raw == 0.0, dim=4)
+        bg_mask = torch.all(t_confidence_raw == 0.0, dim=4) 
+        #bg_mask.shape = (batch_size, num of keypoints/associations, field_w, field_h) gives us the mask of the background(True at the background(c=0), False at the foreground(c=1))
         c_mask = torch.all(t_confidence_raw > 0.0, dim=4)
+        #c_mask.shape = (batch_size, num of keypoints/associations, field_w, field_h) gives us the mask of the foreground(True at the foreground(c=0), False at the background(c=1))
         reg_mask = torch.all(finite[:, :, :, :, self.n_confidences:1 + self.n_vectors * 2], dim=4)
         scale_mask = torch.all(finite[:, :, :, :, self.n_confidences + self.n_vectors * 3:], dim=4)
 
