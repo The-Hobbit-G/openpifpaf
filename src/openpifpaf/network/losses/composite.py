@@ -343,6 +343,11 @@ class CompositeLoss(torch.nn.Module):
         # for i in range(self.n_scales):
         #     l_scale_component = l_scale[:, i]
         #     l_scale_component = l_scale_component * scale_factor + 0.5 * x_logs2
+        
+        ####x_logs2_c and x_logs2_reg are the logs of the variance of the confidence and regression respectively,
+        ####They are used to calculate the composite uncertainty of the confidence and regression
+        ####If we have a large negative value in confidence loss, it means the confidence is very high, and we are certain about the prediction
+        ####But this could also happen because we predict 0 for most out locations for the confidence(might because we don't have much objects in the data due to inapproper fpn filter), which is not what we want
 
         if self.weights is not None:
             full_weights = torch.empty_like(t_confidence_raw)
