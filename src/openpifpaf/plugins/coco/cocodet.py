@@ -262,7 +262,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.train_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[0],
+            category_ids=[],
         )
         
 
@@ -287,7 +287,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             ann_file=self.val_annotations,
             preprocess=self.multiencoder_process(),
             annotation_filter=True,
-            category_ids=[0],
+            category_ids=[],
         )
         
 
