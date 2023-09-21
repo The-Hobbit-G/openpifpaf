@@ -186,7 +186,8 @@ class Trainer():
                     if target is not None:
                         assert target.is_pinned()
 
-            print(type(targets),type(targets[0]),type(targets[1]),type(targets[2]))
+            # print(type(targets),type(targets[0]),type(targets[1]),type(targets[2]))
+            rint(type(targets),type(targets[0]),type(targets[1]))
             print(len(targets),len(targets[0]),len(targets[1]))
             print(type(data),len(data))
             
