@@ -21,7 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/${SLURM_JOB_NAME}"
-
+checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.epoch027"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet/checkpoints/opp_train_resnet50_cifcafdet_cocodet.pt.optim.epoch027"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
@@ -39,7 +40,8 @@ srun --gpu-bind=closest /bin/bash -c "time python3 -m openpifpaf.train --ddp \
   --cocodet-extended-scale \
   --cocodet-orientation-invariant=0.1 \
   --cocodet-upsample=2 \
-  --basenet=resnet50 \
+  --checkpoint=${checkpoint} \
+  --resume-training=${optimizer_cp} \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
