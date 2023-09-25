@@ -144,7 +144,7 @@ class Decoder:
         start_decoder = time.perf_counter()
         result = self.worker_pool.starmap(
             self._mappable_annotations, zip(fields_batch, image_batch, gt_anns_batch))
-        #fields_batch are [Cif,Caf,...] w/o fpn or [[Cif1,Caf1,...],[Cif2,Caf2,...],...] with fpn put in an extra len=1 list,
+        #fields_batch are [Cif,Caf,...] w/o fpn or [[Cif1,Caf1,...],[Cif2,Caf2,...],...] of length=output layers with fpn or [cifdet1,cafdet1], [cifdet2,cafdet2], ...] of length=categories with cifcafdet put in an extra len=1 list,
         #so that when using zip, the outer list will be lifted
         self.last_decoder_time = time.perf_counter() - start_decoder
 
