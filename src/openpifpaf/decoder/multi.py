@@ -22,6 +22,7 @@ class Multi(Decoder):
                 out.append(None)
                 continue
             LOG.debug('task %d', task_i)
+            # To deal with the case that we use FPN
             if type(decoder)==list:
                 assert len(decoder)==len(all_fields)
                 for i in range(len(decoder)):

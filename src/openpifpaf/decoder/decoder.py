@@ -92,6 +92,7 @@ class Decoder:
             with torch.autograd.profiler.record_function('model'):
                 heads = model(image_batch)
                 # print(type(heads),type(heads[0]),len(heads),len(heads[0]))
+                #In the case of cifcafdet, heads would be tuple(tuple(cifdet1,cafdet1),tuple(cifdet2,cafdet2),...)
 
             # to numpy
             with torch.autograd.profiler.record_function('tonumpy'):
@@ -99,6 +100,7 @@ class Decoder:
                     heads = apply(lambda x: x.cpu(), heads)
                 else:
                     heads = apply(lambda x: x.cpu().numpy(), heads)
+                #In the case of cifcafdet, heads would be [[cifdet1,cafdet1], [cifdet2,cafdet2], ...] and the inner cifdet, cafdet would be numpy array
 
         # index by frame (item in batch)
         head_iter = apply(iter, heads)

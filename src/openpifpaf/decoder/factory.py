@@ -142,6 +142,7 @@ class Factory:
         decoders = list(sorted(decoders, key=lambda d: d.priority, reverse=True))
         LOG.debug('created %d decoders', len(decoders))
 
+        #Since we will clarify decoder_request in the cli function(also in val config files), we will not enter the following if-else statement
         if not decoders:
             LOG.warning('no decoders found for heads %s', [meta.name for meta in head_metas])
         elif len(decoders) == 1:
