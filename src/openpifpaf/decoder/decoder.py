@@ -122,7 +122,7 @@ class Decoder:
 
         ##check fields_batch type and len
         print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch)))
-        print(type(ields_batch[0]),len(fields_batch[0]))
+        print(type(fields_batch[0]),len(fields_batch[0]))
         print(type(fields_batch[0][0]),len(fields_batch[0][0]))
 
         print(type(fields_batch[0][0][0]),len(fields_batch[0][0][0]),type(fields_batch[0][0][1]),len(fields_batch[0][0][1]))
