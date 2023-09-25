@@ -239,10 +239,10 @@ class CifCaf(Decoder):
                 initial_ids_t[i] = getattr(ann_py, 'id_', -1)
             LOG.debug('initial annotations = %d', initial_annotations_t.size(0))
 
-        for vis, meta in zip(self.cif_visualizers, self.cif_metas):
-            vis.predicted(fields[meta.head_index])
-        for vis, meta in zip(self.caf_visualizers, self.caf_metas):
-            vis.predicted(fields[meta.head_index])
+        # for vis, meta in zip(self.cif_visualizers, self.cif_metas):
+        #     vis.predicted(fields[meta.head_index])
+        # for vis, meta in zip(self.caf_visualizers, self.caf_metas):
+        #     vis.predicted(fields[meta.head_index])
 
         start = time.perf_counter()
         annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
