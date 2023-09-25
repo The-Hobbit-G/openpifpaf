@@ -125,7 +125,7 @@ class Decoder:
         print(type(fields_batch[0]),len(fields_batch[0]))
         print(type(fields_batch[0][0]),len(fields_batch[0][0]))
 
-        print(type(fields_batch[0][0][0]),len(fields_batch[0][0][0]),type(fields_batch[0][0][1]),len(fields_batch[0][0][1]))
+        print(type(fields_batch[0][0][0]),fields_batch[0][0][0].shape,type(fields_batch[0][0][1]),fields_batch[0][0][1].shape)
 
         '''The following parts won't be executed in most cases'''
         if gt_anns_batch is None:
