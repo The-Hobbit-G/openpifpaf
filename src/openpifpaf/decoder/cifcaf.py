@@ -261,6 +261,7 @@ class CifCaf(Decoder):
             vis.predicted(fields, low)
 
         print(annotations,annotation_ids)
+        print(annotations.shape,annotation_ids.shape)
 
         annotations_py = []
         for ann_data, ann_id in zip(annotations, annotation_ids):
