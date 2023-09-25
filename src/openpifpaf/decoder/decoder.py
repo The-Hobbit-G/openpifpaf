@@ -121,11 +121,15 @@ class Decoder:
         self.last_nn_time = time.perf_counter() - start_nn
 
         ##check fields_batch type and len
-        print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch)))
-        print(type(fields_batch[0]),len(fields_batch[0]))
-        print(type(fields_batch[0][0]),len(fields_batch[0][0]))
+        print('image_batch type: {}, length: {}'.format(type(image_batch),len(image_batch)))
+        print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch))) #In the case of cifcafdet, fields_batch would be a list of len=1(a true field output list in a list)
+        print(type(fields_batch[0]),len(fields_batch[0])) #In the case of cifcafdet, fields_batch[0] would be a list of 91 length
+        print(type(fields_batch[0][0]),len(fields_batch[0][0])) #In the case of cifcafdet, each element in fields_batch[0] would be the cifdet, cafdet field of one category, so the length is 2
 
         print(type(fields_batch[0][0][0]),fields_batch[0][0][0].shape,type(fields_batch[0][0][1]),fields_batch[0][0][1].shape)
+        #cifdet field shape: (keypoints, n_components, height, width), caf field shape: (skeletons, n_components, height, width). Note that we use batch_size = 1 during evaluation.
+        #For example: cifdet field shape: (3, 5, 55, 81), caf field shape: (2, 8, 55, 81)
+
 
         '''The following parts won't be executed in most cases'''
         if gt_anns_batch is None:
