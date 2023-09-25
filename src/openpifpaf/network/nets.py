@@ -40,7 +40,10 @@ class Shell(torch.nn.Module):
     def head_metas(self):
         if self.head_nets is None:
             return None
-        return [hn.meta for hn in self.head_nets]
+        elif isinstance(self.head_nets, torch.nn.ModuleList) and isinstance(self.head_nets[0], torch.nn.ModuleList):
+            return [hn.meta for hn in self.head_nets[0]]
+        else:
+            return [hn.meta for hn in self.head_nets]
 
     def set_head_nets(self, head_nets):
         if not isinstance(head_nets, torch.nn.ModuleList):
