@@ -121,7 +121,7 @@ class Decoder:
         self.last_nn_time = time.perf_counter() - start_nn
 
         ##check fields_batch type and len
-        print('image_batch type: {}, length: {}'.format(type(image_batch),len(image_batch)))
+        print('image_batch type: {}, shape: {}'.format(type(image_batch),image_batch.shape))
         print('field_batch type: {}, length: {}'.format(type(fields_batch),len(fields_batch))) #In the case of cifcafdet, fields_batch would be a list of len=1(a true field output list in a list)
         print(type(fields_batch[0]),len(fields_batch[0])) #In the case of cifcafdet, fields_batch[0] would be a list of 91 length
         print(type(fields_batch[0][0]),len(fields_batch[0][0])) #In the case of cifcafdet, each element in fields_batch[0] would be the cifdet, cafdet field of one category, so the length is 2
