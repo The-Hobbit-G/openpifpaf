@@ -260,6 +260,8 @@ class CifCaf(Decoder):
             fields, low = self.cpp_decoder.get_cifhr()
             vis.predicted(fields, low)
 
+        print(annotations,annotation_ids)
+
         annotations_py = []
         for ann_data, ann_id in zip(annotations, annotation_ids):
             ann = Annotation(self.cif_metas[0].keypoints,
