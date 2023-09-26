@@ -281,6 +281,10 @@ class CifCaf(Decoder):
             assert type(fields[0])==list
             assert len(fields) == len(self.cif_metas[0].categories)
             print('fields length:{}'.format(len(fields[0])))
+
+            categories = []
+            scores = []
+            boxes = []
             for field_id, category_fields in enumerate(fields):
                 category = field_id + 1
                 annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
@@ -293,9 +297,7 @@ class CifCaf(Decoder):
                 )
                 # print(annotations,annotation_ids)
                 # print(annotations.shape,annotation_ids.shape)
-                categories = []
-                scores = []
-                boxes = []
+                
                 if annotation_ids.numel() != 0:
                     categoty_labels = [category] * annotation_ids.numel()
                     category_bboxes = []
@@ -374,9 +376,9 @@ class CifCaf(Decoder):
                     categories+=categoty_labels
                     boxes.append(category_bboxes)
                     scores+=categoty_scores
-            # categories = torch.tensor(categories)
-            # boxes = torch.stack(boxes,dim=0)
-            # scores = torch.tensor(scores)
+            categories = torch.tensor(categories)
+            boxes = torch.stack(boxes,dim=0)
+            scores = torch.tensor(scores)
             print(categories,boxes,scores)
             print(categories.shape,boxes.shape,scores.shape)
             annotations_py = []
