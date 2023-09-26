@@ -301,12 +301,12 @@ class CifCaf(Decoder):
                         bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
 
                         # bbox derived from center and top_left
-                        width = 2 * (center[:, 0] - top_left[:, 0])
-                        height = 2 * (center[:, 1] - top_left[:, 1])
+                        width = 2 * (center[0] - top_left[0])
+                        height = 2 * (center[1] - top_left[1])
 
                         # Calculate the x and y coordinates of the bounding box
-                        x = top_left[:, 0]  # x-coordinate of the top-left corner
-                        y = top_left[:, 1]  # y-coordinate of the top-left corner
+                        x = top_left[0]  # x-coordinate of the top-left corner
+                        y = top_left[1]  # y-coordinate of the top-left corner
 
                         # Create the bounding box label as (x, y, width, height)
                         bbox_1 = torch.stack((x, y, width, height))
@@ -317,12 +317,12 @@ class CifCaf(Decoder):
                         ''''''
 
                         # bbox derived from center and bottom_right
-                        width = 2 * (bottom_right[:, 0] - center[:, 0])
-                        height = 2 * (bottom_right[:, 1] - center[:, 1])
+                        width = 2 * (bottom_right[0] - center[0])
+                        height = 2 * (bottom_right[1] - center[1])
 
                         # Calculate the x and y coordinates of the bounding box
-                        x = bottom_right[:, 0] - width # x-coordinate of the top-left corner
-                        y = bottom_right[:, 1] - height
+                        x = bottom_right[0] - width # x-coordinate of the top-left corner
+                        y = bottom_right[1] - height
 
                         # Create the bounding box label as (x, y, width, height)
                         bbox_2 = torch.stack((x, y, width, height))
@@ -333,12 +333,12 @@ class CifCaf(Decoder):
                         ''''''
 
                         # bbox derived from top_left and bottom_right
-                        width = bottom_right[:, 0] - top_left[:, 0]
-                        height = bottom_right[:, 1] - top_left[:, 1]
+                        width = bottom_right[0] - top_left[0]
+                        height = bottom_right[1] - top_left[1]
 
                         # Calculate the x and y coordinates of the bounding box
-                        x = top_left[:, 0]
-                        y = top_left[:, 1]
+                        x = top_left[0]
+                        y = top_left[1]
 
                         # Create the bounding box label as (x, y, width, height)
                         bbox_3 = torch.stack((x, y, width, height))
