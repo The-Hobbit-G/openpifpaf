@@ -281,7 +281,6 @@ class CifCaf(Decoder):
             assert type(fields[0])==list
             assert len(fields) == len(self.cif_metas[0].categories)
             print('fields length:{}'.format(len(fields[0])))
-            i=0
             for field_id, category_fields in enumerate(fields):
                 category = field_id + 1
                 annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
@@ -295,7 +294,65 @@ class CifCaf(Decoder):
                 # print(annotations,annotation_ids)
                 # print(annotations.shape,annotation_ids.shape)
                 if annotation_ids.numel() != 0:
-                    i+=1
-            print('total categories:{}'.format(i))
+                    categoty_labels = [category] * annotation_ids.numel()
+                    for ann_data, ann_id in zip(annotations, annotation_ids):
+                        center,center_c = ann_data[0, 1:3],ann_data[0, 0]
+                        top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
+                        bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
+
+                        # bbox derived from center and top_left
+                        width = 2 * (center[:, 0] - top_left[:, 0])
+                        height = 2 * (center[:, 1] - top_left[:, 1])
+
+                        # Calculate the x and y coordinates of the bounding box
+                        x = top_left[:, 0]  # x-coordinate of the top-left corner
+                        y = top_left[:, 1]  # y-coordinate of the top-left corner
+
+                        # Create the bounding box label as (x, y, width, height)
+                        bbox_1 = torch.stack((x, y, width, height))
+
+                        #Calculate the confidence score
+                        confidence_1 = center_c + top_left_c
+
+                        ''''''
+
+                        # bbox derived from center and bottom_right
+                        width = 2 * (bottom_right[:, 0] - center[:, 0])
+                        height = 2 * (bottom_right[:, 1] - center[:, 1])
+
+                        # Calculate the x and y coordinates of the bounding box
+                        x = bottom_right[:, 0] - width # x-coordinate of the top-left corner
+                        y = bottom_right[:, 1] - height
+
+                        # Create the bounding box label as (x, y, width, height)
+                        bbox_2 = torch.stack((x, y, width, height))
+
+                        #Calculate the confidence score
+                        confidence_2 = bottom_right_c + center_c
+
+                        ''''''
+
+                        # bbox derived from top_left and bottom_right
+                        width = bottom_right[:, 0] - top_left[:, 0]
+                        height = bottom_right[:, 1] - top_left[:, 1]
+
+                        # Calculate the x and y coordinates of the bounding box
+                        x = top_left[:, 0]
+                        y = top_left[:, 1]
+
+                        # Create the bounding box label as (x, y, width, height)
+                        bbox_3 = torch.stack((x, y, width, height))
+
+                        #Calculate the confidence score
+                        confidence_3 = top_left_c + bottom_right_c
+
+                        ''''''
+
+                        confidence_weight = torch.stack((confidence_1,confidence_2,confidence_3))
+                        confidence_weight = torch.softmax(confidence_weight,dim=0)
+                        weighted_bbox = torch.sum(confidence_weight * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
+
+                        print(confidence_weight,weighted_bbox)
+                        print(confidence_weight.shape,weighted_bbox.shape)
             annotations_py = []
         return annotations_py
