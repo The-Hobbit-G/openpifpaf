@@ -357,6 +357,7 @@ class CifCaf(Decoder):
 
                         category_bboxes.append(weighted_bbox)
                         categoty_scores.append(overall_confidence)
+                        print(overall_confidence.shape,type(overall_confidence))
                         
                         # print(confidence_1,confidence_2,confidence_3)
                         # print(confidence_weight,weighted_bbox)
@@ -365,7 +366,7 @@ class CifCaf(Decoder):
                     assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
                     categoty_labels = torch.tensor(categoty_labels)
                     category_bboxes = torch.cat(category_bboxes, dim=0)
-                    categoty_scores = torch.cat(categoty_scores)
+                    # categoty_scores = torch.cat(categoty_scores)
                     print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
                     print(categoty_labels,category_bboxes,categoty_scores)
             annotations_py = []
