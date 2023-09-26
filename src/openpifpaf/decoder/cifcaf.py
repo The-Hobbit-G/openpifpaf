@@ -281,6 +281,7 @@ class CifCaf(Decoder):
             assert type(fields[0])==list
             assert len(fields) == len(self.cif_metas[0].categories)
             print('fields length:{}'.format(len(fields[0])))
+            i=0
             for field_id, category_fields in enumerate(fields):
                 category = field_id + 1
                 annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
@@ -293,4 +294,8 @@ class CifCaf(Decoder):
                 )
                 print(annotations,annotation_ids)
                 print(annotations.shape,annotation_ids.shape)
+                if annotation_ids.numel() != 0:
+                    i+1
+            print('total categories:{}'.format(i))
+            annotations_py = []
         return annotations_py
