@@ -241,7 +241,7 @@ class CifCaf(Decoder):
         #     vis.predicted(fields[meta.head_index])
         # for vis, meta in zip(self.caf_visualizers, self.caf_metas):
         #     vis.predicted(fields[meta.head_index])
-        if self.cif_metas[0].categories is not None:
+        if self.cif_metas[0].categories is None:
             print('fields length:{}'.format(len(fields)))
             start = time.perf_counter()
             annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
