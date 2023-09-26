@@ -293,6 +293,9 @@ class CifCaf(Decoder):
                 )
                 # print(annotations,annotation_ids)
                 # print(annotations.shape,annotation_ids.shape)
+                categories = []
+                scores = []
+                boxes = []
                 if annotation_ids.numel() != 0:
                     categoty_labels = [category] * annotation_ids.numel()
                     category_bboxes = []
@@ -363,10 +366,18 @@ class CifCaf(Decoder):
                         # print(confidence_weight.shape,weighted_bbox.shape)
                         # print(overall_confidence)
                     assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
-                    categoty_labels = torch.tensor(categoty_labels)
+                    # categoty_labels = torch.tensor(categoty_labels)
                     category_bboxes = torch.stack(category_bboxes, dim=0)
-                    categoty_scores = torch.tensor(categoty_scores)
-                    print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
-                    print(categoty_labels,category_bboxes,categoty_scores)
+                    # categoty_scores = torch.tensor(categoty_scores)
+                    # print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
+                    # print(categoty_labels,category_bboxes,categoty_scores)
+                    categories+=categoty_labels
+                    boxes.append(category_bboxes)
+                    scores+=categoty_scores
+                categories = torch.tensor(categories)
+                boxes = torch.stack(boxes,dim=0)
+                scores = torch.tensor(scores)
+                print(categories,boxes,scores)
+                print(categories.shape,boxes.shape,scores.shape)
             annotations_py = []
         return annotations_py
