@@ -295,6 +295,8 @@ class CifCaf(Decoder):
                 # print(annotations.shape,annotation_ids.shape)
                 if annotation_ids.numel() != 0:
                     categoty_labels = [category] * annotation_ids.numel()
+                    category_bboxes = []
+                    categoty_scores = []
                     for ann_data, ann_id in zip(annotations, annotation_ids):
                         center,center_c = ann_data[0, 1:3],ann_data[0, 0]
                         top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
@@ -351,10 +353,20 @@ class CifCaf(Decoder):
                         confidence_weight = torch.stack((confidence_1,confidence_2,confidence_3))
                         confidence_weight = torch.softmax(confidence_weight,dim=0)
                         weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
-                        print(confidence_1,confidence_2,confidence_3)
-                        print(confidence_weight,weighted_bbox)
-                        print(confidence_weight.shape,weighted_bbox.shape)
                         overall_confidence = torch.stack((center_c,top_left_c,bottom_right_c)).sum()
-                        print(overall_confidence)
+
+                        category_bboxes.append(weighted_bbox)
+                        categoty_scores.append(overall_confidence)
+                        
+                        # print(confidence_1,confidence_2,confidence_3)
+                        # print(confidence_weight,weighted_bbox)
+                        # print(confidence_weight.shape,weighted_bbox.shape)
+                        # print(overall_confidence)
+                    assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
+                    categoty_labels = torch.cat(categoty_labels, dim=0)
+                    category_bboxes = torch.cat(category_bboxes, dim=0)
+                    categoty_scores = torch.cat(categoty_scores, dim=0)
+                    print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
+                    print(categoty_labels,category_bboxes,categoty_scores)
             annotations_py = []
         return annotations_py
