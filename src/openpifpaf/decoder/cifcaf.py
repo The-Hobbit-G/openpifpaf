@@ -364,7 +364,7 @@ class CifCaf(Decoder):
                         # print(overall_confidence)
                     assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
                     categoty_labels = torch.tensor(categoty_labels)
-                    category_bboxes = torch.cat(category_bboxes, dim=0)
+                    category_bboxes = torch.stack(category_bboxes, dim=0)
                     categoty_scores = torch.tensor(categoty_scores)
                     print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
                     print(categoty_labels,category_bboxes,categoty_scores)
