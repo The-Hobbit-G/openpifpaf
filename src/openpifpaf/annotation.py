@@ -108,7 +108,7 @@ class Annotation(Base):
         # return 0.1 * np.max(v) + 0.9 * np.mean(np.square(v))
         # return np.mean(np.square(v))
         # return np.sum(self.score_weights * np.sort(np.square(v))[::-1])
-        return np.sum(self.score_weights * np.sort(v)[::-1])
+        return np.sum(self.score_weights * np.sort(v)[::-1]) #do a weighted sum of all the scores(np.sort(v)[::-1] will put v in a descending order)
 
     def scale(self, v_th=0.5):
         m = self.data[:, 2] > v_th
