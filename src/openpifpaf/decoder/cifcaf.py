@@ -292,8 +292,8 @@ class CifCaf(Decoder):
                 initial_annotations_t,
                 initial_ids_t,
                 )
-                print(annotations,annotation_ids)
-                print(annotations.shape,annotation_ids.shape)
+                # print(annotations,annotation_ids)
+                # print(annotations.shape,annotation_ids.shape)
                 if annotation_ids.numel() != 0:
                     i+=1
             print('total categories:{}'.format(i))
