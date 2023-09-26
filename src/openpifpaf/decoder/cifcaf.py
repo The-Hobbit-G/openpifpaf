@@ -222,60 +222,75 @@ class CifCaf(Decoder):
         ]
 
     def __call__(self, fields, initial_annotations=None):
-        print('fields length:{}'.format(len(fields)))
         if not initial_annotations:
-            initial_annotations_t = None
-            initial_ids_t = None
-        else:
-            initial_annotations_t = torch.empty(
-                (len(initial_annotations), self.cif_metas[0].n_fields, 4))
-            initial_ids_t = torch.empty((len(initial_annotations),), dtype=torch.int64)
-            for i, (ann_py, ann_t) in enumerate(zip(initial_annotations, initial_annotations_t)):
-                for f in range(len(ann_py.data)):
-                    ann_t[f, 0] = float(ann_py.data[f, 2])
-                    ann_t[f, 1] = float(ann_py.data[f, 0])
-                    ann_t[f, 2] = float(ann_py.data[f, 1])
-                    ann_t[f, 3] = float(ann_py.joint_scales[f])
-                initial_ids_t[i] = getattr(ann_py, 'id_', -1)
-            LOG.debug('initial annotations = %d', initial_annotations_t.size(0))
-
+                initial_annotations_t = None
+                initial_ids_t = None
+            else:
+                initial_annotations_t = torch.empty(
+                    (len(initial_annotations), self.cif_metas[0].n_fields, 4))
+                initial_ids_t = torch.empty((len(initial_annotations),), dtype=torch.int64)
+                for i, (ann_py, ann_t) in enumerate(zip(initial_annotations, initial_annotations_t)):
+                    for f in range(len(ann_py.data)):
+                        ann_t[f, 0] = float(ann_py.data[f, 2])
+                        ann_t[f, 1] = float(ann_py.data[f, 0])
+                        ann_t[f, 2] = float(ann_py.data[f, 1])
+                        ann_t[f, 3] = float(ann_py.joint_scales[f])
+                    initial_ids_t[i] = getattr(ann_py, 'id_', -1)
+                LOG.debug('initial annotations = %d', initial_annotations_t.size(0))
         # for vis, meta in zip(self.cif_visualizers, self.cif_metas):
         #     vis.predicted(fields[meta.head_index])
         # for vis, meta in zip(self.caf_visualizers, self.caf_metas):
         #     vis.predicted(fields[meta.head_index])
+        if self.cif_metas[0].categories is not None:
+            print('fields length:{}'.format(len(fields)))
+            start = time.perf_counter()
+            annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
+                fields[self.cif_metas[0].head_index],
+                self.cif_metas[0].stride,
+                fields[self.caf_metas[0].head_index],
+                self.caf_metas[0].stride,
+                initial_annotations_t,
+                initial_ids_t,
+            )
+            LOG.debug('cpp annotations = %d (%.1fms)',
+                    len(annotations),
+                    (time.perf_counter() - start) * 1000.0)
+            for vis in self.cifhr_visualizers:
+                fields, low = self.cpp_decoder.get_cifhr()
+                vis.predicted(fields, low)
 
-        start = time.perf_counter()
-        annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
-            fields[self.cif_metas[0].head_index],
-            self.cif_metas[0].stride,
-            fields[self.caf_metas[0].head_index],
-            self.caf_metas[0].stride,
-            initial_annotations_t,
-            initial_ids_t,
-        )
-        LOG.debug('cpp annotations = %d (%.1fms)',
-                  len(annotations),
-                  (time.perf_counter() - start) * 1000.0)
-        for vis in self.cifhr_visualizers:
-            fields, low = self.cpp_decoder.get_cifhr()
-            vis.predicted(fields, low)
+            print(annotations,annotation_ids)
+            print(annotations.shape,annotation_ids.shape)
 
-        print(annotations,annotation_ids)
-        print(annotations.shape,annotation_ids.shape)
+            annotations_py = []
+            for ann_data, ann_id in zip(annotations, annotation_ids):
+                ann = Annotation(self.cif_metas[0].keypoints,
+                                self.caf_metas[0].skeleton,
+                                score_weights=self.score_weights)
+                ann.data[:, :2] = ann_data[:, 1:3]
+                ann.data[:, 2] = ann_data[:, 0]
+                ann.joint_scales[:] = ann_data[:, 3]
+                if ann_id != -1:
+                    ann.id_ = int(ann_id)
+                annotations_py.append(ann)
 
-        annotations_py = []
-        for ann_data, ann_id in zip(annotations, annotation_ids):
-            ann = Annotation(self.cif_metas[0].keypoints,
-                             self.caf_metas[0].skeleton,
-                             score_weights=self.score_weights)
-            ann.data[:, :2] = ann_data[:, 1:3]
-            ann.data[:, 2] = ann_data[:, 0]
-            ann.joint_scales[:] = ann_data[:, 3]
-            if ann_id != -1:
-                ann.id_ = int(ann_id)
-            annotations_py.append(ann)
-
-        LOG.info('annotations %d: %s',
-                 len(annotations_py),
-                 [np.sum(ann.data[:, 2] > 0.1) for ann in annotations_py])
+            LOG.info('annotations %d: %s',
+                    len(annotations_py),
+                    [np.sum(ann.data[:, 2] > 0.1) for ann in annotations_py])
+        else:
+            assert type(fields[0])==list
+            assert len(fields) == len(self.cif_metas[0].categories)
+            print('fields length:{}'.format(len(fields[0])))
+            for field_id, category_fields in enumerate(fields):
+                category = field_id + 1
+                annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
+                category_fields[self.cif_metas[0].head_index],
+                self.cif_metas[0].stride,
+                category_fields[self.caf_metas[0].head_index],
+                self.caf_metas[0].stride,
+                initial_annotations_t,
+                initial_ids_t,
+                )
+                print(annotations,annotation_ids)
+                print(annotations.shape,annotation_ids.shape)
         return annotations_py
