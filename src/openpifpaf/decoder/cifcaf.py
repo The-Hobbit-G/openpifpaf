@@ -351,7 +351,7 @@ class CifCaf(Decoder):
                         confidence_weight = torch.stack((confidence_1,confidence_2,confidence_3))
                         confidence_weight = torch.softmax(confidence_weight,dim=0)
                         weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
-
+                        print(confidence_1,confidence_2,confidence_3)
                         print(confidence_weight,weighted_bbox)
                         print(confidence_weight.shape,weighted_bbox.shape)
             annotations_py = []
