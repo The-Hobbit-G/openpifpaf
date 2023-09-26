@@ -354,5 +354,7 @@ class CifCaf(Decoder):
                         print(confidence_1,confidence_2,confidence_3)
                         print(confidence_weight,weighted_bbox)
                         print(confidence_weight.shape,weighted_bbox.shape)
+                        overall_confidence = torch.stack((center_c,top_left_c,bottom_right_c)).sum()
+                        print(overall_confidence)
             annotations_py = []
         return annotations_py
