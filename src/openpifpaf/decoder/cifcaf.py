@@ -377,7 +377,7 @@ class CifCaf(Decoder):
                     boxes.append(category_bboxes)
                     scores+=categoty_scores
             categories = torch.tensor(categories)
-            boxes = torch.stack(boxes,dim=0)
+            boxes = torch.stack(boxes,dim=1)
             scores = torch.tensor(scores)
             print(categories,boxes,scores)
             print(categories.shape,boxes.shape,scores.shape)
