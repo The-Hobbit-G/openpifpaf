@@ -89,6 +89,11 @@ class CifCaf(Decoder):
 
     reverse_match = True
 
+    iou_threshold = 0.5
+    instance_threshold = 0.15
+    nms_by_category = True
+    suppression = 0.1
+
     def __init__(self,
                  cif_metas: List[headmeta.Cif],
                  caf_metas: List[headmeta.Caf],
@@ -380,11 +385,36 @@ class CifCaf(Decoder):
                     categories+=categoty_labels
                     boxes.append(category_bboxes)
                     scores+=categoty_scores
-            categories = torch.tensor(categories)
-            boxes = torch.cat(boxes,dim=0)
-            scores = torch.tensor(scores)
-            # print(categories,boxes,scores)
-            print(categories.shape,boxes.shape,scores.shape)
-            print(scores.max())
             annotations_py = []
+            if len(boxes) > 0:
+                categories = torch.tensor(categories)
+                boxes = torch.cat(boxes,dim=0)
+                scores = torch.tensor(scores)
+                # print(categories,boxes,scores)
+                print(categories.shape,boxes.shape,scores.shape)
+                print(scores.max())
+                if self.nms_by_category:
+                    keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
+                else:
+                    keep_index = torchvision.ops.nms(boxes, scores, self.iou_threshold)
+                pre_nms_scores = scores.clone()
+                scores *= self.suppression
+                scores[keep_index] = pre_nms_scores[keep_index]
+                filter_mask = scores > self.instance_threshold
+                categories = categories[filter_mask]
+                scores = scores[filter_mask]
+                boxes = boxes[filter_mask]
+                LOG.debug('cpp annotations = %d (%.1fms)',
+                        len(scores),
+                        (time.perf_counter() - start) * 1000.0)
+
+                boxes_np = boxes.numpy()
+                #already in xywh format
+                for category, score, box in zip(categories, scores, boxes_np):
+                    ann = AnnotationDet(self.metas[0].categories)
+                    ann.set(int(category), float(score), box)
+                    annotations_py.append(ann)
+            else:
+                pass
+            
         return annotations_py
