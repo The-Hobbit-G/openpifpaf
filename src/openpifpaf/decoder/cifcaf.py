@@ -228,6 +228,7 @@ class CifCaf(Decoder):
         ]
 
     def __call__(self, fields, initial_annotations=None):
+        start = time.perf_counter()
         if not initial_annotations:
                 initial_annotations_t = None
                 initial_ids_t = None
@@ -411,7 +412,7 @@ class CifCaf(Decoder):
 
                 print(categories.shape,boxes.shape,scores.shape)
                 print(scores.max())
-                
+
                 # convert to py
                 boxes_np = boxes.numpy()
                 #already in xywh format
