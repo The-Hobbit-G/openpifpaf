@@ -5,9 +5,10 @@ from typing import List
 
 import numpy as np
 import torch
+import torchvision
 
 from .decoder import Decoder
-from ..annotation import Annotation
+from ..annotation import Annotation, AnnotationDet
 from . import utils
 from .. import headmeta, visualizer
 
@@ -408,6 +409,10 @@ class CifCaf(Decoder):
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
 
+                print(categories.shape,boxes.shape,scores.shape)
+                print(scores.max())
+                
+                # convert to py
                 boxes_np = boxes.numpy()
                 #already in xywh format
                 for category, score, box in zip(categories, scores, boxes_np):
