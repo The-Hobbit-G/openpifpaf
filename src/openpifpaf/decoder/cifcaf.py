@@ -417,7 +417,7 @@ class CifCaf(Decoder):
                 boxes_np = boxes.numpy()
                 #already in xywh format
                 for category, score, box in zip(categories, scores, boxes_np):
-                    ann = AnnotationDet(self.metas[0].categories)
+                    ann = AnnotationDet(self.cif_metas[0].categories)
                     ann.set(int(category), float(score), box)
                     annotations_py.append(ann)
             else:
