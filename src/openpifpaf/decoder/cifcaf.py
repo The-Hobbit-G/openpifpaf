@@ -355,10 +355,14 @@ class CifCaf(Decoder):
 
                         ''''''
 
-                        confidence_weight = torch.stack((confidence_1,confidence_2,confidence_3))
-                        confidence_weight = torch.softmax(confidence_weight,dim=0)
+                        confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
+                        confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
                         weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
-                        overall_confidence = torch.stack((center_c,top_left_c,bottom_right_c)).sum().item()
+                        # overall_confidence = torch.stack((center_c,top_left_c,bottom_right_c)).sum().item()
+
+                        #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
+                        overall_confidence = confidence_weight_ori@confidence_weight/2
+                        overall_confidence = overall_confidence.item()
 
                         category_bboxes.append(weighted_bbox)
                         categoty_scores.append(overall_confidence)
@@ -379,7 +383,8 @@ class CifCaf(Decoder):
             categories = torch.tensor(categories)
             boxes = torch.cat(boxes,dim=0)
             scores = torch.tensor(scores)
-            print(categories,boxes,scores)
+            # print(categories,boxes,scores)
             print(categories.shape,boxes.shape,scores.shape)
+            print(scores.max())
             annotations_py = []
         return annotations_py
