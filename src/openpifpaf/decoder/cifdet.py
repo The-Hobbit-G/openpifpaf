@@ -73,9 +73,9 @@ class CifDet(Decoder):
                   len(scores),
                   (time.perf_counter() - start) * 1000.0)
 
-        print(categories, scores, boxes)
+        # print(categories, scores, boxes)
         # print(type(categories), type(scores), type(boxes)) #all torch.Tensor
-        print(categories.shape, scores.shape, boxes.shape) #(n,) (n,) (n,4
+        # print(categories.shape, scores.shape, boxes.shape) #(n,) (n,) (n,4
 
         # convert to py
         annotations_py = []
