@@ -410,6 +410,13 @@ class CifCaf(Decoder):
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
 
+                #choose the top 100 boxes
+                if len(scores) > 100:
+                    top_k = 100
+                    scores, indices = torch.topk(scores, top_k)
+                    categories = categories[indices]
+                    boxes = boxes[indices]
+
                 # print(categories.shape,boxes.shape,scores.shape)
                 # print(scores.max())
 
