@@ -6,7 +6,7 @@
 #SBATCH --mem=120G
 #SBATCH --partition=gpu
 #SBATCH --qos=gpu
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:2
 #SBATCH --time=72:00:00
 #SBATCH --output=/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/%x.out
 
