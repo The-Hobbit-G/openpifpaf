@@ -182,6 +182,7 @@ class CifGenerator():
             self.fill_coordinate(f, xyv, joint_scale)
 
     def fill_cifdet(self, detections):
+        # if self.config.meta.n_fields == 3:
         for category_id, bbox in detections:
             xy_center = np.asarray(bbox[:2])  #center of the bbox
             xy_top_left = np.asarray(bbox[2:4])
@@ -207,6 +208,36 @@ class CifGenerator():
             self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
             self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
             self.fill_cifdet_keypoints(2, xy_bottom_right, scale, category_id-1)
+        # elif self.config.meta.n_fields == 5:
+        #     for category_id, bbox in detections:
+        #         xy_center = np.asarray(bbox[:2])  #center of the bbox
+        #         xy_top_left = np.asarray(bbox[2:4])
+        #         xy_top_right = np.asarray(bbox[4:6])
+        #         xy_bottom_left = np.asarray(bbox[6:8])
+        #         xy_bottom_right = np.asarray(bbox[8:])
+        #         wh = [xy_bottom_right[0] - xy_top_left[0], xy_bottom_right[1] - xy_top_left[1]] #width and height of the bbox
+        #         #TODO: assign boxes of different scales to different levels of FPN
+        #         scale = np.sqrt(wh[0]*wh[1])
+        #         if self.config.use_fpn:
+        #             # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
+        #             #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+        #             #     # print('ignore')
+        #             #     continue
+
+        #             # if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
+        #             #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
+        #             #     # print('ignore')
+        #             #     continue
+
+        #             if (self.config.head_index == 0 and scale>8/self.config.meta.upsample_stride) or (self.config.head_index == -1 and scale<=4/self.config.meta.upsample_stride)\
+        #             or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
+        #                 # print('ignore')
+        #                 continue
+        #         self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
+        #         self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
+        #         self.fill_cifdet_keypoints(2, xy_top_right, scale, category_id-1)
+        #         self.fill_cifdet_keypoints(3, xy_bottom_left, scale, category_id-1)
+        #         self.fill_cifdet_keypoints(4, xy_bottom_right, scale, category_id-1)
         
 
     def fill_coordinate(self, f, xyv, scale):
