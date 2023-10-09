@@ -75,33 +75,33 @@ class CocoDet(openpifpaf.datasets.DataModule):
     def __init__(self):
         super().__init__()
         #Use full corners and skeletons for cifcaf
-        # cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
-        #                               keypoints=COCODET_FULL_KEYPOINTS,
-        #                               sigmas=None,
-        #                               draw_skeleton=COCODET_FULL_SKELETON,
-        #                               categories=COCO_CATEGORIES,)
-        # cifdet.upsample_stride = self.upsample_stride
-        # cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
-        #                               keypoints=COCODET_FULL_KEYPOINTS,
-        #                               sigmas=None,
-        #                               skeleton=COCODET_FULL_SKELETON,
-        #                               categories=COCO_CATEGORIES,)
-        # cafdet.upsample_stride = self.upsample_stride
-
-
-        #Use patial corners and skeletons for cifcafdet
         cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
-                                      keypoints=COCODET_KEYPOINTS,
+                                      keypoints=COCODET_FULL_KEYPOINTS,
                                       sigmas=None,
-                                      draw_skeleton=COCODET_SKELETON,
+                                      draw_skeleton=COCODET_FULL_SKELETON,
                                       categories=COCO_CATEGORIES,)
         cifdet.upsample_stride = self.upsample_stride
         cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
-                                      keypoints=COCODET_KEYPOINTS,
+                                      keypoints=COCODET_FULL_KEYPOINTS,
                                       sigmas=None,
-                                      skeleton=COCODET_SKELETON,
+                                      skeleton=COCODET_FULL_SKELETON,
                                       categories=COCO_CATEGORIES,)
         cafdet.upsample_stride = self.upsample_stride
+
+
+        #Use patial corners and skeletons for cifcafdet
+        # cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
+        #                               keypoints=COCODET_KEYPOINTS,
+        #                               sigmas=None,
+        #                               draw_skeleton=COCODET_SKELETON,
+        #                               categories=COCO_CATEGORIES,)
+        # cifdet.upsample_stride = self.upsample_stride
+        # cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
+        #                               keypoints=COCODET_KEYPOINTS,
+        #                               sigmas=None,
+        #                               skeleton=COCODET_SKELETON,
+        #                               categories=COCO_CATEGORIES,)
+        # cafdet.upsample_stride = self.upsample_stride
         self.head_metas = [cifdet, cafdet]
     
     @classmethod
