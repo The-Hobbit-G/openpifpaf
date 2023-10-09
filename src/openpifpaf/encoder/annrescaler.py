@@ -194,9 +194,12 @@ class AnnRescaler():
     
     def detections_scale(self, category_bboxes):
         category_id, bbox = category_bboxes
-        assert len(bbox) == 6
-        #compute the area of the bbox
-        area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3])
+        if len(bbox) == 6:
+            #compute the area of the bbox
+            area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3])
+        elif len(bbox) == 10:
+            #compute the area of the bbox
+            area = (bbox[8] - bbox[2]) * (bbox[9] - bbox[3])
         return area**0.5
 
 
