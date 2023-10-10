@@ -34,8 +34,8 @@ TEST_CATEGOERY = ['person']
 class CocoDet(openpifpaf.datasets.DataModule):
     # cli configurable
     train_annotations = 'data-mscoco/annotations/instances_train2017.json'
-    # val_annotations = 'data-mscoco/annotations/instances_val2017.json'
-    val_annotations = 'data-mscoco/annotations/person_keypoints_val2017.json'
+    val_annotations = 'data-mscoco/annotations/instances_val2017.json'
+    # val_annotations = 'data-mscoco/annotations/person_keypoints_val2017.json'
     eval_annotations = val_annotations
     train_image_dir = 'data-mscoco/images/train2017/'
     val_image_dir = 'data-mscoco/images/val2017/'
