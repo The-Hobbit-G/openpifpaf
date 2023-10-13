@@ -19,6 +19,18 @@ from . import nets
 
 LOG = logging.getLogger(__name__)
 
+mean = [0.485, 0.456, 0.406]
+std = [0.229, 0.224, 0.225]
+
+# Inverse normalization function
+def inverse_normalize(tensor, mean, std):
+    if tensor.dim() == 3:
+        # Add batch dimension if not present
+        tensor = tensor.unsqueeze(0)
+    for i in range(3):
+        tensor[:, i, :, :] = (tensor[:, i, :, :] * std[i]) + mean[i]
+    return tensor
+
 
 class Trainer():
     epochs = None
@@ -430,7 +442,7 @@ class Trainer():
             # print(type(meta))
             # print(meta)
             
-            '''
+            ''''''
             print(data)
             print(type(data),data.size(),data[0].size())
             print(meta[0]['dataset_index'],meta[0]['image_id'])
@@ -457,7 +469,7 @@ class Trainer():
                 #draw bottom right point in image with blue color using opencv
                 image = cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255,0,0), -1)
             cv2.imwrite('/home/jiguo/test_{}.jpg'.format(meta[0]['image_id']), image)
-            '''
+            
             
 
             # soft, _ = resource.getrlimit(resource.RLIMIT_AS)
