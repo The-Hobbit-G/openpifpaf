@@ -637,7 +637,7 @@ def swin_tiny_patch4_window7(pretrained=True, **kwargs):
     model = SwinTransformer(embed_dim=96, depths=(2, 2, 6, 2), num_heads=(3, 6, 12, 24),
                             window_size=7, ape=False, patch_norm=True,
                             use_checkpoint=False, **kwargs)
-    url = "https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth"
+    url = "/scratch/izar/jiguo/pre-trained/swin_transformer/swin_tiny_patch4_window7_224.pth"
     model.init_weights(url if pretrained else None)
     return model
 
