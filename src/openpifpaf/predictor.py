@@ -201,8 +201,8 @@ class Predictor:
                 cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
 
                 for gt in gt_anns:
-                    gt_box = gt.data['bbox']
-                    gt_category = gt.data['category_id']
+                    gt_box = gt.bbox
+                    gt_category = gt.category_id
                     #draw gt_box in image with green color using opencv and put the category id on the top left corner
                     cv2.rectangle(image_gd, (int(gt_box[0]), int(gt_box[1])), (int(gt_box[0]+gt_box[2]), int(gt_box[1]+gt_box[3])), (0, 255, 0), 2)
                     cv2.putText(image_gd, str(gt_category), (int(gt_box[0]), int(gt_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
