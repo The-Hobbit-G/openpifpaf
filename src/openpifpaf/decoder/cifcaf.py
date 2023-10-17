@@ -390,7 +390,7 @@ class CifCaf(Decoder):
                     categories+=categoty_labels
                     boxes.append(category_bboxes)
                     scores+=categoty_scores
-                    points.append(category_points)#for visualization
+                    points+=(category_points)#for visualization
             annotations_py = []
             if len(boxes) > 0:
                 categories = torch.tensor(categories)
