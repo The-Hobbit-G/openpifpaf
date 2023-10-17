@@ -148,9 +148,9 @@ class Predictor:
 
                 #Modify for visualization
                 pred = [ann[0].inverse_transform(meta) for ann in pred]
-                pred_points = [ann[1].inverse_transform(meta) for ann in pred]
+                pred_points = [ann[1] for ann in pred]
 
-                print(pred_points[0].data, pred_points[0].data.shape)
+                print(pred_points[0], pred_points[0].shape)
 
                 if self.json_data:
                     pred = [ann.json_data() for ann in pred]
