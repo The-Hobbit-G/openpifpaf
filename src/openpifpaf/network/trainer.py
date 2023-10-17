@@ -19,17 +19,9 @@ from . import nets
 
 LOG = logging.getLogger(__name__)
 
-mean = [0.485, 0.456, 0.406]
-std = [0.229, 0.224, 0.225]
 
-# Inverse normalization function
-def inverse_normalize(tensor, mean, std):
-    if tensor.dim() == 3:
-        # Add batch dimension if not present
-        tensor = tensor.unsqueeze(0)
-    for i in range(3):
-        tensor[:, i, :, :] = (tensor[:, i, :, :] * std[i]) + mean[i]
-    return tensor
+
+
 
 
 class Trainer():

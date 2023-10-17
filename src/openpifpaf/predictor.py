@@ -10,6 +10,18 @@ from . import datasets, decoder, network, transforms, visualizer
 LOG = logging.getLogger(__name__)
 
 
+mean = [0.485, 0.456, 0.406]
+std = [0.229, 0.224, 0.225]
+# Inverse normalization function
+def inverse_normalize(tensor, mean, std):
+    if tensor.dim() == 3:
+        # Add batch dimension if not present
+        tensor = tensor.unsqueeze(0)
+    for i in range(3):
+        tensor[:, i, :, :] = (tensor[:, i, :, :] * std[i]) + mean[i]
+    return tensor
+
+
 class Predictor:
     """Convenience class to predict from various inputs with a common configuration."""
 
@@ -135,6 +147,7 @@ class Predictor:
             self.total_nn_time += self.processor.last_nn_time
             self.total_images += len(processed_image_batch)
 
+            print(type(processed_image_batch),processed_image_batch[0].shape)
             # un-batch
             for image, pred, gt_anns, meta in \
                     zip(processed_image_batch, pred_batch, gt_anns_batch, meta_batch):
