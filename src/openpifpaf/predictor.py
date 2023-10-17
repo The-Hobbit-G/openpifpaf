@@ -146,8 +146,11 @@ class Predictor:
                 # pred = [ann.inverse_transform(meta) for ann in pred]
                 gt_anns = [ann.inverse_transform(meta) for ann in gt_anns]
 
+
+
                 #Modify for visualization
                 print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
+                print(type(image),image.shape)
                 # pred = [ann[0].inverse_transform(meta) for ann in pred]
                 # pred_points = [ann[1] for ann in pred]
                 pred_ann = []
@@ -156,9 +159,19 @@ class Predictor:
                     pred_ann.append(pre[0].inverse_transform(meta))
                     pred_points.append(pre[1])
 
-                print(pred_points[0], pred_points[0].shape)
+                # print(pred_points[0], pred_points[0].shape)
 
                 pred = pred_ann
+
+                # for pred_point in pred_points:
+                    
+        
+
+
+
+
+
+
 
                 if self.json_data:
                     pred = [ann.json_data() for ann in pred]
