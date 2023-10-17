@@ -185,7 +185,7 @@ class Predictor:
                 pred = pred_ann
                 assert len(pred) == len(pred_points)
                 for pr_ann,pred_point in zip(pred,pred_points):
-                    pred_category = pr_ann.data['category_id']
+                    pred_category = pr_ann.category_id
                     pred_point = pred_point.cpu().numpy()
                     center_point = pred_point[0]
                     top_left_point = pred_point[1]
