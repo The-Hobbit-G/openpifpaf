@@ -150,13 +150,15 @@ class Predictor:
                 print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
                 # pred = [ann[0].inverse_transform(meta) for ann in pred]
                 # pred_points = [ann[1] for ann in pred]
-                pred = []
+                pred_ann = []
                 pred_points = []
                 for pre in pred:
-                    pred.append(pre[0].inverse_transform(meta))
+                    pred_ann.append(pre[0].inverse_transform(meta))
                     pred_points.append(pre[1])
 
                 print(pred_points[0], pred_points[0].shape)
+
+                pred = pred_ann
 
                 if self.json_data:
                     pred = [ann.json_data() for ann in pred]
