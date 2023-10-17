@@ -292,6 +292,7 @@ class CifCaf(Decoder):
             categories = []
             scores = []
             boxes = []
+            points = [] #for visualization
             for field_id, category_fields in enumerate(fields):
                 category = field_id + 1
                 annotations, annotation_ids = self.cpp_decoder.call_with_initial_annotations(
@@ -309,6 +310,7 @@ class CifCaf(Decoder):
                     categoty_labels = [category] * annotation_ids.numel()
                     category_bboxes = []
                     categoty_scores = []
+                    category_points = []#for visualization
                     for ann_data, ann_id in zip(annotations, annotation_ids):
                         center,center_c = ann_data[0, 1:3],ann_data[0, 0]
                         top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
@@ -373,6 +375,7 @@ class CifCaf(Decoder):
 
                         category_bboxes.append(weighted_bbox)
                         categoty_scores.append(overall_confidence)
+                        category_points.append(ann_data[:, 1:3])#for visualization
                         
                         # print(confidence_1,confidence_2,confidence_3)
                         # print(confidence_weight,weighted_bbox)
@@ -387,6 +390,7 @@ class CifCaf(Decoder):
                     categories+=categoty_labels
                     boxes.append(category_bboxes)
                     scores+=categoty_scores
+                    points.append(category_points)#for visualization
             annotations_py = []
             if len(boxes) > 0:
                 categories = torch.tensor(categories)
@@ -406,6 +410,7 @@ class CifCaf(Decoder):
                 categories = categories[filter_mask]
                 scores = scores[filter_mask]
                 boxes = boxes[filter_mask]
+                points = [points[i] for i in range(len(points)) if filter_mask[i]]#for visualization
                 LOG.debug('cpp annotations = %d (%.1fms)',
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
@@ -416,6 +421,7 @@ class CifCaf(Decoder):
                     scores, indices = torch.topk(scores, top_k)
                     categories = categories[indices]
                     boxes = boxes[indices]
+                    points = [points[i] for i in indices]#for visualization
 
                 # print(categories.shape,boxes.shape,scores.shape)
                 # print(scores.max())
@@ -423,10 +429,14 @@ class CifCaf(Decoder):
                 # convert to py
                 boxes_np = boxes.numpy()
                 #already in xywh format
-                for category, score, box in zip(categories, scores, boxes_np):
+                # for category, score, box in zip(categories, scores, boxes_np):
+                #     ann = AnnotationDet(self.cif_metas[0].categories)
+                #     ann.set(int(category), float(score), box)
+                #     annotations_py.append(ann)
+                for category, score, box, cate_points in zip(categories, scores, boxes_np, points):
                     ann = AnnotationDet(self.cif_metas[0].categories)
                     ann.set(int(category), float(score), box)
-                    annotations_py.append(ann)
+                    annotations_py.append([ann,cate_points])
             else:
                 pass
             

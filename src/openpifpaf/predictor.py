@@ -143,8 +143,14 @@ class Predictor:
                 if self.visualize_image:
                     visualizer.Base.image(image, meta=meta)
 
-                pred = [ann.inverse_transform(meta) for ann in pred]
+                # pred = [ann.inverse_transform(meta) for ann in pred]
                 gt_anns = [ann.inverse_transform(meta) for ann in gt_anns]
+
+                #Modify for visualization
+                pred = [ann[0].inverse_transform(meta) for ann in pred]
+                pred_points = [ann[1].inverse_transform(meta) for ann in pred]
+
+                print(pred_points[0].data, pred_points[0].data.shape)
 
                 if self.json_data:
                     pred = [ann.json_data() for ann in pred]
