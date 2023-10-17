@@ -176,7 +176,7 @@ class Predictor:
                     #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
                     cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
                     cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
-                cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta[0]['image_id']), image)
+                cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
 
                     
         
