@@ -3,6 +3,7 @@ import logging
 import cv2
 import PIL
 import torch
+import numpy as np
 
 from . import datasets, decoder, network, transforms, visualizer
 
