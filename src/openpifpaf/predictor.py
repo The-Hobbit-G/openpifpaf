@@ -1,6 +1,6 @@
 import argparse
 import logging
-
+import cv2
 import PIL
 import torch
 
@@ -160,10 +160,23 @@ class Predictor:
                     pred_points.append(pre[1])
 
                 # print(pred_points[0], pred_points[0].shape)
+                image = image.cpu().numpy().transpose(1,2,0).astype(np.uint8)
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
                 pred = pred_ann
 
-                # for pred_point in pred_points:
+                for pred_point in pred_points:
+                    pred_point = pred_point.cpu().numpy()
+                    center_point = pred_point[0]
+                    top_left_point = pred_point[1]
+                    bottom_right_point = pred_point[2]
+                    #draw center point in image with red color using opencv
+                    cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
+                    #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
+                    cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
+                    cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
+                cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta[0]['image_id']), image)
+
                     
         
 
