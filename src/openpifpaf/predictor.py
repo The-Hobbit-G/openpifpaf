@@ -164,8 +164,9 @@ class Predictor:
 
 
                 #Modify for visualization
-                print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
-                print(type(image),image.shape)
+                print(type(gt_anns[0]))
+                # print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
+                # print(type(image),image.shape)
                 # pred = [ann[0].inverse_transform(meta) for ann in pred]
                 # pred_points = [ann[1] for ann in pred]
                 pred_ann = []
@@ -181,17 +182,17 @@ class Predictor:
 
                 pred = pred_ann
 
-                for pred_point in pred_points:
-                    pred_point = pred_point.cpu().numpy()
-                    center_point = pred_point[0]
-                    top_left_point = pred_point[1]
-                    bottom_right_point = pred_point[2]
-                    #draw center point in image with red color using opencv
-                    cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
-                    #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
-                    cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
-                    cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
-                cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
+                # for pred_point in pred_points:
+                #     pred_point = pred_point.cpu().numpy()
+                #     center_point = pred_point[0]
+                #     top_left_point = pred_point[1]
+                #     bottom_right_point = pred_point[2]
+                #     #draw center point in image with red color using opencv
+                #     cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
+                #     #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
+                #     cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
+                #     cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
+                # cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
 
                     
         
