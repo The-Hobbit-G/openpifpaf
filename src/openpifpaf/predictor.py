@@ -147,10 +147,11 @@ class Predictor:
             self.total_nn_time += self.processor.last_nn_time
             self.total_images += len(processed_image_batch)
 
-            print(type(processed_image_batch),processed_image_batch[0].shape)
+            # print(type(processed_image_batch),processed_image_batch[0].shape)
+            unnalmalized_image_batch = inverse_normalize(processed_image_batch, mean, std)
             # un-batch
             for image, pred, gt_anns, meta in \
-                    zip(processed_image_batch, pred_batch, gt_anns_batch, meta_batch):
+                    zip(unnalmalized_image_batch, pred_batch, gt_anns_batch, meta_batch):
                 LOG.info('batch %d: %s', batch_i, meta.get('file_name', 'no-file-name'))
 
                 # load the original image if necessary
