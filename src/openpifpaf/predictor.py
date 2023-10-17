@@ -147,6 +147,7 @@ class Predictor:
                 gt_anns = [ann.inverse_transform(meta) for ann in gt_anns]
 
                 #Modify for visualization
+                print(pred[0], type(pred[0]))
                 pred = [ann[0].inverse_transform(meta) for ann in pred]
                 pred_points = [ann[1] for ann in pred]
 
