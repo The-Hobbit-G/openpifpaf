@@ -164,7 +164,7 @@ class Predictor:
 
 
                 #Modify for visualization
-                print(type(gt_anns[0]))
+                # print(type(gt_anns[0]))
                 # print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
                 # print(type(image),image.shape)
                 # pred = [ann[0].inverse_transform(meta) for ann in pred]
@@ -180,19 +180,33 @@ class Predictor:
                 image = image.cpu().numpy().transpose(1,2,0).astype(np.uint8)
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-                pred = pred_ann
+                image_gd = image.copy()
 
-                # for pred_point in pred_points:
-                #     pred_point = pred_point.cpu().numpy()
-                #     center_point = pred_point[0]
-                #     top_left_point = pred_point[1]
-                #     bottom_right_point = pred_point[2]
-                #     #draw center point in image with red color using opencv
-                #     cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
-                #     #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
-                #     cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
-                #     cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
-                # cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
+                pred = pred_ann
+                assert len(pred) == len(pred_points)
+                for pr_ann,pred_point in zip(pred,pred_points):
+                    pred_category = pr_ann.data['category_id']
+                    pred_point = pred_point.cpu().numpy()
+                    center_point = pred_point[0]
+                    top_left_point = pred_point[1]
+                    bottom_right_point = pred_point[2]
+                    #draw center point in image with red color using opencv
+                    cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
+                    #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
+                    cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
+                    cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
+                    #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
+                    cv2.rectangle(image, (int(top_left_point[0]), int(top_left_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (0, 255, 255), 2)
+                    cv2.putText(image, str(pred_category), (int(top_left_point[0]), int(top_left_point[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
+
+                for gt in gt_anns:
+                    gt_box = gt.data['bbox']
+                    gt_category = gt.data['category_id']
+                    #draw gt_box in image with green color using opencv and put the category id on the top left corner
+                    cv2.rectangle(image_gd, (int(gt_box[0]), int(gt_box[1])), (int(gt_box[0]+gt_box[2]), int(gt_box[1]+gt_box[3])), (0, 255, 0), 2)
+                    cv2.putText(image_gd, str(gt_category), (int(gt_box[0]), int(gt_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.imwrite('/home/jiguo/test_image/test_{}_gd.jpg'.format(meta['image_id']), image_gd)
 
                     
         
