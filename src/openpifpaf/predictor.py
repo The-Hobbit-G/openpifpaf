@@ -175,6 +175,7 @@ class Predictor:
                     pred_points.append(pre[1])
 
                 # print(pred_points[0], pred_points[0].shape)
+                image = image*255
                 image = image.cpu().numpy().transpose(1,2,0).astype(np.uint8)
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
