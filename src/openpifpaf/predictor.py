@@ -136,7 +136,7 @@ class Predictor:
 
             # un-batch
             for image, pred, gt_anns, meta in \
-                    zip(image_batch, pred_batch, gt_anns_batch, meta_batch):
+                    zip(processed_image_batch, pred_batch, gt_anns_batch, meta_batch):
                 LOG.info('batch %d: %s', batch_i, meta.get('file_name', 'no-file-name'))
 
                 # load the original image if necessary
