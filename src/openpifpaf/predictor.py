@@ -186,6 +186,7 @@ class Predictor:
                 assert len(pred) == len(pred_points)
                 for pr_ann,pred_point in zip(pred,pred_points):
                     pred_category = pr_ann.category_id
+                    pred_box = pr_ann.bbox
                     pred_point = pred_point.cpu().numpy()
                     center_point = pred_point[0]
                     top_left_point = pred_point[1]
@@ -196,7 +197,7 @@ class Predictor:
                     cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
                     cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
                     #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
-                    cv2.rectangle(image, (int(top_left_point[0]), int(top_left_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (0, 255, 255), 2)
+                    cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
                     cv2.putText(image, str(pred_category), (int(top_left_point[0]), int(top_left_point[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
                 cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
 
