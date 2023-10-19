@@ -370,8 +370,9 @@ class CifCaf(Decoder):
                         # overall_confidence = torch.stack((center_c,top_left_c,bottom_right_c)).sum().item()
 
                         #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
-                        overall_confidence = confidence_weight_ori@confidence_weight/2
-                        overall_confidence = overall_confidence.item()
+                        # overall_confidence = confidence_weight_ori@confidence_weight/2
+                        # overall_confidence = overall_confidence.item()
+                        overall_confidence = center_c
 
                         category_bboxes.append(weighted_bbox)
                         categoty_scores.append(overall_confidence)
