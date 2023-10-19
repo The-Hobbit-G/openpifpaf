@@ -418,6 +418,7 @@ class CifCaf(Decoder):
                         (time.perf_counter() - start) * 1000.0)
 
                 print(len(scores))
+                print(scores)
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
