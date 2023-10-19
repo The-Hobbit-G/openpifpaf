@@ -269,6 +269,9 @@ class Trainer():
                 assert len(targets) == len(outputs)
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
+
+                print(type(multiclass_loss),type(multiclass_loss[0]),multiclass_loss)
+                
                 loss = sum(multiclass_loss)
                 head_losses = [None] * len(multiclass_head_losses[0])
                 for i in range(len(head_losses)):
