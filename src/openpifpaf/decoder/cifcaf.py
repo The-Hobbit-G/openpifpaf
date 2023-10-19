@@ -398,7 +398,8 @@ class CifCaf(Decoder):
                 boxes = torch.cat(boxes,dim=0)
                 scores = torch.tensor(scores)
                 # print(categories,boxes,scores)
-                # print(categories.shape,boxes.shape,scores.shape)
+                print(categories.shape,boxes.shape,scores.shape)
+                print(categories)
                 # print(scores.max())
                 if self.nms_by_category:
                     keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
