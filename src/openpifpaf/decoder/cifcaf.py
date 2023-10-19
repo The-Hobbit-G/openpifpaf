@@ -399,7 +399,7 @@ class CifCaf(Decoder):
                 scores = torch.tensor(scores)
                 # print(categories,boxes,scores)
                 print(categories.shape,boxes.shape,scores.shape)
-                print(categories)
+                # print(categories)
                 # print(scores.max())
                 if self.nms_by_category:
                     keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
@@ -416,6 +416,8 @@ class CifCaf(Decoder):
                 LOG.debug('cpp annotations = %d (%.1fms)',
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
+
+                print(len(scores))
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
