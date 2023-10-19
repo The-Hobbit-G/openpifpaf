@@ -398,7 +398,7 @@ class CifCaf(Decoder):
                 boxes = torch.cat(boxes,dim=0)
                 scores = torch.tensor(scores)
                 # print(categories,boxes,scores)
-                print(categories.shape,boxes.shape,scores.shape)
+                # print(categories.shape,boxes.shape,scores.shape)
                 # print(categories)
                 # print(scores.max())
                 if self.nms_by_category:
@@ -417,8 +417,8 @@ class CifCaf(Decoder):
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
 
-                print(len(scores))
-                print(scores)
+                # print(len(scores))
+                # print(scores)
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
