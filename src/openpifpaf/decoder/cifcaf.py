@@ -91,7 +91,7 @@ class CifCaf(Decoder):
     reverse_match = True
 
     iou_threshold = 0.5
-    instance_threshold = 0.15
+    instance_threshold = 0.5
     nms_by_category = True
     suppression = 0.1
 
