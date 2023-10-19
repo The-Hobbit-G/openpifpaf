@@ -92,7 +92,7 @@ class CifCaf(Decoder):
 
     iou_threshold = 0.5
     instance_threshold = 0.15
-    nms_by_category = True
+    nms_by_category = False
     suppression = 0.1
 
     def __init__(self,
