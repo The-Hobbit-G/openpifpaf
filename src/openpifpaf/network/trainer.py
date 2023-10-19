@@ -271,10 +271,10 @@ class Trainer():
                 assert len(multiclass_loss) == len(multiclass_head_losses)
 
                 # print(type(multiclass_loss),type(multiclass_loss[0]),multiclass_loss)
-                max_loss = max(class_loss.item() for class_loss in multiclass_loss)
-                min_loss = min(class_loss.item() for class_loss in multiclass_loss)
-                print("Maximum Loss:", max_loss)
-                print("Minimum Loss:", min_loss)
+                # max_loss = max(class_loss.item() for class_loss in multiclass_loss)
+                # min_loss = min(class_loss.item() for class_loss in multiclass_loss)
+                # print("Maximum Loss:", max_loss)
+                # print("Minimum Loss:", min_loss)
 
                 loss = sum(multiclass_loss)
                 head_losses = [None] * len(multiclass_head_losses[0])
