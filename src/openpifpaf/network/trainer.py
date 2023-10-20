@@ -283,7 +283,14 @@ class Trainer():
                 assert type(outputs[0]) == tuple
                 # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
-                multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
+                # multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
+                #try using single apply(for loop replacing multi_apply)
+                multiclass_loss = []
+                multiclass_head_losses = []
+                for output, target in zip(outputs,targets):
+                    class_loss, class_head_loss = self.loss(output,target)
+                    multiclass_loss.append(class_loss)
+                    multiclass_head_losses.append(class_head_loss)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
 
                 multihead_time = time.time() - multihead_start
@@ -429,16 +436,7 @@ class Trainer():
                 assert type(outputs[0]) == tuple
                 # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
-                # multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
-                #try using single apply(for loop replacing multi_apply)
-                multiclass_loss = []
-                multiclass_head_losses = []
-                for output, target in zip(outputs,targets):
-                    class_loss, class_head_loss = self.loss(output,target)
-                    multiclass_loss.append(class_loss)
-                    multiclass_head_losses.append(class_head_loss)
-
-
+                multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
                 loss = sum(multiclass_loss)
                 head_losses = [None] * len(multiclass_head_losses[0])
