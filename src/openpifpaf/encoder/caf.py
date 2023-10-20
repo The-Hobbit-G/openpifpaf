@@ -123,14 +123,16 @@ class AssociationFiller:
         else:
             width_height_original = image.shape[2:0:-1]
             detections = self.rescaler.cif_detections(anns)
-            bg_mask = self.rescaler.bg_mask(anns, width_height_original,
+            bg_mask = self.rescaler.bg_mask_det(anns, width_height_original,
                                         crowd_margin=(self.config.min_size - 1) / 2)
+            print('caf bg_mask shape : {}'.format(bg_mask.shape))
+            #Now bg_mask has a shape of (category_num, height, width)
             #TODO: figure out field shape
             n_fields = self.config.meta.n_fields
             self.field_shape = (
                 n_fields,
-                bg_mask.shape[0] + 2 * self.config.padding,
-                bg_mask.shape[1] + 2 * self.config.padding,
+                bg_mask.shape[-2] + 2 * self.config.padding,
+                bg_mask.shape[-1] + 2 * self.config.padding,
             )
             valid_area = self.rescaler.valid_area(meta)
             LOG.debug('valid area: %s', valid_area)
@@ -139,7 +141,7 @@ class AssociationFiller:
             self.fields_reg_l = [np.full(self.field_shape, np.inf, dtype=np.float32) for _ in range(len(self.config.meta.categories))]
             p = self.config.padding
             for i in range(len(self.config.meta.categories)):
-                self.fields_reg_l[i][:, p:-p, p:-p][:, bg_mask == 0] = 1.0
+                self.fields_reg_l[i][:, p:-p, p:-p][:, bg_mask[i] == 0] = 1.0
             cafdet_fill_values = self.all_fill_values_cafdet(detections, anns)
             self.fill_cafdet(detections, cafdet_fill_values)
             fields = [self.cafdet_fields_as_tensor(valid_area, i) for i in range(len(self.config.meta.categories))]
@@ -411,7 +413,7 @@ class CafGenerator(AssociationFiller):
         # bg_mask
         p = self.config.padding
         for i in range(len(self.config.meta.categories)):
-            self.intensities[i][:, p:-p, p:-p][:, bg_mask == 0] = np.nan
+            self.intensities[i][:, p:-p, p:-p][:, bg_mask[i] == 0] = np.nan
 
 
     def all_fill_values(self, keypoint_sets, anns):

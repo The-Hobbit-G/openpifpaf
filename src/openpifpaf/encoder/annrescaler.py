@@ -139,6 +139,36 @@ class AnnRescaler():
 
         return mask
 
+    def bg_mask_det(self, anns, width_height, *, crowd_margin):
+        """Create background mask taking crowd annotations into account."""
+        mask = np.ones((
+            self.n_categories,
+            (width_height[1] - 1) // self.stride + 1,
+            (width_height[0] - 1) // self.stride + 1,
+        ), dtype=np.bool_)
+        for ann in anns:
+            if not ann['iscrowd']:
+                continue
+
+            if 'mask' not in ann:
+                field_i = ann['category_id'] - 1
+                bb = ann['bbox'].copy()
+                bb /= self.stride
+                bb[2:] += bb[:2]  # convert width and height to x2 and y2
+                left = np.clip(int(bb[0] - crowd_margin), 0, mask.shape[1] - 1)
+                top = np.clip(int(bb[1] - crowd_margin), 0, mask.shape[0] - 1)
+                right = np.clip(int(np.ceil(bb[2] + crowd_margin)) + 1,
+                                left + 1, mask.shape[1])
+                bottom = np.clip(int(np.ceil(bb[3] + crowd_margin)) + 1,
+                                 top + 1, mask.shape[0])
+                mask[field_i, top:bottom, left:right] = 0
+                continue
+
+            assert False  # because code below is not tested
+            mask[ann['mask'][::self.stride, ::self.stride]] = 0
+
+        return mask
+
     def scale(self, keypoints):
         visible = keypoints[:, 2] > 0
         if np.sum(visible) < 3:
