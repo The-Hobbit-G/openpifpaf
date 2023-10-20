@@ -10,7 +10,7 @@ class AnnRescaler():
     suppress_invisible = False
     suppress_collision = False
 
-    def __init__(self, stride, n_categories=90, pose=None):
+    def __init__(self, stride, n_categories=91, pose=None):
         self.stride = stride
         self.pose = pose
         self.n_categories = n_categories
