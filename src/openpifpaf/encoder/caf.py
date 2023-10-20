@@ -128,7 +128,7 @@ class AssociationFiller:
             detections = self.rescaler.cif_detections(anns)
             bg_mask = self.rescaler.bg_mask_det(anns, width_height_original,
                                         crowd_margin=(self.config.min_size - 1) / 2)
-            print('caf bg_mask shape : {}'.format(bg_mask.shape))
+            # print('caf bg_mask shape : {}'.format(bg_mask.shape))
             #Now bg_mask has a shape of (category_num, height, width)
             #TODO: figure out field shape
             n_fields = self.config.meta.n_fields

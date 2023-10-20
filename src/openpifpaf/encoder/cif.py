@@ -80,7 +80,7 @@ class CifGenerator():
             bg_mask = self.rescaler.bg_mask_det(anns, width_height_original,
                                         crowd_margin=(self.config.side_length - 1) / 2)
             #Now bg_mask has a shape of (category_num, height, width)
-            print('cif bg_mask shape : {}'.format(bg_mask.shape))
+            # print('cif bg_mask shape : {}'.format(bg_mask.shape))
             valid_area = self.rescaler.valid_area(meta)
             LOG.debug('valid area: %s, pif side length = %d', valid_area, self.config.side_length)
             n_fields = len(self.config.meta.keypoints)
