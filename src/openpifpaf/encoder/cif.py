@@ -38,8 +38,12 @@ class CifGenerator():
     def __init__(self, config: Cif):
         self.config = config
 
-        self.rescaler = config.rescaler or AnnRescaler(
-            config.meta.stride, config.meta.pose)
+        if config.meta.categories is None:
+            self.rescaler = config.rescaler or AnnRescaler(
+                config.meta.stride, config.meta.pose)
+        else:
+            self.rescaler = config.rescaler or AnnRescaler(
+                config.meta.stride, len(config.meta.categories), config.meta.pose)
         self.visualizer = config.visualizer or CifVisualizer(config.meta)
 
         self.intensities = None

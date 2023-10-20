@@ -33,7 +33,10 @@ class Caf:
 
     def __post_init__(self):
         if self.rescaler is None:
-            self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
+            if self.meta.categories is None:
+                self.rescaler = AnnRescaler(self.meta.stride, self.meta.pose)
+            else:
+                self.rescaler = AnnRescaler(self.meta.stride, len(self.meta.categories),self.meta.pose)
 
         if self.visualizer is None:
             self.visualizer = CafVisualizer(self.meta)
