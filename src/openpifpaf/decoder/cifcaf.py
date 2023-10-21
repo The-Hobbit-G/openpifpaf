@@ -419,6 +419,10 @@ class CifCaf(Decoder):
 
                 # print(len(scores))
                 # print(scores)
+                #print the max and min of the scores
+                print(scores,scores.max(), scores.min())
+                #print the number of scores lower than 0.5
+                print((scores<0.5).sum())
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
