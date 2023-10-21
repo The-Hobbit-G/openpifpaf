@@ -419,10 +419,18 @@ class CifCaf(Decoder):
 
                 # print(len(scores))
                 # print(scores)
+
+                ####test the scores
                 #print the max and min of the scores
                 print(scores,scores.max(), scores.min())
                 #print the number of scores lower than 0.5
                 print((scores<0.5).sum())
+                #filter out the scores lower than 0.5
+                filter_mask = scores > 0.5
+                categories = categories[filter_mask]
+                scores = scores[filter_mask]
+                boxes = boxes[filter_mask]
+                points = [points[i] for i in range(len(points)) if filter_mask[i]]
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
@@ -438,14 +446,14 @@ class CifCaf(Decoder):
                 # convert to py
                 boxes_np = boxes.numpy()
                 #already in xywh format
-                for category, score, box in zip(categories, scores, boxes_np):
-                    ann = AnnotationDet(self.cif_metas[0].categories)
-                    ann.set(int(category), float(score), box)
-                    annotations_py.append(ann)
-                # for category, score, box, cate_points in zip(categories, scores, boxes_np, points):
+                # for category, score, box in zip(categories, scores, boxes_np):
                 #     ann = AnnotationDet(self.cif_metas[0].categories)
                 #     ann.set(int(category), float(score), box)
-                #     annotations_py.append([ann,cate_points])
+                #     annotations_py.append(ann)
+                for category, score, box, cate_points in zip(categories, scores, boxes_np, points):
+                    ann = AnnotationDet(self.cif_metas[0].categories)
+                    ann.set(int(category), float(score), box)
+                    annotations_py.append([ann,cate_points])
             else:
                 pass
             
