@@ -76,6 +76,9 @@ class CifDet(Decoder):
         # print(categories, scores, boxes)
         # print(type(categories), type(scores), type(boxes)) #all torch.Tensor
         # print(categories.shape, scores.shape, boxes.shape) #(n,) (n,) (n,4
+        print(scores,scores.max(), scores.min())
+        #print the number of scores lower than 0.5
+        print((scores<0.5).sum())
 
         # convert to py
         annotations_py = []
