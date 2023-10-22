@@ -79,10 +79,10 @@ class CifDet(Decoder):
         # print(scores,scores.max(), scores.min())
         # #print the number of scores lower than 0.5
         # print((scores<0.5).sum())
-        filter_mask = scores > 0.5
-        categories = categories[filter_mask]
-        scores = scores[filter_mask]
-        boxes = boxes[filter_mask]
+        # filter_mask = scores > 0.5
+        # categories = categories[filter_mask]
+        # scores = scores[filter_mask]
+        # boxes = boxes[filter_mask]
 
         # convert to py
         annotations_py = []
