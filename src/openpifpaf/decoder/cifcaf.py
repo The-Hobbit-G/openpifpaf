@@ -426,11 +426,11 @@ class CifCaf(Decoder):
                 #print the number of scores lower than 0.5
                 # print((scores<0.5).sum())
                 #filter out the scores lower than 0.5
-                filter_mask = scores > 0.5
-                categories = categories[filter_mask]
-                scores = scores[filter_mask]
-                boxes = boxes[filter_mask]
-                points = [points[i] for i in range(len(points)) if filter_mask[i]]
+                # filter_mask = scores > 0.5
+                # categories = categories[filter_mask]
+                # scores = scores[filter_mask]
+                # boxes = boxes[filter_mask]
+                # points = [points[i] for i in range(len(points)) if filter_mask[i]]
 
                 #choose the top 100 boxes
                 if len(scores) > 100:
