@@ -422,9 +422,9 @@ class CifCaf(Decoder):
 
                 ####test the scores
                 #print the max and min of the scores
-                print(scores,scores.max(), scores.min())
+                # print(scores,scores.max(), scores.min())
                 #print the number of scores lower than 0.5
-                print((scores<0.5).sum())
+                # print((scores<0.5).sum())
                 #filter out the scores lower than 0.5
                 filter_mask = scores > 0.5
                 categories = categories[filter_mask]
