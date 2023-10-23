@@ -169,9 +169,9 @@ COCO_PERSON_SIGMAS = [
 ]
 
 COCO_DET_SIGMAS = [ 
-    0.080
-    0.080
-    0.080
+    0.080,
+    0.080,
+    0.080,
 ]
 
 
