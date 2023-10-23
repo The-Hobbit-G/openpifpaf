@@ -650,12 +650,12 @@ class SwinTransformer(BaseNetwork):
         #     out_indices = [3, ]
         # else:
         #     out_indices = list(range(self.fpn_level - 1, 4))
-        print(type(out_stage),out_stage)
+        # print(type(out_stage),out_stage)
         if out_stage == -1:
             out_indices = [3, ]
         elif type(out_stage) == int and out_stage >= 0 and out_stage <= 4:
             out_indices = [out_stage, ]
-        elif type(out_stage) == list:
+        elif len(out_stage) > 0 and type(out_stage[0]) == int:
             out_indices = out_stage
 
         self.backbone = swin_net(pretrained=self.pretrained,
