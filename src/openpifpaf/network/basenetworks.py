@@ -675,10 +675,11 @@ class SwinTransformer(BaseNetwork):
 
         outs = self.backbone(x)
 
-        if self.fpn is not None:
-            x = self.fpn(outs)
-        else:
-            x = outs[-1]
+        ###Implement FPN in factory.py
+        # if self.fpn is not None:
+        #     x = self.fpn(outs)
+        # else:
+        #     x = outs[-1]
 
         return x
 
