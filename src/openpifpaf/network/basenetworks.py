@@ -676,7 +676,8 @@ class SwinTransformer(BaseNetwork):
             x = self.input_upsample_op(x)
         # print(self.backbone.out_indices)
         outs = self.backbone(x)
-        print(type(outs),len(outs))
+        for out in outs:
+            print(out.shape)
         ###Implement FPN in factory.py
         # if self.fpn is not None:
         #     x = self.fpn(outs)
