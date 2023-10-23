@@ -197,7 +197,7 @@ class Trainer():
             
             #for FPN case
 
-            target_formulation_start = time.time()
+            # target_formulation_start = time.time()
 
 
             if type(targets[0]) == list and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
@@ -224,26 +224,26 @@ class Trainer():
                             if head is not None else None
                             for head in targets]
 
-            target_time = time.time() - target_formulation_start
-            print('target formulation time: {}'.format(target_time))
+            # target_time = time.time() - target_formulation_start
+            # print('target formulation time: {}'.format(target_time))
 
         # train encoder
         with torch.autograd.profiler.record_function('model'):
 
-            output_start = time.time()
+            # output_start = time.time()
             # print(type(targets),type(targets[0]),len(targets),len(targets[0]))
             if type(targets) == tuple:
                 outputs = self.model(data, head_mask=[t is not None for t in targets[0]])
             else:
                 outputs = self.model(data, head_mask=[t is not None for t in targets])
 
-            output_time = time.time() - output_start
-            print('output time: {}'.format(output_time))
+            # output_time = time.time() - output_start
+            # print('output time: {}'.format(output_time))
 
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize() #torch.cuda.synchronize() is a function in the PyTorch deep learning library that allows you to synchronize the CPU with the GPU.
         with torch.autograd.profiler.record_function('loss'):
-            loss_start = time.time()
+            # loss_start = time.time()
             # print('targets type: {}'.format(type(targets)))
             if type(targets) == tuple and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
@@ -279,7 +279,7 @@ class Trainer():
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
                 # deal with the case where we use cifcaf detection head
 
-                multihead_start = time.time()
+                # multihead_start = time.time()
                 assert type(outputs[0]) == tuple
                 # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
@@ -293,15 +293,15 @@ class Trainer():
                 #     multiclass_head_losses.append(class_head_loss)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
 
-                multihead_time = time.time() - multihead_start
-                print('multihead loss calculation time: {}'.format(multihead_time))
+                # multihead_time = time.time() - multihead_start
+                # print('multihead loss calculation time: {}'.format(multihead_time))
                 # print(type(multiclass_loss),type(multiclass_loss[0]),multiclass_loss)
                 # max_loss = max(class_loss.item() for class_loss in multiclass_loss)
                 # min_loss = min(class_loss.item() for class_loss in multiclass_loss)
                 # print("Maximum Loss:", max_loss)
                 # print("Minimum Loss:", min_loss)
 
-                category_loss_start = time.time()
+                # category_loss_start = time.time()
 
                 loss = sum(multiclass_loss)
                 head_losses = [None] * len(multiclass_head_losses[0])
@@ -309,29 +309,29 @@ class Trainer():
                     if multiclass_head_losses[0][i] is not None:
                         head_losses[i] = sum([head_loss[i] for head_loss in multiclass_head_losses])
 
-                category_loss_time = time.time() - category_loss_start
-                print('category loss calculation time: {}'.format(category_loss_time))
+                # category_loss_time = time.time() - category_loss_start
+                # print('category loss calculation time: {}'.format(category_loss_time))
             else:
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))
                 loss, head_losses = self.loss(outputs, targets)
                 # print('loss: {}, head_losses: {}'.format(loss,head_losses))
 
-            loss_time = time.time() - loss_start
-            print('loss time: {}'.format(loss_time))
+            # loss_time = time.time() - loss_start
+            # print('loss time: {}'.format(loss_time))
 
             if self.train_profile and self.device.type != 'cpu':
                 torch.cuda.synchronize()
         if loss is not None:
-            backprop_start = time.time()
+            # backprop_start = time.time()
 
             with torch.autograd.profiler.record_function('backward'):
                 loss.backward()
                 if self.train_profile and self.device.type != 'cpu':
                     torch.cuda.synchronize()
             
-            backprop_time = time.time() - backprop_start
-            print('backprop time: {}'.format(backprop_time))
+            # backprop_time = time.time() - backprop_start
+            # print('backprop time: {}'.format(backprop_time))
         if self.clip_grad_norm:
             with torch.autograd.profiler.record_function('clip-grad-norm'):
                 max_norm = self.clip_grad_norm / self.lr()
