@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --time=01:00:00
-#SBATCH --output=/scratch/izar/jiguo/val/cocodet/cifcafdet/resnet50/%x.out
+#SBATCH --output=/scratch/izar/jiguo/val/cocodet/cifcafdet/resnet50/best_pair/%x.out
 
 shopt -s extglob
 
@@ -20,7 +20,7 @@ evalxp='opp_train_resnet50_cifcafdet_cocodet_bg_mask_det'
 evalepoch=025
 
 
-xpdir="/scratch/izar/jiguo/val/cocodet/cifcafdet/resnet50/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/val/cocodet/cifcafdet/resnet50/best_pair/${SLURM_JOB_NAME}"
 
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
