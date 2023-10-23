@@ -29,7 +29,7 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocokp-upsample=2 \
   --basenet=swin_t \
   --necknet=FPN \
-  --neck_in 512 1024 2048 \
+  --neck_in 96 192 384 \
   --neck_out=256 \
   --num_outs=3 \
   --start_level=0 \
