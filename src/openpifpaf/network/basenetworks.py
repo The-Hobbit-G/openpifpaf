@@ -658,7 +658,7 @@ class SwinTransformer(BaseNetwork):
         elif len(out_stage) > 0 and type(out_stage[0]) == int:
             out_indices = out_stage
 
-        print(out_indices)
+        
 
         self.backbone = swin_net(pretrained=self.pretrained,
                                  drop_path_rate=self.drop_path_rate,
@@ -674,7 +674,7 @@ class SwinTransformer(BaseNetwork):
         #TODO: add output stages like other basenets
         if self.input_upsample_op is not None:
             x = self.input_upsample_op(x)
-
+        print(self.out_indices)
         outs = self.backbone(x)
 
         ###Implement FPN in factory.py
