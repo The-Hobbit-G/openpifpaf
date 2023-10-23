@@ -645,19 +645,27 @@ class SwinTransformer(BaseNetwork):
         if self.input_upsample:
             self.input_upsample_op = torch.nn.Upsample(scale_factor=2)
 
-        if not self.use_fpn:
+        ###Implement FPN in factory.py
+        # if not self.use_fpn:
+        #     out_indices = [3, ]
+        # else:
+        #     out_indices = list(range(self.fpn_level - 1, 4))
+        if out_stage == -1:
             out_indices = [3, ]
-        else:
-            out_indices = list(range(self.fpn_level - 1, 4))
+        elif type(out_stage) == int and out_stage >= 0 and out_stage <= 4:
+            out_indices = [out_stage, ]
+        elif type(out_stage) == list:
+            out_indices = out_stage
 
         self.backbone = swin_net(pretrained=self.pretrained,
                                  drop_path_rate=self.drop_path_rate,
                                  out_indices=out_indices)
 
-        self.fpn = None
-        if self.use_fpn:
-            self.fpn = FPN([embed_dim, 2 * embed_dim, 4 * embed_dim, 8 * embed_dim],
-                           self.out_features, self.fpn_level)
+        ###Implement FPN in factory.py
+        # self.fpn = None
+        # if self.use_fpn:
+        #     self.fpn = FPN([embed_dim, 2 * embed_dim, 4 * embed_dim, 8 * embed_dim],
+        #                    self.out_features, self.fpn_level)
 
     def forward(self, x):
         #TODO: add output stages like other basenets
