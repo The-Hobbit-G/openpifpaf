@@ -658,6 +658,8 @@ class SwinTransformer(BaseNetwork):
         elif len(out_stage) > 0 and type(out_stage[0]) == int:
             out_indices = out_stage
 
+        print(out_indices)
+
         self.backbone = swin_net(pretrained=self.pretrained,
                                  drop_path_rate=self.drop_path_rate,
                                  out_indices=out_indices)
