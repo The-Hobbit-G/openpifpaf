@@ -650,6 +650,7 @@ class SwinTransformer(BaseNetwork):
         #     out_indices = [3, ]
         # else:
         #     out_indices = list(range(self.fpn_level - 1, 4))
+        print(type(out_stage),out_stage)
         if out_stage == -1:
             out_indices = [3, ]
         elif type(out_stage) == int and out_stage >= 0 and out_stage <= 4:
