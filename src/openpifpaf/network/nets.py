@@ -81,6 +81,8 @@ class Shell(torch.nn.Module):
         x = self.base_net(image_batch)
 
         if self.neck_net is not None:
+            for x_i in x:
+                print(x_i.shape)
             assert type(x) == tuple
             x = self.neck_net(x) ##now x becomes a tuple(the outputs from different stage of the FPN in a bottom-up!!! fasion)
             # print(type(head_mask),type(head_mask[0]))
