@@ -156,7 +156,7 @@ class FPN(nn.Module):
                 laterals[i], size=laterals[i-1].size()[2:], mode="bilinear"
             )
 
-        build outputs
+        # build outputs
         # outs = [
         #     self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
         #     # laterals[i]
