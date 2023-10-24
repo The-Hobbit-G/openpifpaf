@@ -29,14 +29,13 @@ python3 -m openpifpaf.train --output ${xpdir}/checkpoints/debug.pt \
   --cocokp-upsample=2 \
   --basenet=resnet50 \
   --necknet=FPN \
-  --neck_in 512 1024 2048 \
+  --neck_in 1024 2048 \
   --neck_out=256 \
   --num_outs=3 \
   --start_level=0 \
-  --base_outstage 2 3 4 \
-  --head_stride 4 8 16 \
-  --cif-side-length 16 8 4 \
-  --caf-min-size 16 8 4 \
+  --base_outstage 3 4 5 \
+  --head_stride 8 16 32 \
+  --add_extra_convs=on_output \
   --epochs=150 \
   --batch-size=8 \
   --lr=0.0001 \
