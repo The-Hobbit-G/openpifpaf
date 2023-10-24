@@ -163,7 +163,7 @@ class FPN(nn.Module):
         # ]
 
         outs = [
-            self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self,end_level)
+            self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self.end_level)
             # use only the selected levels and the remaining levels are for lateral connection and top-down path
         ]
 
