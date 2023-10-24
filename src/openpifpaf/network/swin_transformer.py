@@ -489,6 +489,10 @@ class SwinTransformer(nn.Module):
                  use_checkpoint=False):
         super().__init__()
 
+        if len(out_indices) > 1 and 3 not in out_indices:
+            # raise ValueError('the output of the last stage must be included')
+            out_indices = (0,1,2,3)
+
         self.pretrain_img_size = pretrain_img_size
         self.num_layers = len(depths)
         self.embed_dim = embed_dim
