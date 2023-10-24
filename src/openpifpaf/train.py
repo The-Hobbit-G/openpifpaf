@@ -153,7 +153,7 @@ def main():
     use_fpn = False
     if args.necknet is not None:
         use_fpn = True
-        if args.add_extra_convs is False and not args.backbone.startswith('swin'):
+        if args.add_extra_convs is False and not args.basenet.startswith('swin'):
             assert(len(args.neck_in)==len(args.head_stride))
 
     # print(type(args.neck_in),type(args.head_stride),len(args.neck_in),len(args.head_stride))
