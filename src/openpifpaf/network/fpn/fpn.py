@@ -62,8 +62,8 @@ class FPN(nn.Module):
             assert num_outs >= self.num_ins - start_level
         else:
             # if end_level < inputs, no extra level is allowed
-            # self.backbone_end_level = end_level
-            self.backbone_end_level = self.num_ins #do lateral till the last level to avoid the problem of the last level not used
+            self.backbone_end_level = end_level
+            # self.backbone_end_level = self.num_ins #do lateral till the last level to avoid the problem of the last level not used
             assert end_level <= len(in_channels)
             assert num_outs == end_level - start_level
         self.start_level = start_level
@@ -155,17 +155,17 @@ class FPN(nn.Module):
                 laterals[i], size=laterals[i-1].size()[2:], mode="bilinear"
             )
 
-        # build outputs
-        # outs = [
-        #     self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
-        #     # laterals[i]
-        #     # for i in range(used_backbone_levels)
-        # ]
-
+        build outputs
         outs = [
-            self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self.end_level)
-            # use only the selected levels and the remaining levels are for lateral connection and top-down path
+            self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
+            # laterals[i]
+            # for i in range(used_backbone_levels)
         ]
+
+        # outs = [
+        #     self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self.end_level)
+        #     # use only the selected levels and the remaining levels are for lateral connection and top-down path
+        # ]
 
         # part 2: add extra levels
         if self.num_outs > len(outs):
