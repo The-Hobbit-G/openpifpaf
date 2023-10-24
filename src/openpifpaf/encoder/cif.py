@@ -211,9 +211,14 @@ class CifGenerator():
                     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
                         # print('ignore')
                         continue
-                self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
-                self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
-                self.fill_cifdet_keypoints(2, xy_bottom_right, scale, category_id-1)
+                if self.config.meta.sigmas is None:
+                    self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
+                    self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
+                    self.fill_cifdet_keypoints(2, xy_bottom_right, scale, category_id-1)
+                else:
+                    self.fill_cifdet_keypoints(0, xy_center, scale*self.config.meta.sigmas[0], category_id-1)
+                    self.fill_cifdet_keypoints(1, xy_top_left, scale*self.config.meta.sigmas[1], category_id-1)
+                    self.fill_cifdet_keypoints(2, xy_bottom_right, scale*self.config.meta.sigmas[2], category_id-1)
         elif self.config.meta.n_fields == 5:
             for category_id, bbox in detections:
                 xy_center = np.asarray(bbox[:2])  #center of the bbox
@@ -239,11 +244,18 @@ class CifGenerator():
                     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
                         # print('ignore')
                         continue
-                self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
-                self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
-                self.fill_cifdet_keypoints(2, xy_top_right, scale, category_id-1)
-                self.fill_cifdet_keypoints(3, xy_bottom_left, scale, category_id-1)
-                self.fill_cifdet_keypoints(4, xy_bottom_right, scale, category_id-1)
+                if self.config.meta.sigmas is None:
+                    self.fill_cifdet_keypoints(0, xy_center, scale, category_id-1)
+                    self.fill_cifdet_keypoints(1, xy_top_left, scale, category_id-1)
+                    self.fill_cifdet_keypoints(2, xy_top_right, scale, category_id-1)
+                    self.fill_cifdet_keypoints(3, xy_bottom_left, scale, category_id-1)
+                    self.fill_cifdet_keypoints(4, xy_bottom_right, scale, category_id-1)
+                else:
+                    self.fill_cifdet_keypoints(0, xy_center, scale*self.config.meta.sigmas[0], category_id-1)
+                    self.fill_cifdet_keypoints(1, xy_top_left, scale*self.config.meta.sigmas[1], category_id-1)
+                    self.fill_cifdet_keypoints(2, xy_top_right, scale*self.config.meta.sigmas[2], category_id-1)
+                    self.fill_cifdet_keypoints(3, xy_bottom_left, scale*self.config.meta.sigmas[3], category_id-1)
+                    self.fill_cifdet_keypoints(4, xy_bottom_right, scale*self.config.meta.sigmas[4], category_id-1)
         
 
     def fill_coordinate(self, f, xyv, scale):
