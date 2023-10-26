@@ -34,8 +34,8 @@ mkdir -p ${xpdir}/predictions
 
 for cpepoch in ${evalepoch}
 do
-  # evalfrom="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
-  evalfrom="/home/jiguo/${evalxp}.pt.epoch${cpepoch}"
+  evalfrom="/scratch/izar/jiguo/train/cocokp/resnet50_fpn256/${evalxp}/checkpoints/${evalxp}.pt.epoch${cpepoch}"
+  # evalfrom="/home/jiguo/${evalxp}.pt.epoch${cpepoch}"
   echo "Start evaluating ${evalfrom}..."
   srun time python3 -m openpifpaf.eval \
     --write-predictions \
