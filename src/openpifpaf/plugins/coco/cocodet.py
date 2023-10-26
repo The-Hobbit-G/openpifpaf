@@ -66,7 +66,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
 
     eval_annotation_filter = True
 
-    '''
+    
     def __init__(self):
         super().__init__()
         cifdet = openpifpaf.headmeta.CifDet('cifdet', 'cocodet', COCO_CATEGORIES)
@@ -120,7 +120,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
         cafdet.upsample_stride = self.upsample_stride
 
         self.head_metas = [cifdet, cafdet]
-    
+    '''
     @classmethod
     def cli(cls, parser: argparse.ArgumentParser):
         group = parser.add_argument_group('data module CocoDet')
@@ -189,7 +189,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
 
         cls.eval_annotation_filter = args.coco_eval_annotation_filter
 
-    '''
+    
     def _preprocess(self):
         enc = openpifpaf.encoder.CifDet(self.head_metas[0])
 
@@ -278,7 +278,7 @@ class CocoDet(openpifpaf.datasets.DataModule):
             openpifpaf.transforms.TRAIN_TRANSFORM,
             openpifpaf.transforms.Encoders(encoders),
         ])
-    
+    '''
     def train_loader(self):
         '''
         train_data = CocoDataset(
