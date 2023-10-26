@@ -157,17 +157,16 @@ class FPN(nn.Module):
             )
 
         # build outputs
-        # outs = [
-        #     self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
-        #     # laterals[i]
-        #     # for i in range(used_backbone_levels)
-        # ]
-
         outs = [
-            self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self.end_level)
-            # use only the selected levels and the remaining levels are for lateral connection and top-down path
+            self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
+            # laterals[i]
+            # for i in range(used_backbone_levels)
         ]
-        print(len(outs),self.start_level,self.end_level)
+
+        # outs = [
+        #     self.fpn_convs[i](laterals[i]) for i in range(self.start_level, self.end_level)
+        #     # use only the selected levels and the remaining levels are for lateral connection and top-down path
+        # ]
 
         # part 2: add extra levels
         if self.num_outs > len(outs):
