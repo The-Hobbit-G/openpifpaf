@@ -214,7 +214,7 @@ class Trainer():
                     data = data.to(self.device, non_blocking=True)
                     assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
                     #concatenate all cifdet targets and all cafdet targets at dim=1 dimention into two tensors
-                    targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=1),\  
+                    targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=1),\
                                      torch.cat([targets[1][i] for i in range(len(targets[1])) if targets[1][i] is not None],dim=1)])  #cifdet targets,cafdet targets
                     print(targets[0].size(),targets[1].size())
                     # print(targets[0][0].size(),targets[1][0].size())
