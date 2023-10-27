@@ -294,8 +294,8 @@ class Trainer():
                 # assert len(targets) == len(outputs)
 
                 #concatenate all the cifdet outpus and all the cafdet outputs into two tensors at dim = 1
-                outputs = tuple([torch.cat([outputs[0][i] for i in range(len(outputs[0])) if outputs[0][i] is not None],dim=1),\
-                                    torch.cat([outputs[1][i] for i in range(len(outputs[1])) if outputs[1][i] is not None],dim=1)])  #cifdet outputs,cafdet outputs
+                outputs = tuple([torch.cat([outputs[i][0] for i in range(len(outputs)) if outputs[i][0] is not None],dim=1),\
+                                    torch.cat([outputs[i][1] for i in range(len(outputs)) if outputs[i][1] is not None],dim=1)])    #cifdet outputs,cafdet outputs
 
                 '''
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
