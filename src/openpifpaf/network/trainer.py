@@ -218,7 +218,7 @@ class Trainer():
                                      torch.cat([targets[1][i] for i in range(len(targets[1])) if targets[1][i] is not None],dim=1).to(self.device, non_blocking=True)])  #cifdet targets,cafdet targets
                     
                     
-                    print(targets[0].size(),targets[1].size())
+                    # print(targets[0].size(),targets[1].size())
                     # print(targets[0][0].size(),targets[1][0].size())
                     # targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
                     #                   targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
@@ -329,10 +329,10 @@ class Trainer():
                 # category_loss_time = time.time() - category_loss_start
                 # print('category loss calculation time: {}'.format(category_loss_time))
                 '''
-                multihead_start = time.time()
+                # multihead_start = time.time()
                 loss, head_losses = self.loss(outputs, targets)
-                multihead_time = time.time() - multihead_start
-                print('multihead loss calculation time: {}'.format(multihead_time))
+                # multihead_time = time.time() - multihead_start
+                # print('multihead loss calculation time: {}'.format(multihead_time))
             else:
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))
