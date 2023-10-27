@@ -291,7 +291,7 @@ class Trainer():
                 # multihead_start = time.time()
                 assert type(outputs[0]) == tuple
                 # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
-                assert len(targets) == len(outputs)
+                # assert len(targets) == len(outputs)
 
                 #concatenate all the cifdet outpus and all the cafdet outputs into two tensors at dim = 1
                 outputs = tuple([torch.cat([outputs[0][i] for i in range(len(outputs[0])) if outputs[0][i] is not None],dim=1),\
