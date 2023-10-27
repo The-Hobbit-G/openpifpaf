@@ -213,11 +213,14 @@ class Trainer():
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
                     assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
-                    #concatenate all cifdet targets and all cafdet targets at the 2nd dimention into two tensors
-                    print(targets[0][0].size(),targets[1][0].size())
-                    targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
-                                      targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
-                                        for i in range(len(targets[0]))])
+                    #concatenate all cifdet targets and all cafdet targets at dim=1 dimention into two tensors
+                    targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=1),\  
+                                     torch.cat([targets[1][i] for i in range(len(targets[1])) if targets[1][i] is not None],dim=1)])  #cifdet targets,cafdet targets
+                    print(targets[0].size(),targets[1].size())
+                    # print(targets[0][0].size(),targets[1][0].size())
+                    # targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
+                    #                   targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
+                    #                     for i in range(len(targets[0]))])
                     #in this case, the new targets would be tuple([cifdet_target1,cafdet_target1],[cifdet_target2,cafdet_target2],...)
                     #concatenate all cifdet targets and all cafdet targets into two tensors
                     # targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=0),\  #cifdet targets
@@ -237,7 +240,8 @@ class Trainer():
 
             # output_start = time.time()
             # print(type(targets),type(targets[0]),len(targets),len(targets[0]))
-            if type(targets) == tuple:
+            if type(targets) == tuple and ((isinstance(self.model,nets.Shell) and self.model.neck_net is not None) or \
+                                             (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is not None)):
                 outputs = self.model(data, head_mask=[t is not None for t in targets[0]])
             else:
                 outputs = self.model(data, head_mask=[t is not None for t in targets])
@@ -286,8 +290,14 @@ class Trainer():
 
                 # multihead_start = time.time()
                 assert type(outputs[0]) == tuple
-                print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
+                # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
+
+                #concatenate all the cifdet outpus and all the cafdet outputs into two tensors at dim = 1
+                outputs = tuple([torch.cat([outputs[0][i] for i in range(len(outputs[0])) if outputs[0][i] is not None],dim=1),\
+                                    torch.cat([outputs[1][i] for i in range(len(outputs[1])) if outputs[1][i] is not None],dim=1)])  #cifdet outputs,cafdet outputs
+
+                '''
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 #try using single apply(for loop replacing multi_apply)
                 # multiclass_loss = []
@@ -313,9 +323,14 @@ class Trainer():
                 for i in range(len(head_losses)):
                     if multiclass_head_losses[0][i] is not None:
                         head_losses[i] = sum([head_loss[i] for head_loss in multiclass_head_losses])
-
+                 
                 # category_loss_time = time.time() - category_loss_start
                 # print('category loss calculation time: {}'.format(category_loss_time))
+                '''
+                multihead_start = time.time()
+                loss, head_losses = self.loss(outputs, targets)
+                multihead_time = time.time() - multihead_start
+                print('multihead loss calculation time: {}'.format(multihead_time))
             else:
                 # print('target shape: {} {}, output shape: {} {}'.format(targets[0].size(),targets[1].size(),
                 #                                                         outputs[0].size(),outputs[1].size()))
