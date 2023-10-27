@@ -21,8 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det/checkpoints/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det.pt.epoch054"
-optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det/checkpoints/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det.pt.optim.epoch054"
+checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det/checkpoints/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det.pt.epoch057"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det/checkpoints/opp_train_resnet50_cifcafdet_cocodet_bg_mask_det.pt.optim.epoch057"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
