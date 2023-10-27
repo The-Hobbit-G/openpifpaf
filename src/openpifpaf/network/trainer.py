@@ -213,10 +213,15 @@ class Trainer():
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
                     assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
+                    #concatenate all cifdet targets and all cafdet targets at the 2nd dimention into two tensors
+                    print(targets[0][0].size(),targets[1][0].size())
                     targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
                                       targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
                                         for i in range(len(targets[0]))])
                     #in this case, the new targets would be tuple([cifdet_target1,cafdet_target1],[cifdet_target2,cafdet_target2],...)
+                    #concatenate all cifdet targets and all cafdet targets into two tensors
+                    # targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=0),\  #cifdet targets
+                    #                  torch.cat([targets[1][i] for i in range(len(targets[1])) if targets[1][i] is not None],dim=0)])  #cafdet targets
             else:
                 with torch.autograd.profiler.record_function('to-device'):
                     data = data.to(self.device, non_blocking=True)
@@ -281,7 +286,7 @@ class Trainer():
 
                 # multihead_start = time.time()
                 assert type(outputs[0]) == tuple
-                # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
+                print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
                 assert len(targets) == len(outputs)
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 #try using single apply(for loop replacing multi_apply)
