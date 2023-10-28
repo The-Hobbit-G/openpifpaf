@@ -226,7 +226,7 @@ class CifCaf(Decoder):
             if (isinstance(meta, headmeta.Cif)
                 and isinstance(meta_next, headmeta.Caf))
         ]
-    '''
+    
     def __call__(self, fields, initial_annotations=None):
         start = time.perf_counter()
         if not initial_annotations:
@@ -525,3 +525,4 @@ class CifCaf(Decoder):
                  len(annotations_py),
                  [np.sum(ann.data[:, 2] > 0.1) for ann in annotations_py])
         return annotations_py
+        '''
