@@ -362,6 +362,8 @@ class CifCaf(Decoder):
                         #Calculate the confidence score
                         confidence_3 = top_left_c + bottom_right_c
 
+
+                        '''
                         ###generate the final bbox by doing weighted average ovea bboxes
                         #generate the final bbox by doing weighted average ovea bboxes
                         confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
@@ -373,7 +375,11 @@ class CifCaf(Decoder):
                         overall_confidence = confidence_weight_ori@confidence_weight/2
                         overall_confidence = overall_confidence.item()
                         # overall_confidence = center_c
-                        
+                        '''
+
+                        ###generate hte final bbox by using only the top_left and bottom_right bboxes
+                        weighted_bbox = bbox_3
+                        overall_confidence = confidence_3.item()
 
 
                         ####generate the final bbox by choosing the bbox with the highest confidence
