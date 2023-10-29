@@ -425,13 +425,13 @@ class CifCaf(Decoder):
 
                         ###generate hte final bbox by using only the top_left and bottom_right bboxes
                         weighted_bbox = bbox_3
-                        overall_confidence = confidence_3.item()
+                        overall_confidence = confidence_3.item()/2
 
 
                         ####generate the final bbox by choosing the bbox with the highest confidence
                         # confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
                         # overall_confidence,weighted_bbox_index = torch.max(confidence_weight_ori,dim=0)
-                        # overall_confidence = overall_confidence.item()
+                        # overall_confidence = overall_confidence.item()/2
                         # weighted_bbox = torch.stack((bbox_1,bbox_2,bbox_3))[weighted_bbox_index]
 
 
