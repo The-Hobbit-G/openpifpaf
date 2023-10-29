@@ -174,6 +174,14 @@ COCO_DET_SIGMAS = [
     0.080,
 ]
 
+COCO_DET_FULL_SIGMAS = [ 
+    0.080,
+    0.080,
+    0.080,
+    0.080,
+    0.080,
+]
+
 
 COCO_PERSON_SCORE_WEIGHTS = [3.0] * 3 + [1.0] * (len(COCO_KEYPOINTS) - 3)
 
