@@ -427,9 +427,11 @@ class Trainer():
                                              (isinstance(self.model,torch.nn.parallel.DistributedDataParallel) and self.model.module.neck_net is None)):
                 data = data.to(self.device, non_blocking=True)
                 assert (len(targets) == 2) and (len(targets[0]) == len(targets[1]))
-                targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
-                                    targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
-                                    for i in range(len(targets[0]))])
+                # targets = tuple([[targets[0][i].to(self.device, non_blocking=True) if targets[0][i] is not None else None,\
+                #                     targets[1][i].to(self.device, non_blocking=True) if targets[1][i] is not None else None]\
+                #                     for i in range(len(targets[0]))])
+                targets = tuple([torch.cat([targets[0][i] for i in range(len(targets[0])) if targets[0][i] is not None],dim=1).to(self.device, non_blocking=True),\
+                                     torch.cat([targets[1][i] for i in range(len(targets[1])) if targets[1][i] is not None],dim=1).to(self.device, non_blocking=True)])  #cifdet targets,cafdet targets
             else:
                 data = data.to(self.device, non_blocking=True)
                 targets = [head.to(self.device, non_blocking=True)
@@ -457,6 +459,10 @@ class Trainer():
                 # deal with the case where we use cifcaf detection head
                 assert type(outputs[0]) == tuple
                 # print(len(outputs),len(outputs[0]),outputs[0][0].shape,outputs[0][1].shape)
+                outputs = tuple([torch.cat([outputs[i][0] for i in range(len(outputs)) if outputs[i][0] is not None],dim=1),\
+                                    torch.cat([outputs[i][1] for i in range(len(outputs)) if outputs[i][1] is not None],dim=1)])    #cifdet outputs,cafdet outputs
+                loss, head_losses = self.loss(outputs, targets)
+                '''
                 assert len(targets) == len(outputs)
                 multiclass_loss, multiclass_head_losses = multi_apply(self.loss,outputs,targets)
                 assert len(multiclass_loss) == len(multiclass_head_losses)
@@ -465,6 +471,7 @@ class Trainer():
                 for i in range(len(head_losses)):
                     if multiclass_head_losses[0][i] is not None:
                         head_losses[i] = sum([head_loss[i] for head_loss in multiclass_head_losses])
+                '''
             else:
                 loss, head_losses = self.loss(outputs, targets)
             loss = self.reduce_loss(loss)
