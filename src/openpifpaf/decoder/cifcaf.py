@@ -405,10 +405,10 @@ class CifCaf(Decoder):
                         y = top_left[1] - height/4
 
                         #Create the bounding box label as (x, y, width, height)
-                        bbox_4 = torch.stack((x, y, width, height))
+                        bbox_3 = torch.stack((x, y, width, height))
 
                         #Calculate the confidence score
-                        confidence_4 = top_left_c + bottom_right_c
+                        confidence_3 = top_left_c + bottom_right_c
 
 
                         ''''''
