@@ -209,18 +209,18 @@ class AnnRescaler():
     
     def cif_detections(self, anns):
         #Use center point, top left, and bottom right as annotations
-        # category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
-        #                      ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride,(ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
-        #                    for ann in anns if not ann['iscrowd']]
+        category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
+                             ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride,(ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
+                           for ann in anns if not ann['iscrowd']]
         #The resulting list, category_bboxes, contains tuples where each tuple consists of 
         #the category ID and the adjusted bounding box coordinates(in the order of center, top_left, bottom_right).
         #[(category_id, [center_x, center_y, top_left_x, top_left_y, bottom_right_x, bottom_right_y])]
 
         #Use center point, top left, top right, bottom left, and bottom right as annotations
-        category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
-                             ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride, ann['bbox'][1] / self.stride,\
-                             ann['bbox'][0] / self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
-                           for ann in anns if not ann['iscrowd']]
+        # category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
+        #                      ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride, ann['bbox'][1] / self.stride,\
+        #                      ann['bbox'][0] / self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
+        #                    for ann in anns if not ann['iscrowd']]
 
         #Use the center point, the midpoint of top_left and center_point, the midpoint of bottom_right and center_point as annotations
         # category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
@@ -233,9 +233,9 @@ class AnnRescaler():
         category_id, bbox = category_bboxes
         if len(bbox) == 6:
             #compute the area of the bbox
-            # area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3])
+            area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3])
             #for the case we use center, midpoint of top_left and center, midpoint of bottom_right and center as annotations
-            area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3]) * 4
+            # area = (bbox[4] - bbox[2]) * (bbox[5] - bbox[3]) * 4
         elif len(bbox) == 10:
             #compute the area of the bbox
             area = (bbox[8] - bbox[2]) * (bbox[9] - bbox[3])
