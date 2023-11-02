@@ -195,8 +195,8 @@ class CifGenerator():
                 xy_bottom_right = np.asarray(bbox[4:])
                 wh = [xy_bottom_right[0] - xy_top_left[0], xy_bottom_right[1] - xy_top_left[1]] #width and height of the bbox
                 #TODO: assign boxes of different scales to different levels of FPN
-                scale = np.sqrt(wh[0]*wh[1])*2   #for using midpoints of corners and center
-                # scale = np.sqrt(wh[0]*wh[1])
+                # scale = np.sqrt(wh[0]*wh[1])*2   #for using midpoints of corners and center
+                scale = np.sqrt(wh[0]*wh[1])
                 if self.config.use_fpn:
                     # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
                     #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
