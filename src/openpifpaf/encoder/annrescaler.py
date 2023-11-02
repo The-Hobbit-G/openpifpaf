@@ -217,16 +217,16 @@ class AnnRescaler():
         #[(category_id, [center_x, center_y, top_left_x, top_left_y, bottom_right_x, bottom_right_y])]
 
         #Use center point, top left, top right, bottom left, and bottom right as annotations
-        # category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
-        #                      ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride, ann['bbox'][1] / self.stride,\
-        #                      ann['bbox'][0] / self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
-        #                    for ann in anns if not ann['iscrowd']]
+        category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
+                             ann['bbox'][0] / self.stride, ann['bbox'][1] / self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride, ann['bbox'][1] / self.stride,\
+                             ann['bbox'][0] / self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride, (ann['bbox'][0]+ann['bbox'][2])/self.stride,(ann['bbox'][1]+ann['bbox'][3])/self.stride])
+                           for ann in anns if not ann['iscrowd']]
 
         #Use the center point, the midpoint of top_left and center_point, the midpoint of bottom_right and center_point as annotations
-        category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
-                             (ann['bbox'][0]+ann['bbox'][2]/4)/self.stride, (ann['bbox'][1]+ann['bbox'][3]/4)/self.stride,\
-                             (ann['bbox'][0]+ann['bbox'][2]*3/4)/self.stride, (ann['bbox'][1]+ann['bbox'][3]*3/4)/self.stride])
-                            for ann in anns if not ann['iscrowd']]
+        # category_bboxes = [(ann['category_id'],[(ann['bbox'][0]+ann['bbox'][2]/2)/self.stride,(ann['bbox'][1]+ann['bbox'][3]/2)/self.stride,\
+        #                      (ann['bbox'][0]+ann['bbox'][2]/4)/self.stride, (ann['bbox'][1]+ann['bbox'][3]/4)/self.stride,\
+        #                      (ann['bbox'][0]+ann['bbox'][2]*3/4)/self.stride, (ann['bbox'][1]+ann['bbox'][3]*3/4)/self.stride])
+        #                     for ann in anns if not ann['iscrowd']]
         return category_bboxes
     
     def detections_scale(self, category_bboxes):
