@@ -312,137 +312,254 @@ class CifCaf(Decoder):
                     categoty_scores = []
                     category_points = []#for visualization
                     for ann_data, ann_id in zip(annotations, annotation_ids):
-                        center,center_c = ann_data[0, 1:3],ann_data[0, 0]
-                        top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
-                        bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
+                        if ann_data.shape[0]==3:
+                            center,center_c = ann_data[0, 1:3],ann_data[0, 0]
+                            top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
+                            bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
 
-                        # bbox derived from center and top_left
-                        # width = 2 * (center[0] - top_left[0])
-                        # height = 2 * (center[1] - top_left[1])
+                            # bbox derived from center and top_left
+                            width = 2 * (center[0] - top_left[0])
+                            height = 2 * (center[1] - top_left[1])
 
-                        # # Calculate the x and y coordinates of the bounding box
-                        # x = top_left[0]  # x-coordinate of the top-left corner
-                        # y = top_left[1]  # y-coordinate of the top-left corner
+                            # Calculate the x and y coordinates of the bounding box
+                            x = top_left[0]  # x-coordinate of the top-left corner
+                            y = top_left[1]  # y-coordinate of the top-left corner
 
-                        # # Create the bounding box label as (x, y, width, height)
-                        # bbox_1 = torch.stack((x, y, width, height))
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_1 = torch.stack((x, y, width, height))
 
-                        # #Calculate the confidence score
-                        # confidence_1 = center_c + top_left_c
-
-
-
-                        # #bbox derived from the center and the midpoint of top_left and center
-                        width = 4 * (center[0]-top_left[0])
-                        height = 4 * (center[1]-top_left[1])
-
-                        #Calculate the x and y coordinates of the bounding box
-                        x = top_left[0] - width/4
-                        y = top_left[1] - height/4
-
-                        #Create the bounding box label as (x, y, width, height)
-                        bbox_1 = torch.stack((x, y, width, height))
-
-                        #Calculate the confidence score
-                        confidence_1 = center_c + top_left_c
-
-                        ''''''
-
-                        # bbox derived from center and bottom_right
-                        # width = 2 * (bottom_right[0] - center[0])
-                        # height = 2 * (bottom_right[1] - center[1])
-
-                        # # Calculate the x and y coordinates of the bounding box
-                        # x = bottom_right[0] - width # x-coordinate of the top-left corner
-                        # y = bottom_right[1] - height
-
-                        # # Create the bounding box label as (x, y, width, height)
-                        # bbox_2 = torch.stack((x, y, width, height))
-
-                        # #Calculate the confidence score
-                        # confidence_2 = bottom_right_c + center_c
-
-
-                        # # bbox derived from center and the midpoint of bottom_right and center
-                        width = 4 * (bottom_right[0]-center[0])
-                        height = 4 * (bottom_right[1]-center[1])
-
-                        #Calculate the x and y coordinates of the bounding box
-                        x = center[0] - width/2
-                        y = center[1] - height/2
-
-                        #Create the bounding box label as (x, y, width, height)
-                        bbox_2 = torch.stack((x, y, width, height))
-
-                        #Calculate the confidence score
-                        confidence_2 = bottom_right_c + center_c
-
-
-                        ''''''
-
-                        # bbox derived from top_left and bottom_right
-                        # width = bottom_right[0] - top_left[0]
-                        # height = bottom_right[1] - top_left[1]
-
-                        # # Calculate the x and y coordinates of the bounding box
-                        # x = top_left[0]
-                        # y = top_left[1]
-
-                        # # Create the bounding box label as (x, y, width, height)
-                        # bbox_3 = torch.stack((x, y, width, height))
-
-                        # #Calculate the confidence score
-                        # confidence_3 = top_left_c + bottom_right_c
+                            #Calculate the confidence score
+                            confidence_1 = center_c + top_left_c
 
 
 
-                        # #bbox derived from the midpoint of top_left and center and the midpoint of bottom_right and center
-                        width = 2 * (bottom_right[0]-top_left[0])
-                        height = 2 * (bottom_right[1]-top_left[1])
+                            # #bbox derived from the center and the midpoint of top_left and center
+                            # width = 4 * (center[0]-top_left[0])
+                            # height = 4 * (center[1]-top_left[1])
 
-                        #Calculate the x and y coordinates of the bounding box
-                        x = top_left[0] - width/4
-                        y = top_left[1] - height/4
+                            # #Calculate the x and y coordinates of the bounding box
+                            # x = top_left[0] - width/4
+                            # y = top_left[1] - height/4
 
-                        #Create the bounding box label as (x, y, width, height)
-                        bbox_3 = torch.stack((x, y, width, height))
+                            # #Create the bounding box label as (x, y, width, height)
+                            # bbox_1 = torch.stack((x, y, width, height))
 
-                        #Calculate the confidence score
-                        confidence_3 = top_left_c + bottom_right_c
+                            # #Calculate the confidence score
+                            # confidence_1 = center_c + top_left_c
 
+                            ''''''
 
-                        ''''''
-                        ###generate the final bbox by doing weighted average ovea bboxes
-                        confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
-                        confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
-                        weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
+                            # bbox derived from center and bottom_right
+                            width = 2 * (bottom_right[0] - center[0])
+                            height = 2 * (bottom_right[1] - center[1])
 
-                        #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
-                        overall_confidence = confidence_weight_ori@confidence_weight/2
-                        overall_confidence = overall_confidence.item()
-                        
+                            # Calculate the x and y coordinates of the bounding box
+                            x = bottom_right[0] - width # x-coordinate of the top-left corner
+                            y = bottom_right[1] - height
 
-                        ###generate hte final bbox by using only the top_left and bottom_right bboxes
-                        # weighted_bbox = bbox_3
-                        # overall_confidence = confidence_3.item()/2
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_2 = torch.stack((x, y, width, height))
 
-
-                        ####generate the final bbox by choosing the bbox with the highest confidence
-                        # confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
-                        # overall_confidence,weighted_bbox_index = torch.max(confidence_weight_ori,dim=0)
-                        # overall_confidence = overall_confidence.item()/2
-                        # weighted_bbox = torch.stack((bbox_1,bbox_2,bbox_3))[weighted_bbox_index]
+                            #Calculate the confidence score
+                            confidence_2 = bottom_right_c + center_c
 
 
+                            # # bbox derived from center and the midpoint of bottom_right and center
+                            # width = 4 * (bottom_right[0]-center[0])
+                            # height = 4 * (bottom_right[1]-center[1])
 
-                        category_bboxes.append(weighted_bbox)
-                        categoty_scores.append(overall_confidence)
-                        category_points.append(ann_data[:, 1:3])#for visualization
-                        
-                        # print(confidence_1,confidence_2,confidence_3)
-                        # print(confidence_weight,weighted_bbox)
-                        # print(confidence_weight.shape,weighted_bbox.shape)
-                        # print(overall_confidence)
+                            # #Calculate the x and y coordinates of the bounding box
+                            # x = center[0] - width/2
+                            # y = center[1] - height/2
+
+                            # #Create the bounding box label as (x, y, width, height)
+                            # bbox_2 = torch.stack((x, y, width, height))
+
+                            # #Calculate the confidence score
+                            # confidence_2 = bottom_right_c + center_c
+
+
+                            ''''''
+
+                            # bbox derived from top_left and bottom_right
+                            width = bottom_right[0] - top_left[0]
+                            height = bottom_right[1] - top_left[1]
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = top_left[0]
+                            y = top_left[1]
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_3 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_3 = top_left_c + bottom_right_c
+
+
+
+                            # #bbox derived from the midpoint of top_left and center and the midpoint of bottom_right and center
+                            # width = 2 * (bottom_right[0]-top_left[0])
+                            # height = 2 * (bottom_right[1]-top_left[1])
+
+                            # #Calculate the x and y coordinates of the bounding box
+                            # x = top_left[0] - width/4
+                            # y = top_left[1] - height/4
+
+                            # #Create the bounding box label as (x, y, width, height)
+                            # bbox_3 = torch.stack((x, y, width, height))
+
+                            # #Calculate the confidence score
+                            # confidence_3 = top_left_c + bottom_right_c
+
+
+                            ''''''
+                            ###generate the final bbox by doing weighted average ovea bboxes
+                            confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
+                            confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
+                            weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
+
+                            #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
+                            overall_confidence = confidence_weight_ori@confidence_weight/2
+                            overall_confidence = overall_confidence.item()
+                            
+
+                            ###generate hte final bbox by using only the top_left and bottom_right bboxes
+                            # weighted_bbox = bbox_3
+                            # overall_confidence = confidence_3.item()/2
+
+
+                            ####generate the final bbox by choosing the bbox with the highest confidence
+                            # confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
+                            # overall_confidence,weighted_bbox_index = torch.max(confidence_weight_ori,dim=0)
+                            # overall_confidence = overall_confidence.item()/2
+                            # weighted_bbox = torch.stack((bbox_1,bbox_2,bbox_3))[weighted_bbox_index]
+
+
+
+                            category_bboxes.append(weighted_bbox)
+                            categoty_scores.append(overall_confidence)
+                            category_points.append(ann_data[:, 1:3])#for visualization
+                            
+                            # print(confidence_1,confidence_2,confidence_3)
+                            # print(confidence_weight,weighted_bbox)
+                            # print(confidence_weight.shape,weighted_bbox.shape)
+                            # print(overall_confidence)
+                        elif ann_data.shape[0]==5:
+                            center,center_c = ann_data[0, 1:3],ann_data[0, 0]
+                            top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
+                            top_right,top_right_c = ann_data[2, 1:3],ann_data[2, 0]
+                            bottom_left,bottom_left_c = ann_data[3, 1:3],ann_data[3, 0]
+                            bottom_right,bottom_right_c = ann_data[4, 1:3],ann_data[4, 0]
+                            # bbox derived from center and top_left
+                            width = 2 * (center[0] - top_left[0])
+                            height = 2 * (center[1] - top_left[1])
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = top_left[0]  # x-coordinate of the top-left corner
+                            y = top_left[1]  # y-coordinate of the top-left corner
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_1 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_1 = center_c + top_left_c
+
+                            ''''''
+                            # bbox derived from center and top_right
+                            width = 2 * (top_right[0] - center[0])
+                            height = 2 * (center[1] - top_right[1])
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = top_right[0] - width # x-coordinate of the top-left corner
+                            y = top_right[1] # y-coordinate of the top-left corner
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_2 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_2 = center_c + top_right_c
+
+                            ''''''
+                            # bbox derived from center and bottom_left
+                            width = 2 * (center[0] - bottom_left[0])
+                            height = 2 * (bottom_left[1] - center[1])
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = bottom_left[0]  # x-coordinate of the top-left corner
+                            y = bottom_left[1] - height # y-coordinate of the top-left corner
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_3 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_3 = center_c + bottom_left_c
+
+
+                            ''''''
+
+                            # bbox derived from center and bottom_right
+                            width = 2 * (bottom_right[0] - center[0])
+                            height = 2 * (bottom_right[1] - center[1])
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = bottom_right[0] - width # x-coordinate of the top-left corner
+                            y = bottom_right[1] - height
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_4 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_4 = bottom_right_c + center_c
+
+
+
+                            ''''''
+
+                            # bbox derived from top_left and bottom_right
+                            width = bottom_right[0] - top_left[0]
+                            height = bottom_right[1] - top_left[1]
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = top_left[0]
+                            y = top_left[1]
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_5 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_5 = top_left_c + bottom_right_c
+
+                            ''''''
+
+                            # bbox derived from top_right and bottom_left
+                            width = top_right[0] - bottom_left[0]
+                            height = bottom_left[1] - top_right[1]
+
+                            # Calculate the x and y coordinates of the bounding box
+                            x = bottom_left[0]
+                            y = top_right[1]
+
+                            # Create the bounding box label as (x, y, width, height)
+                            bbox_6 = torch.stack((x, y, width, height))
+
+                            #Calculate the confidence score
+                            confidence_6 = top_right_c + bottom_left_c
+
+                            ''''''
+
+                            ###generate the final bbox by doing weighted average ovea bboxes
+                            confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3,confidence_4,confidence_5,confidence_6))
+                            confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
+                            weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3,bbox_4,bbox_5,bbox_6)),dim=0)
+
+                            #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
+                            overall_confidence = confidence_weight_ori@confidence_weight/2
+                            overall_confidence = overall_confidence.item()
+
+
+                            category_bboxes.append(weighted_bbox)
+                            categoty_scores.append(overall_confidence)
+                            category_points.append(ann_data[:, 1:3])#for visualization
                     assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
                     # categoty_labels = torch.tensor(categoty_labels)
                     category_bboxes = torch.stack(category_bboxes, dim=0)
