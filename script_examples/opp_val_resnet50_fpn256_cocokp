@@ -8,7 +8,7 @@
 #SBATCH --qos=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --time=01:00:00
-#SBATCH --output=/scratch/izar/jiguo/val/cocokp/resnet50_fpn256/%x.out
+#SBATCH --output=/scratch/izar/jiguo/val/cocokp/resnet50_fpn256_original/%x.out
 
 shopt -s extglob
 
@@ -16,11 +16,11 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50_fpn256_cocokp'
-evalepoch=150
+evalxp='opp_train_resnet50_fpn256_cocokp_tarthre4'
+evalepoch=045
 
 
-xpdir="/scratch/izar/jiguo/val/cocokp/resnet50_fpn256/${SLURM_JOB_NAME}"
+xpdir="/scratch/izar/jiguo/val/cocokp/resnet50_fpn256_original/${SLURM_JOB_NAME}"
 
 mkdir -p ${xpdir}
 # mkdir -p ${xpdir}/code
