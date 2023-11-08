@@ -78,18 +78,18 @@ class CocoDet(openpifpaf.datasets.DataModule):
     def __init__(self):
         super().__init__()
         #Use full corners and skeletons for cifcaf with sigmas(joint scales)
-        # cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
-        #                               keypoints=COCODET_FULL_KEYPOINTS,
-        #                               sigmas=COCO_DET_FULL_SIGMAS,
-        #                               draw_skeleton=COCODET_FULL_SKELETON,
-        #                               categories=COCO_CATEGORIES,)
-        # cifdet.upsample_stride = self.upsample_stride
-        # cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
-        #                               keypoints=COCODET_FULL_KEYPOINTS,
-        #                               sigmas=COCO_DET_FULL_SIGMAS,
-        #                               skeleton=COCODET_FULL_SKELETON,
-        #                               categories=COCO_CATEGORIES,)
-        # cafdet.upsample_stride = self.upsample_stride
+        cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
+                                      keypoints=COCODET_FULL_KEYPOINTS,
+                                      sigmas=COCO_DET_FULL_SIGMAS,
+                                      draw_skeleton=COCODET_FULL_SKELETON,
+                                      categories=COCO_CATEGORIES,)
+        cifdet.upsample_stride = self.upsample_stride
+        cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
+                                      keypoints=COCODET_FULL_KEYPOINTS,
+                                      sigmas=COCO_DET_FULL_SIGMAS,
+                                      skeleton=COCODET_FULL_SKELETON,
+                                      categories=COCO_CATEGORIES,)
+        cafdet.upsample_stride = self.upsample_stride
 
 
         #Use patial corners and skeletons for cifcafdet
@@ -107,18 +107,18 @@ class CocoDet(openpifpaf.datasets.DataModule):
         # cafdet.upsample_stride = self.upsample_stride
 
         #Use patial corners and skeletons for cifcafdet with sigmas(joint scales)
-        cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
-                                      keypoints=COCODET_KEYPOINTS,
-                                      sigmas=COCO_DET_SIGMAS,
-                                      draw_skeleton=COCODET_SKELETON,
-                                      categories=COCO_CATEGORIES,)
-        cifdet.upsample_stride = self.upsample_stride
-        cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
-                                      keypoints=COCODET_KEYPOINTS,
-                                      sigmas=COCO_DET_SIGMAS,
-                                      skeleton=COCODET_SKELETON,
-                                      categories=COCO_CATEGORIES,)
-        cafdet.upsample_stride = self.upsample_stride
+        # cifdet = openpifpaf.headmeta.Cif('cif', 'cocodet',
+        #                               keypoints=COCODET_KEYPOINTS,
+        #                               sigmas=COCO_DET_SIGMAS,
+        #                               draw_skeleton=COCODET_SKELETON,
+        #                               categories=COCO_CATEGORIES,)
+        # cifdet.upsample_stride = self.upsample_stride
+        # cafdet = openpifpaf.headmeta.Caf('caf', 'cocodet',
+        #                               keypoints=COCODET_KEYPOINTS,
+        #                               sigmas=COCO_DET_SIGMAS,
+        #                               skeleton=COCODET_SKELETON,
+        #                               categories=COCO_CATEGORIES,)
+        # cafdet.upsample_stride = self.upsample_stride
 
         self.head_metas = [cifdet, cafdet]
     
