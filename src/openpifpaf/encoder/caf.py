@@ -177,6 +177,21 @@ class AssociationFiller:
         return shortest
 
     def fill_keypoints(self, keypoints, fill_values):
+        _,scale = fill_values
+        if self.config.use_fpn:
+            # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
+            #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+            #     return
+
+            # if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
+            #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
+            #     return
+            
+            if (self.config.head_index == 0 and scale>8/self.config.meta.upsample_stride) or (self.config.head_index == -1 and scale<=4/self.config.meta.upsample_stride)\
+                or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
+                # print('ignore')
+                return
+
         for field_i, joint1i, joint2i in self.config.fill_plan:
             joint1 = keypoints[joint1i] #keypoints coordinate of the first joint connected by the i_th joint connection
             joint2 = keypoints[joint2i] #keypoints coordinate of the second joint connected by the i_th joint connection
@@ -429,19 +444,19 @@ class CafGenerator(AssociationFiller):
         joint1i, joint2i = self.skeleton_m1[field_i]
         keypoints, scale = fill_values
 
-        if self.config.use_fpn:
-            # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
-            #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
-            #     return
+        # if self.config.use_fpn:
+        #     # if (self.config.head_index == 0 and scale>8) or (self.config.head_index == -1 and scale<=4)\
+        #     #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8 or scale<=4)):
+        #     #     return
 
-            # if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
-            #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
-            #     return
+        #     # if (self.config.head_index == 0 and scale>16) or (self.config.head_index == -1 and scale<=8)\
+        #     #     or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>16 or scale<=8)):
+        #     #     return
             
-            if (self.config.head_index == 0 and scale>8/self.config.meta.upsample_stride) or (self.config.head_index == -1 and scale<=4/self.config.meta.upsample_stride)\
-                or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
-                # print('ignore')
-                return
+        #     if (self.config.head_index == 0 and scale>8/self.config.meta.upsample_stride) or (self.config.head_index == -1 and scale<=4/self.config.meta.upsample_stride)\
+        #         or (self.config.head_index != 0 and self.config.head_index != -1 and (scale>8/self.config.meta.upsample_stride or scale<=4/self.config.meta.upsample_stride)):
+        #         # print('ignore')
+        #         return
         # update intensity
         self.intensities[field_i, fij[1], fij[0]] = 1.0
 
