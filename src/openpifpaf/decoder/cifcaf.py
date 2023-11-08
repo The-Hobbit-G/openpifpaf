@@ -414,13 +414,13 @@ class CifCaf(Decoder):
 
                             ''''''
                             ###generate the final bbox by doing weighted average ovea bboxes
-                            confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
-                            confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
-                            weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
+                            # confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
+                            # confidence_weight = torch.softmax(confidence_weight_ori,dim=0)
+                            # weighted_bbox = torch.sum(confidence_weight[:,None] * torch.stack((bbox_1,bbox_2,bbox_3)),dim=0)
 
-                            #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
-                            overall_confidence = confidence_weight_ori@confidence_weight/2
-                            overall_confidence = overall_confidence.item()
+                            # #compute the overall confidence as the weighted sum of the confidence of the three bboxes(the confidence of each bbox is the mean of the confidence of the two keypoints that define the bbox)
+                            # overall_confidence = confidence_weight_ori@confidence_weight/2
+                            # overall_confidence = overall_confidence.item()
                             
 
                             ###generate hte final bbox by using only the top_left and bottom_right bboxes
@@ -429,10 +429,10 @@ class CifCaf(Decoder):
 
 
                             ####generate the final bbox by choosing the bbox with the highest confidence
-                            # confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
-                            # overall_confidence,weighted_bbox_index = torch.max(confidence_weight_ori,dim=0)
-                            # overall_confidence = overall_confidence.item()/2
-                            # weighted_bbox = torch.stack((bbox_1,bbox_2,bbox_3))[weighted_bbox_index]
+                            confidence_weight_ori = torch.stack((confidence_1,confidence_2,confidence_3))
+                            overall_confidence,weighted_bbox_index = torch.max(confidence_weight_ori,dim=0)
+                            overall_confidence = overall_confidence.item()/2
+                            weighted_bbox = torch.stack((bbox_1,bbox_2,bbox_3))[weighted_bbox_index]
 
 
 
