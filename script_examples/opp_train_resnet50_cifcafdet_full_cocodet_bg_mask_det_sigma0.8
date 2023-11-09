@@ -21,8 +21,8 @@ echo STARTING AT `date`
 
 
 xpdir="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/${SLURM_JOB_NAME}"
-checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8/checkpoints/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8.pt.epoch080"
-optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8/checkpoints/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8.pt.optim.epoch080"
+checkpoint="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8/checkpoints/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8.pt.epoch120"
+optimizer_cp="/scratch/izar/jiguo/train/cocodet/cifcafdet_no_fpnfilter/resnet50/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8/checkpoints/opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8.pt.optim.epoch120"
 mkdir -p ${xpdir}
 mkdir -p ${xpdir}/code
 tar -czvf ${xpdir}/code/code.tar.gz /home/jiguo/openpifpaf
