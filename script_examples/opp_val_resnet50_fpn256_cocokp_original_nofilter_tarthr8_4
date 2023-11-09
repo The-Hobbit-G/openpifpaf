@@ -16,7 +16,7 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50_fpn256_cocokp_original_nofilter'
+evalxp='opp_train_resnet50_fpn256_cocokp_original_nofilter_tarthr8_4'
 evalepoch=065
 
 
