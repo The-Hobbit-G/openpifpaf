@@ -30,7 +30,7 @@ do
     --write-predictions \
     --output ${xpdir}/predictions/${SLURM_JOB_NAME}_epoch${cpepoch} \
     --dataset=cocokp \
-    --coco-eval-long-edge 641 \
+    --coco-eval-long-edge 321 \
     --cocokp-upsample=2 \
     --coco-no-eval-annotation-filter \
     --batch-size 1 \
