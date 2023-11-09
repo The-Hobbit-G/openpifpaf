@@ -17,7 +17,7 @@ echo STARTING AT `date`
 
 
 evalxp='opp_train_resnet50_fpn256_cocokp_original_nofilter'
-evalepoch=065
+evalepoch=150
 
 
 xpdir="/scratch/izar/jiguo/val/cocokp/resnet50_fpn256_original/${SLURM_JOB_NAME}"
