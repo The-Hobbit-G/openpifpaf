@@ -209,7 +209,7 @@ class Predictor:
                         top_right_point = pred_point[2]
                         bottom_left_point = pred_point[3]
                         bottom_right_point = pred_point[4]
-                        draw center point in image with red color using opencv
+                        # draw center point in image with red color using opencv
                         cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
                         #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
                         cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
