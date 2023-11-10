@@ -7,8 +7,8 @@ shopt -s extglob
 echo STARTING AT `date`
 
 
-evalxp='opp_train_resnet50_cifcafdet_cocodet_bg_mask_det_sigma0.8'
-evalepoch=150
+evalxp='opp_train_resnet50_cifcafdet_full_cocodet_bg_mask_det_sigma0.8'
+evalepoch=120
 
 
 xpdir="/scratch/izar/jiguo/val/cocodet/cifcafdet/resnet50/${SLURM_JOB_NAME}"
