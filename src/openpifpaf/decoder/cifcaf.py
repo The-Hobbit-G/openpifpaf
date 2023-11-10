@@ -618,12 +618,12 @@ class CifCaf(Decoder):
                 # points = [points[i] for i in range(len(points)) if filter_mask[i]]
 
                 #choose the top 100 boxes
-                if len(scores) > 100:
-                    top_k = 100
-                    scores, indices = torch.topk(scores, top_k)
-                    categories = categories[indices]
-                    boxes = boxes[indices]
-                    points = [points[i] for i in indices]#for visualization
+                # if len(scores) > 100:
+                #     top_k = 100
+                #     scores, indices = torch.topk(scores, top_k)
+                #     categories = categories[indices]
+                #     boxes = boxes[indices]
+                #     points = [points[i] for i in indices]#for visualization
 
                 # print(categories.shape,boxes.shape,scores.shape)
                 # print(scores.max())
@@ -631,14 +631,14 @@ class CifCaf(Decoder):
                 # convert to py
                 boxes_np = boxes.numpy()
                 #already in xywh format
-                for category, score, box in zip(categories, scores, boxes_np):
-                    ann = AnnotationDet(self.cif_metas[0].categories)
-                    ann.set(int(category), float(score), box)
-                    annotations_py.append(ann)
-                # for category, score, box, cate_points in zip(categories, scores, boxes_np, points):
+                # for category, score, box in zip(categories, scores, boxes_np):
                 #     ann = AnnotationDet(self.cif_metas[0].categories)
                 #     ann.set(int(category), float(score), box)
-                #     annotations_py.append([ann,cate_points])
+                #     annotations_py.append(ann)
+                for category, score, box, cate_points in zip(categories, scores, boxes_np, points):
+                    ann = AnnotationDet(self.cif_metas[0].categories)
+                    ann.set(int(category), float(score), box)
+                    annotations_py.append([ann,cate_points])
             else:
                 pass
             

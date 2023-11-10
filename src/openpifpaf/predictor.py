@@ -151,18 +151,18 @@ class Predictor:
             unnalmalized_image_batch = inverse_normalize(processed_image_batch, mean, std)
             # un-batch
             for image, pred, gt_anns, meta in \
-                    zip(image_batch, pred_batch, gt_anns_batch, meta_batch):
+                    zip(unnalmalized_image_batch, pred_batch, gt_anns_batch, meta_batch):
                 LOG.info('batch %d: %s', batch_i, meta.get('file_name', 'no-file-name'))
 
                 # load the original image if necessary
                 if self.visualize_image:
                     visualizer.Base.image(image, meta=meta)
 
-                pred = [ann.inverse_transform(meta) for ann in pred]
+                # pred = [ann.inverse_transform(meta) for ann in pred]
                 gt_anns = [ann.inverse_transform(meta) for ann in gt_anns]
 
 
-                '''
+                ''''''
                 #Modify for visualization
                 # print(type(gt_anns[0]))
                 # print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
@@ -185,20 +185,51 @@ class Predictor:
                 pred = pred_ann
                 assert len(pred) == len(pred_points)
                 for pr_ann,pred_point in zip(pred,pred_points):
-                    pred_category = pr_ann.category_id
+                    pred_category = pr_ann.category
                     pred_box = pr_ann.bbox
                     pred_point = pred_point.cpu().numpy()
-                    center_point = pred_point[0]
-                    top_left_point = pred_point[1]
-                    bottom_right_point = pred_point[2]
-                    #draw center point in image with red color using opencv
-                    cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
-                    #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
-                    cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
-                    cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
-                    #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
-                    cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
-                    cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                    if pred_point.shape[0] == 3:
+                        center_point = pred_point[0]
+                        top_left_point = pred_point[1]
+                        bottom_right_point = pred_point[2]
+                        #draw center point in image with red color using opencv
+                        cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
+                        #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
+                        cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
+                        cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
+                        #draw a connection line between center point and top_left_point and bottom_right_point respectively in purple using opencv
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(top_left_point[0]), int(top_left_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (255, 0, 255), 2)
+                        #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
+                        cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
+                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                    elif pred_point.shape[0] == 5:
+                        center_point = pred_point[0]
+                        top_left_point = pred_point[1]
+                        top_right_point = pred_point[2]
+                        bottom_left_point = pred_point[3]
+                        bottom_right_point = pred_point[4]
+                        draw center point in image with red color using opencv
+                        cv2.circle(image, (int(center_point[0]), int(center_point[1])), 5, (0, 0, 255), -1)
+                        #draw top_left_point and bottom_right_point in image with green and blue color respectively using opencv
+                        cv2.circle(image, (int(top_left_point[0]), int(top_left_point[1])), 5, (0, 255, 0), -1)
+                        cv2.circle(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), 5, (255, 0, 0), -1)
+                        #draw top_right_point and bottom_left_point in image with orange and pink color respectively using opencv
+                        cv2.circle(image, (int(top_right_point[0]), int(top_right_point[1])), 5, (0, 165, 255), -1)
+                        cv2.circle(image, (int(bottom_left_point[0]), int(bottom_left_point[1])), 5, (255, 192, 203), -1)
+                        #draw a connection line between center point and top_left_point, top_right_point, bottom_left_point and bottom_right_point respectively in purple using opencv
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(top_left_point[0]), int(top_left_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(top_right_point[0]), int(top_right_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(bottom_left_point[0]), int(bottom_left_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (255, 0, 255), 2)
+                        #draw a connection line between top_left_point and top_right_point, top_right_point and bottom_right_point, bottom_right_point and bottom_left_point, bottom_left_point and top_left_point respectively in purple using opencv
+                        cv2.line(image, (int(top_left_point[0]), int(top_left_point[1])), (int(top_right_point[0]), int(top_right_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(top_right_point[0]), int(top_right_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(bottom_right_point[0]), int(bottom_right_point[1])), (int(bottom_left_point[0]), int(bottom_left_point[1])), (255, 0, 255), 2)
+                        cv2.line(image, (int(bottom_left_point[0]), int(bottom_left_point[1])), (int(top_left_point[0]), int(top_left_point[1])), (255, 0, 255), 2)
+                        #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
+                        cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
+                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
 
                     # cv2.rectangle(image, (int(top_left_point[0]), int(top_left_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (0, 255, 255), 2)
                     # cv2.putText(image, str(pred_category), (int(top_left_point[0]), int(top_left_point[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
@@ -206,12 +237,12 @@ class Predictor:
 
                 for gt in gt_anns:
                     gt_box = gt.bbox
-                    gt_category = gt.category_id
+                    gt_category = gt.category
                     #draw gt_box in image with green color using opencv and put the category id on the top left corner
                     cv2.rectangle(image_gd, (int(gt_box[0]), int(gt_box[1])), (int(gt_box[0]+gt_box[2]), int(gt_box[1]+gt_box[3])), (0, 255, 0), 2)
                     cv2.putText(image_gd, str(gt_category), (int(gt_box[0]), int(gt_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 cv2.imwrite('/home/jiguo/test_image/test_{}_gd.jpg'.format(meta['image_id']), image_gd)
-                '''
+                
                     
         
 
