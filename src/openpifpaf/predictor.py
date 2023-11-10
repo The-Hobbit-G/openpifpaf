@@ -202,7 +202,7 @@ class Predictor:
                         cv2.line(image, (int(center_point[0]), int(center_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (255, 0, 255), 2)
                         #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
                         cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
-                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 1)
                     elif pred_point.shape[0] == 5:
                         center_point = pred_point[0]
                         top_left_point = pred_point[1]
@@ -229,7 +229,7 @@ class Predictor:
                         cv2.line(image, (int(bottom_left_point[0]), int(bottom_left_point[1])), (int(top_left_point[0]), int(top_left_point[1])), (255, 0, 255), 2)
                         #draw pred_box in image with yellow color using opencv and put the category id on the top left corner
                         cv2.rectangle(image, (int(pred_box[0]), int(pred_box[1])), (int(pred_box[0]+pred_box[2]), int(pred_box[1]+pred_box[3])), (0, 255, 255), 2)
-                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+                        cv2.putText(image, str(pred_category), (int(pred_box[0]), int(pred_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 1)
 
                     # cv2.rectangle(image, (int(top_left_point[0]), int(top_left_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (0, 255, 255), 2)
                     # cv2.putText(image, str(pred_category), (int(top_left_point[0]), int(top_left_point[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
