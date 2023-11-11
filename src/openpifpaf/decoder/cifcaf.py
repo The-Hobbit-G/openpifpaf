@@ -312,11 +312,16 @@ class CifCaf(Decoder):
                     categoty_scores = []
                     category_points = []#for visualization
                     for ann_data, ann_id in zip(annotations, annotation_ids):
-                        print(ann_id)
+                        # print(ann_id)
                         if ann_data.shape[0]==3:
                             center,center_c = ann_data[0, 1:3],ann_data[0, 0]
                             top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
                             bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
+
+                            if center_c < self.instance_threshold:
+                                #delete one element in categoty_labels
+                                categoty_labels.pop()
+                                continue
 
                             # bbox derived from center and top_left
                             width = 2 * (center[0] - top_left[0])
@@ -586,8 +591,8 @@ class CifCaf(Decoder):
                 # print(categories,boxes,scores)
                 # print(categories.shape,boxes.shape,scores.shape)
                 # print(categories)
-                print(scores.max())
-                print(self.instance_threshold)
+                # print(scores.max())
+                # print(self.instance_threshold)
                 if self.nms_by_category:
                     keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
                 else:
