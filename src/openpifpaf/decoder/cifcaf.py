@@ -312,6 +312,7 @@ class CifCaf(Decoder):
                     categoty_scores = []
                     category_points = []#for visualization
                     for ann_data, ann_id in zip(annotations, annotation_ids):
+                        print(ann_id)
                         if ann_data.shape[0]==3:
                             center,center_c = ann_data[0, 1:3],ann_data[0, 0]
                             top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
