@@ -151,18 +151,18 @@ class Predictor:
             unnalmalized_image_batch = inverse_normalize(processed_image_batch, mean, std)
             # un-batch
             for image, pred, gt_anns, meta in \
-                    zip(image_batch, pred_batch, gt_anns_batch, meta_batch):
+                    zip(unnalmalized_image_batch, pred_batch, gt_anns_batch, meta_batch):
                 LOG.info('batch %d: %s', batch_i, meta.get('file_name', 'no-file-name'))
 
                 # load the original image if necessary
                 if self.visualize_image:
                     visualizer.Base.image(image, meta=meta)
 
-                pred = [ann.inverse_transform(meta) for ann in pred]
+                # pred = [ann.inverse_transform(meta) for ann in pred]
                 gt_anns = [ann.inverse_transform(meta) for ann in gt_anns]
 
 
-                '''
+                ''''''
                 #Modify for visualization
                 # print(type(gt_anns[0]))
                 # print(pred[0], type(pred[0]),type(pred[0][0]),type(pred[0][1]),len(pred))
@@ -181,7 +181,7 @@ class Predictor:
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
                 image_gd = image.copy()
-                image_skeleton = image.copy()
+                # image_skeleton = image.copy()
 
                 pred = pred_ann
                 assert len(pred) == len(pred_points)
@@ -236,7 +236,7 @@ class Predictor:
                     # cv2.rectangle(image, (int(top_left_point[0]), int(top_left_point[1])), (int(bottom_right_point[0]), int(bottom_right_point[1])), (0, 255, 255), 2)
                     # cv2.putText(image, str(pred_category), (int(top_left_point[0]), int(top_left_point[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
                 cv2.imwrite('/home/jiguo/test_image/test_{}.jpg'.format(meta['image_id']), image)
-                cv2.imwrite('/home/jiguo/test_image/test_skeleton_{}.jpg'.format(meta['image_id']), image_skeleton)
+                # cv2.imwrite('/home/jiguo/test_image/test_skeleton_{}.jpg'.format(meta['image_id']), image_skeleton)
 
                 for gt in gt_anns:
                     gt_box = gt.bbox
@@ -245,7 +245,7 @@ class Predictor:
                     cv2.rectangle(image_gd, (int(gt_box[0]), int(gt_box[1])), (int(gt_box[0]+gt_box[2]), int(gt_box[1]+gt_box[3])), (0, 255, 0), 2)
                     cv2.putText(image_gd, str(gt_category), (int(gt_box[0]), int(gt_box[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 cv2.imwrite('/home/jiguo/test_image/test_{}_gd.jpg'.format(meta['image_id']), image_gd)
-                '''
+                
                     
         
 
