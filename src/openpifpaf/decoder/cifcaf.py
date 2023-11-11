@@ -597,18 +597,18 @@ class CifCaf(Decoder):
                 # print(categories)
                 # print(scores.max())
                 # print(self.instance_threshold)
-                # if self.nms_by_category:
-                #     keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
-                # else:
-                #     keep_index = torchvision.ops.nms(boxes, scores, self.iou_threshold)
-                # pre_nms_scores = scores.clone()
-                # scores *= self.suppression
-                # scores[keep_index] = pre_nms_scores[keep_index]
-                # filter_mask = scores > self.instance_threshold
-                # categories = categories[filter_mask]
-                # scores = scores[filter_mask]
-                # boxes = boxes[filter_mask]
-                # points = [points[i] for i in range(len(points)) if filter_mask[i]]#for visualization
+                if self.nms_by_category:
+                    keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
+                else:
+                    keep_index = torchvision.ops.nms(boxes, scores, self.iou_threshold)
+                pre_nms_scores = scores.clone()
+                scores *= self.suppression
+                scores[keep_index] = pre_nms_scores[keep_index]
+                filter_mask = scores > self.instance_threshold
+                categories = categories[filter_mask]
+                scores = scores[filter_mask]
+                boxes = boxes[filter_mask]
+                points = [points[i] for i in range(len(points)) if filter_mask[i]]#for visualization
                 LOG.debug('cpp annotations = %d (%.1fms)',
                         len(scores),
                         (time.perf_counter() - start) * 1000.0)
