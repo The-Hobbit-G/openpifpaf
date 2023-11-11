@@ -574,15 +574,19 @@ class CifCaf(Decoder):
                             categoty_scores.append(overall_confidence)
                             category_points.append(ann_data[:, 1:3])#for visualization
                     assert len(category_bboxes) == len(categoty_scores) == len(categoty_labels)
-                    # categoty_labels = torch.tensor(categoty_labels)
-                    category_bboxes = torch.stack(category_bboxes, dim=0)
-                    # categoty_scores = torch.tensor(categoty_scores)
-                    # print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
-                    # print(categoty_labels,category_bboxes,categoty_scores)
-                    categories+=categoty_labels
-                    boxes.append(category_bboxes)
-                    scores+=categoty_scores
-                    points+=(category_points)#for visualization
+
+                    if len(category_bboxes)>0:
+                        # categoty_labels = torch.tensor(categoty_labels)
+                        category_bboxes = torch.stack(category_bboxes, dim=0)
+                        # categoty_scores = torch.tensor(categoty_scores)
+                        # print(categoty_labels.shape,category_bboxes.shape,categoty_scores.shape)
+                        # print(categoty_labels,category_bboxes,categoty_scores)
+                        categories+=categoty_labels
+                        boxes.append(category_bboxes)
+                        scores+=categoty_scores
+                        points+=(category_points)#for visualization
+                    else:
+                        continue
             annotations_py = []
             if len(boxes) > 0:
                 categories = torch.tensor(categories)
