@@ -318,10 +318,10 @@ class CifCaf(Decoder):
                             top_left,top_left_c = ann_data[1, 1:3],ann_data[1, 0]
                             bottom_right,bottom_right_c = ann_data[2, 1:3],ann_data[2, 0]
 
-                            if center_c < self.instance_threshold:
-                                #delete one element in categoty_labels
-                                categoty_labels.pop()
-                                continue
+                            # if center_c < self.instance_threshold:
+                            #     #delete one element in categoty_labels
+                            #     categoty_labels.pop()
+                            #     continue
 
                             # bbox derived from center and top_left
                             width = 2 * (center[0] - top_left[0])
@@ -597,10 +597,12 @@ class CifCaf(Decoder):
                 # print(categories)
                 # print(scores.max())
                 # print(self.instance_threshold)
+                boxes_for_nms = boxes.copy()
+                boxes_for_nms[:,2:] += boxes_for_nms[:,:2]
                 if self.nms_by_category:
-                    keep_index = torchvision.ops.batched_nms(boxes, scores, categories, self.iou_threshold)
+                    keep_index = torchvision.ops.batched_nms(boxes_for_nms, scores, categories, self.iou_threshold)
                 else:
-                    keep_index = torchvision.ops.nms(boxes, scores, self.iou_threshold)
+                    keep_index = torchvision.ops.nms(boxes_for_nms, scores, self.iou_threshold)
                 pre_nms_scores = scores.clone()
                 scores *= self.suppression
                 scores[keep_index] = pre_nms_scores[keep_index]
