@@ -597,7 +597,7 @@ class CifCaf(Decoder):
                 # print(categories)
                 # print(scores.max())
                 # print(self.instance_threshold)
-                boxes_for_nms = boxes.copy()
+                boxes_for_nms = boxes.clone()
                 boxes_for_nms[:,2:] += boxes_for_nms[:,:2]
                 if self.nms_by_category:
                     keep_index = torchvision.ops.batched_nms(boxes_for_nms, scores, categories, self.iou_threshold)
